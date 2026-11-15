@@ -1,0 +1,5 @@
+# Netlify build configuration.
+# Exclude only non-secret public config values that legitimately appear in rendered HTML/JSON-LD.
+# Do NOT add real secrets (OCR_API_KEY, ADMIN_API_KEYS, MONGODB_URI, NEXTAUTH_SECRET) here.
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "NEXTAUTH_URL,RAZORPAY_CURRENCY"

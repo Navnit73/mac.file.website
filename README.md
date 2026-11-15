@@ -7,7 +7,7 @@ Compare a bank statement against a business ledger (cash book / general ledger e
 1. Configure server environment variables in `.env.local` (see `.env.example`):
 
 ```bash
-OCR_API_BASE_URL=https://api.finlyzers.com/api/v1
+OCR_API_BASE_URL=https://api.example.com/api/v1
 OCR_API_KEY=your_api_key_here
 ```
 
