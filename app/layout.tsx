@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { SITE_URL } from "@/lib/landing-data";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,16 +13,57 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const PAGE_TITLE =
+  "Reconcile Bank Statement Files & Ledgers | ClearTie Software";
+const PAGE_DESCRIPTION =
+  "Reconcile bank statement PDFs, images, CSV, and XLSX files against your ledger in seconds. Spot gaps, duplicates, and mismatches with XLSX/CSV export.";
+
 export const metadata: Metadata = {
-  title: "File Organizer for Mac: Sort Files Automatically",
-  description:
-    "A file organizer for Mac that sorts your desktop, Downloads, and folders with rules you control. Preview every change and undo moves. Start your free trial today.",
+  metadataBase: new URL(SITE_URL),
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
+  applicationName: "ClearTie",
+  keywords: [
+    "reconcile bank statement",
+    "reconciling bank statements",
+    "financial reconciliation software",
+    "account reconciliation software",
+    "bank reconciliation software",
+    "automated bank reconciliation",
+    "bank account reconciliation",
+    "account reconciliation meaning",
+    "accounting account reconciliation",
+    "bank and account reconciliation",
+    "reconciliation for accounting",
+    "credit card reconciliation",
+    "balance sheet account reconciliation",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
   openGraph: {
-    title: "File Organizer for Mac: Sort Files Automatically",
-    description:
-      "A file organizer for Mac that sorts your desktop, Downloads, and folders with rules you control. Preview every change and undo moves. Start your free trial today.",
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
     type: "website",
     url: "/",
+    siteName: "ClearTie",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
   },
 };
 

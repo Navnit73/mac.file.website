@@ -1,48 +1,25 @@
-export type PricingPlan = {
-  id: string;
-  name: string;
-  price: string;
-  cadence: string;
-  bestFor: string;
-  includes: string;
-  features: string[];
-  ctaLabel: string;
-  featured?: boolean;
-};
-
 export type FaqItem = {
   id: string;
+  category: "tool" | "concepts";
   question: string;
   answer: string;
 };
 
-export type SimulationFolder = {
-  id: "desktop" | "downloads" | "projects";
-  label: string;
-  path: string;
-  ruleSummary: string;
-  files: {
-    name: string;
-    kind: "pdf" | "image" | "archive" | "sheet" | "dmg";
-    size: string;
-    destination: string;
-    ruleMatched: string;
-  }[];
-};
-
 export type QuickGuide = {
-  id: "desktop" | "downloads";
+  id: "bank" | "credit-card" | "balance-sheet";
   title: string;
   subtitle: string;
   steps: { title: string; detail: string }[];
 };
 
 export type ImplementedCapability = {
-  id: "monitoring" | "safety" | "classifier" | "security";
+  id: "ingestion" | "matching" | "audit" | "exports";
   tabLabel: string;
   badge: string;
   title: string;
   summary: string;
+  specLabel: string;
+  specDetail: string;
   highlights: {
     label: string;
     detail: string;
@@ -50,431 +27,532 @@ export type ImplementedCapability = {
   codeChips?: string[];
 };
 
-export const BRAND = {
-  name: "FolderFlow",
-  tagline: "File Organizer for Mac",
-  trialDays: 14,
-  minMacOS: "macOS 13+ (Apple Silicon & Intel)",
-  stackSummary: "Tauri 2 • Rust • SQLite (SQLx) • React + TypeScript",
-  version: "v0.2",
+export type PlaybookPhase = {
+  phase: string;
+  title: string;
+  items: {
+    heading: string;
+    detail: string;
+  }[];
 };
 
-export const BUILTIN_CATEGORIES = [
-  "Documents",
-  "Images",
-  "Videos",
-  "Audio",
-  "Archives",
-  "Spreadsheets",
-  "Presentations",
-  "Applications & Installers",
-  "Design",
-  "Development",
-  "Fonts",
-  "E-books",
-  "Other",
+export type UtilityComparisonRow = {
+  dimension: string;
+  manualSpreadsheets: string;
+  genericPdfTools: string;
+  enterpriseSuites: string;
+  cleartie: string;
+};
+
+export type ReconciliationProblem = {
+  id: string;
+  badge: string;
+  title: string;
+  whyItHappens: string;
+  howClearTieFixesIt: string;
+};
+
+export type BenefitPillar = {
+  id: string;
+  title: string;
+  metric: string;
+  description: string;
+};
+
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://cleartie.com";
+
+export const BRAND = {
+  name: "ClearTie",
+  tagline: "Bank Statement & Business Ledger Reconciliation Utility",
+  stackSummary:
+    "Byte-Detected OCR & Spreadsheet Engine • Direct Tie-Out Utility",
+  version: "v2.4",
+};
+
+export const SUPPORTED_FORMATS = [
+  "PDF (Digital)",
+  "PDF (Scanned OCR)",
+  "JPG / JPEG",
+  "PNG / WEBP",
+  "TIFF / TIF",
+  "CSV",
+  "TSV / TXT",
+  "XLSX / XLSM",
+  "HTML / XML Bank Excel",
+  "UTF-16 Bank Exports",
 ] as const;
+
+export const BENEFIT_PILLARS: BenefitPillar[] = [
+  {
+    id: "speed",
+    title: "Close Faster Without Formula Fragility",
+    metric: "±0–31d Window",
+    description:
+      "Replace error-prone VLOOKUP sheets with deterministic amount, direction, reference, and date-tolerance matching.",
+  },
+  {
+    id: "accuracy",
+    title: "Prove Both Ending & Running Balances",
+    metric: "Line-by-Line Proof",
+    description:
+      "Verify opening plus net flow equals closing balance on both records and catch mid-statement running-balance breaks.",
+  },
+  {
+    id: "privacy",
+    title: "Zero Bank Credentials Required",
+    metric: "In-Memory Unlock",
+    description:
+      "Never link live banking logins. Upload exported statements directly—including encrypted PDFs unlocked strictly in memory.",
+  },
+  {
+    id: "global",
+    title: "Ready for US, UK & EU Formats",
+    metric: "6 Header Languages",
+    description:
+      "Parse ISO 4217 currencies, parentheses or Dr/Cr signs, UTF-16 exports, and English, German, French, Spanish, Portuguese, and Dutch headers.",
+  },
+];
+
+export const RECONCILIATION_PROBLEMS: ReconciliationProblem[] = [
+  {
+    id: "timing-differences",
+    badge: "Timing Lag",
+    title: "Deposits in Transit & Uncleared Checks",
+    whyItHappens:
+      "Payments recorded in your cash book at month-end often settle at the bank 1 to 3 business days later, creating temporary gaps.",
+    howClearTieFixesIt:
+      "Configure date tolerances up to ±31 days to match delayed settlements, while true period-end cutoffs isolate cleanly in Unmatched Ledger.",
+  },
+  {
+    id: "unrecorded-items",
+    badge: "Bank-Only Items",
+    title: "Unrecorded Bank Fees, Interest & NSF Reversals",
+    whyItHappens:
+      "Wire charges, monthly maintenance fees, bounced customer checks, and earned interest appear on bank statements before reaching your ledger.",
+    howClearTieFixesIt:
+      "Every unposted bank line surfaces in Unmatched Bank with exact dates, amounts, and descriptions ready for adjusting journal entries.",
+  },
+  {
+    id: "transposition-sign-flips",
+    badge: "Posting Errors",
+    title: "Transposed Amounts & Flipped Debit/Credit Signs",
+    whyItHappens:
+      "Manual keying swaps digits (like $850 vs. $840) or logs a withdrawal as a deposit when switching between bank and book conventions.",
+    howClearTieFixesIt:
+      "Automatic direction convention detection and near-match analysis isolate exact amount deltas and Dr/Cr sign inversions in Amount Mismatches.",
+  },
+  {
+    id: "duplicates-breaks",
+    badge: "Integrity Breaks",
+    title: "Duplicate Imports & Running-Balance Gaps",
+    whyItHappens:
+      "Overlapping CSV exports or missing OCR rows introduce duplicate transactions and break statement math mid-period.",
+    howClearTieFixesIt:
+      "Possible Duplicates groups suspect repeats on either record, while row-by-row running-balance checks pinpoint the exact row of any break.",
+  },
+];
 
 export const IMPLEMENTED_CAPABILITIES: ImplementedCapability[] = [
   {
-    id: "monitoring",
-    tabLabel: "Monitoring & Stability",
-    badge: "Native macOS Engine",
-    title: "Folder Registry, Live FSEvents & File Stability",
+    id: "ingestion",
+    tabLabel: "Document & File Parsing",
+    badge: "Byte-Level Detection",
+    title: "Multi-Format Bank Statement & Business Ledger Extraction",
     summary:
-      "FolderFlow watches standard macOS folders or custom directories via supervised per-folder FSEvents tasks, backed by SQLite reconciliation and file-stability verification.",
+      "Detects true document format from file bytes—not just extensions—routing PDFs and images through OCR while parsing CSV, TSV, TXT, XLSX, and XLSM directly.",
+    specLabel: "Up to 100 MB per File & 200 PDF Pages",
+    specDetail:
+      "Recognizes English, German, French, Spanish, Portuguese, and Dutch bank headers automatically",
     highlights: [
       {
-        label: "Folder Registry & Quick-Add",
+        label: "Scanned & Password-Protected PDFs",
         detail:
-          "Quick-add Downloads, Desktop, Documents, Pictures, Movies, and Music or pick any custom folder via native dialog. Configure custom names, recursive watching, include/exclude extensions, excluded subfolders, and stability overrides.",
+          "Extracts transaction tables from native or scanned PDFs with multi-pass OCR fallback, and unlocks password-protected PDFs in memory without storing passwords.",
       },
       {
-        label: "Global & Per-Folder Controls",
+        label: "Bank Quirk Spreadsheet Support",
         detail:
-          "Pause or resume monitoring globally, or pause, resume, rescan, restart, and remove individual folders without touching files on disk.",
+          "Reads UTF-16 Unicode text exports, split two-row headers, and HTML/XML bank exports saved with spreadsheet extensions up to 100,000 rows.",
       },
       {
-        label: "Supervised FSEvents + Reconciliation",
+        label: "All ISO 4217 Currencies & Formats",
         detail:
-          "Debounced watcher tasks with bounded channels, overflow fallback to reconciliation, exponential error backoff, and periodic SQLite scans to catch missed events.",
+          "Parses currency codes/symbols, trailing minus signs, accounting parentheses, and Dr/Cr suffixes consistently across statements and cash books.",
       },
       {
-        label: "Multi-Check File Stability",
+        label: "Opening & Closing Balance Extraction",
         detail:
-          "Waits until file size, mtime, device, and inode remain unchanged across consecutive checks before marking any new download or export ready.",
-      },
-    ],
-  },
-  {
-    id: "safety",
-    tabLabel: "Safety & macOS TCC",
-    badge: "Strict Path Safety",
-    title: "Ignore Filtering, Path Authority & TCC Permissions",
-    summary:
-      "Every path is validated, NFC-normalized, and checked against approved roots while active downloads, system metadata, and symlinks are automatically skipped.",
-    highlights: [
-      {
-        label: "Smart Ignore & Safety Filtering",
-        detail:
-          "Automatically ignores macOS metadata (.DS_Store, ._*, .localized), partial browser downloads, editor swap/temp files, VCS/cache folders, symlinks (no following), and FolderFlow staging files.",
-      },
-      {
-        label: "Strict Path Authority",
-        detail:
-          "Validates, normalizes (Unicode NFC), canonicalizes, and verifies approved folder roots on every backend command.",
-      },
-      {
-        label: "macOS TCC Permission Handling",
-        detail:
-          "Probes access states (Granted, Denied, Missing, NotAFolder), reports folder health (Healthy, Paused, Unavailable, PermissionDenied, Error), surfaces recent errors, and deep-links straight to macOS System Settings.",
+          "Automatically picks up Balance B/F, Brought Forward, Balance C/F, and Carried Forward rows from both statements and ledgers.",
       },
     ],
     codeChips: [
-      ".DS_Store",
-      ".download / .crdownload / .part",
-      ".tmp / .swp / ~$*",
-      ".git / node_modules / .Trash",
-      ".folderflow-*",
+      "PDF Statement OCR",
+      "JPG / PNG / TIFF",
+      "CSV / TSV / TXT",
+      "XLSX / XLSM",
+      "In-Memory PDF Unlock",
     ],
   },
   {
-    id: "classifier",
-    tabLabel: "Hybrid Classifier",
-    badge: "8,192B Header Inspection",
-    title: "Magic-Byte Inspection & 13 Built-in Categories",
+    id: "matching",
+    tabLabel: "Matching & Tolerances",
+    badge: "Configurable Rules",
+    title: "Deterministic Matching With Date-Window & Memo Scoring",
     summary:
-      "Combines extension matching with safe 8,192-byte magic-header inspection—without ever executing files—and breaks down folder counts and byte totals by category.",
+      "Compares normalized bank statement lines against your business ledger using exact amounts, flow direction, reference IDs, configurable date tolerances, and optional description similarity.",
+    specLabel: "±0 to 31 Day Window • Description Scoring",
+    specDetail:
+      "Tolerates weekend and ACH/SEPA/Faster Payments clearing lags while catching flipped signs",
     highlights: [
       {
-        label: "Extension + Magic-Byte Inspection",
+        label: "Configurable Date Tolerance Window",
         detail:
-          "Inspects up to 8,192 header bytes via infer to verify actual file types alongside extensions without executing untrusted files.",
+          "Set `date_tolerance_days` between 0 and 31 days (default ±2 days) so clearing delays never hide valid matches.",
       },
       {
-        label: "Atomic .app Bundles & Spoof Detection",
+        label: "Reference & Narration Matching",
         detail:
-          "Treats macOS .app bundles as single atomic items and flags extension/signature mismatches (such as an executable disguised as .pdf) as Other with Low confidence.",
+          "Matches UTR, cheque numbers, voucher IDs, and toggleable description similarity (`description_matching`) with confidence scores and match reasons.",
       },
       {
-        label: "Category Analytics & Custom Model",
+        label: "Direction Convention Detection",
         detail:
-          "Folder detail views show live file counts and byte totals across all 13 built-in categories, backed by a custom category priority data model in Rust and SQLite.",
+          "Handles both bank-convention and ledger-convention cash books automatically so inflows and outflows align accurately.",
+      },
+      {
+        label: "Single-Total Invoice/Receipt Fallback",
+        detail:
+          "Even if you upload an invoice or receipt PDF as your business ledger, ClearTie extracts and reconciles its printed total with an explanatory warning.",
       },
     ],
   },
   {
-    id: "security",
-    tabLabel: "Settings & Security",
-    badge: "Offline SQLite Core",
-    title: "Offline SQLite Storage, Redacted Logs & Hardened Rust",
+    id: "audit",
+    tabLabel: "Gaps, Duplicates & Proof",
+    badge: "Full Variance Check",
+    title: "Surface Unmatched Items, Duplicates, Mismatches & Balance Proof",
     summary:
-      "Built offline-first with type-safe Rust-to-TypeScript bindings, 6 persistent settings sections in SQLite, and compile-time bans on unsafe raw filesystem mutations.",
+      "Every run isolates bank-only gaps, book-only gaps, possible duplicate entries, and amount or direction mismatches alongside math verification across both records.",
+    specLabel: "Running-Balance & Book-to-Bank Proof",
+    specDetail:
+      "Verifies opening balance + net flow = closing balance line by line",
     highlights: [
       {
-        label: "6 Typed SQLite Settings Sections",
+        label: "Bank-Only & Book-Only Gaps",
         detail:
-          "Persists and validates preferences across general, monitoring, organization, performance, appearance (Light/Dark/System + Comfortable/Compact density), and privacy.",
+          "Separates unrecorded bank fees, interest, or unposted wires (`unmatched_bank`) from deposits in transit or uncleared checks (`unmatched_ledger`).",
       },
       {
-        label: "Redacted Rolling Logs",
+        label: "Duplicate & Amount Mismatch Alerts",
         detail:
-          "Rolling diagnostic log files with configurable path redaction and 1–90 day retention, plus an About view showing app version, SQLite schema version, and data/log paths.",
+          "Flags potential duplicate groups on either side and highlights near-matches with amount differences or opposite Dr/Cr directions.",
       },
       {
-        label: "Hardened Rust Architecture",
+        label: "Row-by-Row Running Balance Check",
         detail:
-          "Type-safe Rust ↔ TypeScript bindings generated via tauri-specta, plus Clippy disallowed_methods banning raw mutating filesystem or shell calls outside safe_fs.",
+          "Detects mid-statement running balance breaks caused by OCR errors, missing rows, or corrupted ledger exports.",
+      },
+      {
+        label: "Book-to-Bank Explained Variance",
+        detail:
+          "Breaks down closing balance differences into explained discrepancies versus unexplained residual variance.",
+      },
+    ],
+  },
+  {
+    id: "exports",
+    tabLabel: "Exports & Session Resume",
+    badge: "XLSX • CSV • Webhooks",
+    title: "Downloadable Reports, Paginated Filters & Resumable IDs",
+    summary:
+      "Inspect transactions by category, download formatted Excel or CSV workbooks, resume prior reconciliation runs by ID, or attach signed completion webhooks.",
+    specLabel: "XLSX & CSV • Category Filtering",
+    specDetail:
+      "Browse Matched, Unmatched Bank, Unmatched Ledger, Duplicates, and Mismatches",
+    highlights: [
+      {
+        label: "Formatted XLSX & CSV Export",
+        detail:
+          "Download complete reconciliation workbooks in `.xlsx` or `.csv` containing summary KPIs, balance checks, and all categorized rows.",
+      },
+      {
+        label: "Paginated Category Explorer",
+        detail:
+          "Switch between All, Matched, Bank Only, Ledger Only, Duplicates, and Amount Mismatches with page size controls.",
+      },
+      {
+        label: "Session Resume by Reconciliation ID",
+        detail:
+          "Reload recent runs automatically or enter any `reconciliation_id` (e.g. `rec_...`) to reopen saved results within the retention window.",
+      },
+      {
+        label: "Optional HTTPS Webhooks",
+        detail:
+          "Attach an HTTPS `webhook_url` and optional HMAC-SHA256 `webhook_secret` when kicking off long scanned-PDF jobs.",
       },
     ],
   },
 ];
 
-export const SIMULATION_FOLDERS: SimulationFolder[] = [
+export const UTILITY_COMPARISON: UtilityComparisonRow[] = [
   {
-    id: "desktop",
-    label: "Desktop",
-    path: "~/Desktop",
-    ruleSummary:
-      "Screenshots -> ~/Pictures/Screenshots/YYYY-MM • PDFs -> ~/Documents/Inbox",
-    files: [
-      {
-        name: "Screenshot 2026-11-14 at 9.12 AM.png",
-        kind: "image",
-        size: "2.4 MB",
-        destination: "~/Pictures/Screenshots/2026-11/",
-        ruleMatched: "Screenshots by Date",
-      },
-      {
-        name: "ACME-Q4-Invoice-1042.pdf",
-        kind: "pdf",
-        size: "418 KB",
-        destination: "~/Documents/Invoices/2026/",
-        ruleMatched: "PDF Invoices by Year",
-      },
-      {
-        name: "Budget-Forecast-Draft.xlsx",
-        kind: "sheet",
-        size: "1.1 MB",
-        destination: "~/Documents/Spreadsheets/",
-        ruleMatched: "Group Loose Files by Type",
-      },
-      {
-        name: "Design-Review-Notes.png",
-        kind: "image",
-        size: "3.8 MB",
-        destination: "~/Desktop/Review Holding/",
-        ruleMatched: "Temporary Weekly Holding",
-      },
-    ],
+    dimension: "Access & Setup",
+    manualSpreadsheets: "Manual formula & tab setup",
+    genericPdfTools: "Converter limits or paywalls",
+    enterpriseSuites: "Weeks of ERP onboarding & sales demos",
+    cleartie: "Instant browser utility — no subscription",
   },
   {
-    id: "downloads",
-    label: "Downloads",
-    path: "~/Downloads",
-    ruleSummary:
-      "Installers -> ~/Downloads/Installers • Archives -> ~/Downloads/Archives • PDFs -> ~/Documents/PDFs",
-    files: [
-      {
-        name: "Figma-Desktop-macOS.dmg",
-        kind: "dmg",
-        size: "142 MB",
-        destination: "~/Downloads/Installers/",
-        ruleMatched: "Mac Installers (.dmg, .pkg)",
-      },
-      {
-        name: "Q3-Tax-Receipt-Stripe.pdf",
-        kind: "pdf",
-        size: "290 KB",
-        destination: "~/Documents/Receipts/2026/",
-        ruleMatched: "Receipts by Date",
-      },
-      {
-        name: "Brand-Assets-Pack.zip",
-        kind: "archive",
-        size: "68.5 MB",
-        destination: "~/Downloads/Archives/",
-        ruleMatched: "Compressed Archives",
-      },
-      {
-        name: "Vendor-Pricing-2026.csv",
-        kind: "sheet",
-        size: "94 KB",
-        destination: "~/Documents/Spreadsheets/",
-        ruleMatched: "Spreadsheets & Data",
-      },
-    ],
+    dimension: "Scanned & Locked PDFs",
+    manualSpreadsheets: "Manual re-keying line by line",
+    genericPdfTools: "Must unlock PDFs separately first",
+    enterpriseSuites: "Requires clean ERP or bank feeds",
+    cleartie: "Built-in PDF OCR + in-memory unlock",
   },
   {
-    id: "projects",
-    label: "Projects",
-    path: "~/Projects/ACME-Launch",
-    ruleSummary:
-      "Drafts -> /Drafts • Final -> /Final Files • Old builds -> /Archives",
-    files: [
-      {
-        name: "ACME-Deck-v2-DRAFT.pdf",
-        kind: "pdf",
-        size: "6.2 MB",
-        destination: "~/Projects/ACME-Launch/Drafts/",
-        ruleMatched: "Pattern: *-DRAFT*",
-      },
-      {
-        name: "ACME-Launch-Final-PressKit.zip",
-        kind: "archive",
-        size: "34.1 MB",
-        destination: "~/Projects/ACME-Launch/Final Files/",
-        ruleMatched: "Pattern: *Final*",
-      },
-      {
-        name: "ACME-Hero-Render.png",
-        kind: "image",
-        size: "8.7 MB",
-        destination: "~/Projects/ACME-Launch/Final Files/Media/",
-        ruleMatched: "Client Prefix + Image",
-      },
-      {
-        name: "ACME-2025-Archive-Sheet.xlsx",
-        kind: "sheet",
-        size: "740 KB",
-        destination: "~/Projects/ACME-Launch/Archives/",
-        ruleMatched: "Pattern: *Archive*",
-      },
-    ],
+    dimension: "Date Tolerance & Matching",
+    manualSpreadsheets: "Fragile exact VLOOKUP formulas",
+    genericPdfTools: "No ledger comparison engine",
+    enterpriseSuites: "Complex custom rule scripting",
+    cleartie: "±0–31 day window + reference & memo scoring",
+  },
+  {
+    dimension: "Duplicates & Sign Flips",
+    manualSpreadsheets: "Missed without custom pivots",
+    genericPdfTools: "Not checked",
+    enterpriseSuites: "Batch rules after feed sync",
+    cleartie: "Dedicated duplicates & Dr/Cr flip alerts",
+  },
+  {
+    dimension: "Balance & Variance Proof",
+    manualSpreadsheets: "Manual ending tie-out formulas",
+    genericPdfTools: "Raw table dump only",
+    enterpriseSuites: "Tied to full close platform",
+    cleartie: "Opening/closing, running balance & proof",
+  },
+  {
+    dimension: "Export Deliverable",
+    manualSpreadsheets: "Ad-hoc copy-paste sheets",
+    genericPdfTools: "Unstructured CSV dump",
+    enterpriseSuites: "Proprietary close workspace",
+    cleartie: "Clean XLSX workbook & CSV report export",
   },
 ];
 
-export const PRICING_PLANS: PricingPlan[] = [
-  {
-    id: "free",
-    name: "Free",
-    price: "$0",
-    cadence: "Free forever",
-    bestFor: "Trying FolderFlow on your Mac",
-    includes: "2 watched folders, 5 active rules",
-    features: [
-      "Up to 2 watched folders (e.g., Desktop & Downloads)",
-      "Hybrid magic-byte classifier & 13 categories",
-      "File stability checks & smart ignore safety filters",
-      "Dry-run preview & undo (as rule execution rolls out)",
-    ],
-    ctaLabel: "Download Free",
-  },
-  {
-    id: "pro",
-    name: "Pro",
-    price: "$29",
-    cadence: "One-time license (offline Ed25519)",
-    bestFor: "Daily use across several folders",
-    includes: "Unlimited folders, advanced rules, priority updates",
-    features: [
-      "Unlimited watched folders & subfolder exclusions",
-      "Full nested ALL/ANY/NOT rule engine & presets",
-      "Transactional safe_fs ledger, undo & duplicate finder",
-      "Offline Keychain license—no subscription required",
-    ],
-    ctaLabel: "Buy Pro — $29",
-    featured: true,
-  },
-  {
-    id: "team",
-    name: "Team or Family",
-    price: "$59",
-    cadence: "One-time up to 5 Macs",
-    bestFor: "Shared or multi-user setups",
-    includes: "5 Mac seats, shared JSON rule configs & priority support",
-    features: [
-      "Up to 5 Macs for family or creative teams",
-      "Versioned JSON rule config import/export",
-      "Consistent project folder structures across seats",
-      "Priority email support & all Pro features",
-    ],
-    ctaLabel: "Buy Team — $59",
-  },
-];
-
-export const GETTING_STARTED_STEPS = [
+export const HOW_TO_USE_STEPS = [
   {
     step: "01",
-    title: "Download and install FolderFlow on your Mac.",
+    title: "Upload Bank Statement",
     detail:
-      "Open the signed .dmg installer on macOS 13+ and drag FolderFlow into your Applications folder.",
+      "Drop your bank or card statement in PDF (digital or scanned), image, CSV, TSV, TXT, or XLSX/XLSM format.",
   },
   {
     step: "02",
-    title: "Grant the access it needs to your chosen folders when macOS asks.",
+    title: "Upload Business Ledger",
     detail:
-      "FolderFlow probes TCC permissions and deep-links to macOS System Settings if any folder needs authorization.",
+      "Add your matching cash book, general ledger export, or invoice/receipt PDF (supply PDF passwords if locked).",
   },
   {
     step: "03",
-    title: "Pick your watched folders, such as Desktop and Downloads.",
+    title: "Configure Tolerances",
     detail:
-      "Quick-add standard macOS folders or any custom directory, and exclude subfolders or extensions you manage by hand.",
+      "Set your date window (0–31 days) and toggle description similarity scoring to reflect settlement timing.",
   },
   {
     step: "04",
-    title: "Start with one or two rules, preview the changes, and apply them.",
+    title: "Review Matches & Exceptions",
     detail:
-      "Inspect file stability, category classification, and exact planned destination paths before moving a single file.",
+      "Inspect matched pairs, bank-only fees, book-only timing items, possible duplicates, mismatches, and balance checks.",
   },
   {
     step: "05",
-    title: "Add more rules as you see what works.",
+    title: "Export XLSX or CSV",
     detail:
-      "Layer type, date, and project naming templates once your core folders stay consistently tidy.",
+      "Download your complete reconciliation workbook as XLSX or CSV, or save your reconciliation ID to reopen later.",
+  },
+];
+
+export const HOW_TO_USE_PLAYBOOK: PlaybookPhase[] = [
+  {
+    phase: "Phase 1: Prepare & Upload Documents",
+    title: "Provide Matched Source Statements",
+    items: [
+      {
+        heading: "Keep Same Currency Across Both Files",
+        detail:
+          "Ensure the bank statement and business ledger cover overlapping statement periods in the same currency with clear date and amount columns.",
+      },
+      {
+        heading: "Unlock Password-Protected PDFs Inline",
+        detail:
+          "If either PDF is encrypted, provide its password before or when prompted; it is decrypted in memory only and never saved.",
+      },
+    ],
+  },
+  {
+    phase: "Phase 2: Match & Isolate Exceptions",
+    title: "Review Automated Classification",
+    items: [
+      {
+        heading: "Separate Bank Gaps from Book Gaps",
+        detail:
+          "Filter directly to `Unmatched Bank` (wires, fees, interest) and `Unmatched Ledger` (deposits in transit, uncashed checks).",
+      },
+      {
+        heading: "Verify Duplicates & Amount Mismatches",
+        detail:
+          "Check flagged duplicate groups and rows with amount differences or reversed debit/credit directions side by side.",
+      },
+    ],
+  },
+  {
+    phase: "Phase 3: Verify Balances & Export",
+    title: "Confirm Book-to-Bank Integrity",
+    items: [
+      {
+        heading: "Check Opening, Closing & Running Balances",
+        detail:
+          "Verify both statement and ledger math checks pass, including line-by-line running balance continuity.",
+      },
+      {
+        heading: "Download Complete XLSX or CSV Output",
+        detail:
+          "Export your finished reconciliation workbook immediately for review or archival without locking into any platform.",
+      },
+    ],
   },
 ];
 
 export const FAQ_ITEMS: FaqItem[] = [
   {
-    id: "app-or-software",
-    question: "Is this a mac file organizer app or file organizer software for Mac?",
+    id: "how-to-reconcile-step-by-step",
+    category: "tool",
+    question: "How do I reconcile bank statement files with ClearTie step by step?",
     answer:
-      "It is both, in the sense people usually mean. FolderFlow is a native Mac app built with Tauri 2, Rust, and SQLite that works as offline-first file organizer software—monitoring the folders you choose and classifying files locally on your Mac.",
+      "Scroll to the Reconciliation Utility above, drop your bank statement (PDF, image, CSV, TSV, TXT, or XLSX/XLSM) into Slot 1 and your business ledger or cash book into Slot 2, adjust the date tolerance window (0–31 days, default ±2 days) and description similarity toggle, and click Run Bank Reconciliation. Once processing completes, review Matched, Unmatched Bank, Unmatched Ledger, Duplicates, and Mismatches, verify the balance checks, and export your XLSX or CSV report. You can also click Load Sample CSV Pair to test the workflow instantly.",
   },
   {
-    id: "delete-files",
-    question: "Will the file organizer for Mac delete my files?",
+    id: "account-reconciliation-meaning-faq",
+    category: "concepts",
+    question: "What is the account reconciliation meaning in business finance?",
     answer:
-      "No. FolderFlow's core job is to classify and move files safely according to your rules—never silent deletion. In-progress downloads, .DS_Store metadata, VCS directories, and symlinks are automatically ignored, and upcoming rule execution uses atomic same-volume renames, BLAKE3 verification, dry-run previews, and multi-level undo.",
+      "In plain English, an account reconciliation is the accounting check that compares two independent financial records—such as a bank statement and your company general ledger—to verify that balances agree and every difference is documented. Its purpose is to catch timing lags, unrecorded fees, duplicate postings, and data-entry errors before closing the books.",
   },
   {
-    id: "icloud-drive",
-    question: "Does it work with iCloud Drive and other cloud folders?",
+    id: "formats",
+    category: "tool",
+    question: "What document and spreadsheet formats are supported?",
     answer:
-      "If your watched folders live inside iCloud Drive or another cloud sync directory, FolderFlow can monitor and organize files there once macOS grants folder access. File stability checks wait until size, mtime, device, and inode settle, and you can pause monitoring globally or per folder during large cloud syncs to avoid sync conflicts.",
+      "Both uploads support digital or scanned PDFs (.pdf), images (.jpg, .jpeg, .png, .webp, .tiff, .tif), and spreadsheets (.csv, .tsv, .txt, .xlsx, .xlsm). ClearTie detects true format from file bytes rather than extensions, so UTF-16 Unicode bank exports and HTML/XML spreadsheets parse cleanly. Legacy .xls files are not supported—resave them as .xlsx, .csv, or PDF first.",
   },
   {
-    id: "existing-files",
-    question: "Can I organize files that are already on my Mac?",
+    id: "password-pdfs",
+    category: "tool",
+    question: "How does ClearTie handle password-protected PDF statements?",
     answer:
-      "Yes. FolderFlow runs periodic SQLite reconciliation scans alongside live FSEvents monitoring so existing files are discovered and categorized right away. You can trigger a manual folder rescan anytime and preview planned moves before applying rules to large folders.",
+      "Enter an optional PDF password per document before submitting—or enter it when prompted if an encrypted PDF is detected. Your PDF is decrypted strictly in memory on the server, and ClearTie never stores or logs passwords.",
   },
   {
-    id: "finder-difference",
-    question: "How is this different from using Finder or Smart Folders?",
+    id: "limits",
+    category: "tool",
+    question: "What are the file size, page, and row limits?",
     answer:
-      "Finder and Smart Folders are useful for searching and viewing files. FolderFlow inspects file headers (magic bytes), tracks stability across downloads, and automates organization into structured folders as new files arrive. Smart Folders complement FolderFlow cleanly.",
+      "Each uploaded file supports up to 100 MB, PDF documents support up to 200 pages each, and spreadsheets support up to 100,000 rows.",
   },
   {
-    id: "supported-macs",
-    question: "Which Macs are supported?",
+    id: "how-often-reconcile",
+    category: "concepts",
+    question: "How often should businesses be reconciling bank statements and card ledgers?",
     answer:
-      "Both Apple silicon (M1, M2, M3, M4 series) and Intel Macs running macOS 13 Ventura or later are supported.",
+      "Finance teams should perform reconciliation at least monthly right after statement close. High-volume operating accounts, e-commerce settlement accounts, and corporate credit cards benefit from weekly reviews so missing entries, duplicate charges, or bank errors are caught early.",
   },
   {
-    id: "stop-paying",
-    question: "What happens to my rules if I stop paying?",
+    id: "difference-from-enterprise-software",
+    category: "concepts",
+    question: "How does ClearTie differ from subscription financial reconciliation software?",
     answer:
-      "One-time Pro and Team licenses are verified offline via Ed25519 and stored in your macOS Keychain—they never expire for your licensed version. Your SQLite database, folder configurations, and rules stay local on your Mac and can always be exported without losing data.",
+      "Traditional reconciliation platforms and accounting suites require connecting live bank credentials, paying monthly per-seat subscriptions, or configuring full ERP integrations. ClearTie works directly from exported statements and ledgers with built-in PDF OCR, configurable tolerances, balance verification, and XLSX/CSV exports—no account or subscription required.",
+  },
+  {
+    id: "what-report-includes",
+    category: "tool",
+    question: "What does the completed reconciliation report include?",
+    answer:
+      "Every report includes summary KPI counts (matched, unmatched bank, unmatched ledger, possible duplicates, amount mismatches, and OCR corrections), independent Bank and Ledger opening/closing and running-balance checks, a Book-to-Bank explained vs. unexplained variance breakdown, warnings, filterable transaction rows, and downloadable XLSX or CSV workbooks.",
   },
 ];
 
-export const QUICK_GUIDES: Record<"desktop" | "downloads", QuickGuide> = {
-  desktop: {
-    id: "desktop",
-    title: "Guide to Organizing Your MacBook Desktop",
+export const QUICK_GUIDES: Record<
+  "bank" | "credit-card" | "balance-sheet",
+  QuickGuide
+> = {
+  bank: {
+    id: "bank",
+    title: "Quick Guide: Bank Account Reconciliation Tie-Out",
     subtitle:
-      "Keep your Desktop reserved for active work instead of screenshots and stray downloads.",
+      "Compare checking or savings statements against your cash book in three steps.",
     steps: [
       {
-        title: "1. Clear the backlog into a dated Review folder",
+        title: "1. Upload your bank statement and cash book export",
         detail:
-          "Move old desktop items into ~/Documents/Desktop Review/YYYY-MM so you start fresh without deleting anything.",
+          "Pair any PDF, image, CSV, or XLSX bank statement with your cash book or general ledger export.",
       },
       {
-        title: "2. Route screenshots off the Desktop automatically",
+        title: "2. Review matched rows, bank gaps, and book gaps",
         detail:
-          "Send any file matching 'Screenshot*' straight to ~/Pictures/Screenshots/YYYY-MM once stability checks confirm the capture is complete.",
+          "Filter by category to separate deposits in transit and outstanding checks from bank charges and potential duplicate entries.",
       },
       {
-        title: "3. Group loose documents and spreadsheets by type",
+        title: "3. Check running-balance math and export XLSX/CSV",
         detail:
-          "Keep PDFs, docs, and sheets organized in dedicated subfolders while leaving your current active project files visible.",
+          "Inspect the Book-to-Bank proof card for unexplained variance and download the full XLSX or CSV workbook.",
       },
     ],
   },
-  downloads: {
-    id: "downloads",
-    title: "Guide to Organizing Your Downloads Folder on Mac",
+  "credit-card": {
+    id: "credit-card",
+    title: "Quick Guide: Credit Card Reconciliation",
     subtitle:
-      "Stop scrolling through hundreds of browser downloads every time you need a recent file.",
+      "Verify corporate card statements against your expense or AP ledger.",
     steps: [
       {
-        title: "1. Wait for active browser downloads to finish",
+        title: "1. Pair card statement PDF or CSV with your expense export",
         detail:
-          "FolderFlow automatically ignores .download, .crdownload, and .part files and verifies file stability before touching any new item.",
+          "Upload your monthly Visa, Mastercard, or Amex statement alongside your corporate card ledger export.",
       },
       {
-        title: "2. Separate installers from documents",
+        title: "2. Allow ±2–5 day posting tolerance for pending authorizations",
         detail:
-          "Move .dmg, .pkg, and .app bundles into ~/Downloads/Installers and archives into ~/Downloads/Archives.",
+          "Merchant settlement dates often trail purchase dates; widen date_tolerance_days slightly to pair delayed charges cleanly.",
       },
       {
-        title: "3. Sort receipts and invoices by year and month",
+        title: "3. Isolate unrecorded fees, duplicate charges & sign flips",
         detail:
-          "Match invoice or receipt PDFs by name and file them into ~/Documents/Invoices/YYYY/ automatically after dry-run preview.",
+          "Review Unmatched Bank for unposted subscriptions or FX fees and Mismatches for reversed refunds or credits.",
+      },
+    ],
+  },
+  "balance-sheet": {
+    id: "balance-sheet",
+    title: "Quick Guide: Balance Sheet Account Reconciliation",
+    subtitle:
+      "Substantiate cash, clearing, and subledger schedules with audit-ready proof.",
+    steps: [
+      {
+        title: "1. Upload external statement evidence and GL subledger",
+        detail:
+          "Substantiate ending balance sheet figures using PDF OCR or multi-language CSV/XLSX exports up to 100,000 rows.",
+      },
+      {
+        title: "2. Inspect running-balance breaks and Book-to-Bank math",
+        detail:
+          "Confirm opening balance + net flow = closing balance on both records and verify residual unexplained variance equals zero.",
+      },
+      {
+        title: "3. Export XLSX workbook & store Reconciliation ID",
+        detail:
+          "Download the formatted XLSX tie-out workpaper for audit review and copy your reconciliation_id to reopen the run anytime.",
       },
     ],
   },

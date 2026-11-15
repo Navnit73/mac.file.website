@@ -5,36 +5,36 @@ import {
   CheckCircle2,
   Cpu,
   Database,
+  Download,
   FileSearch,
-  FolderCog,
+  Landmark,
   Layers,
   Lock,
-  ShieldAlert,
   ShieldCheck,
 } from "lucide-react";
 import {
   BRAND,
-  BUILTIN_CATEGORIES,
   IMPLEMENTED_CAPABILITIES,
+  SUPPORTED_FORMATS,
 } from "@/lib/landing-data";
 
 function CapabilityIcon({ id }: { id: string }) {
   switch (id) {
-    case "monitoring":
-      return <FolderCog className="h-4 w-4 shrink-0" />;
-    case "safety":
-      return <ShieldAlert className="h-4 w-4 shrink-0" />;
-    case "classifier":
+    case "ingestion":
+      return <Landmark className="h-4 w-4 shrink-0" />;
+    case "matching":
       return <FileSearch className="h-4 w-4 shrink-0" />;
-    default:
+    case "audit":
       return <Lock className="h-4 w-4 shrink-0" />;
+    default:
+      return <Download className="h-4 w-4 shrink-0" />;
   }
 }
 
-export function ArchitectureFeaturesSection() {
+export function FeaturesExplorerSection() {
   const [activeTabId, setActiveTabId] = useState<
-    "monitoring" | "safety" | "classifier" | "security"
-  >("monitoring");
+    "ingestion" | "matching" | "audit" | "exports"
+  >("ingestion");
 
   const activeCapability =
     IMPLEMENTED_CAPABILITIES.find((item) => item.id === activeTabId) ??
@@ -49,21 +49,21 @@ export function ArchitectureFeaturesSection() {
             <span>{BRAND.stackSummary}</span>
           </span>
           <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-[#111214] sm:text-5xl sm:leading-[1.12]">
-            Offline-First Architecture &amp; Features
+            Bank Reconciliation Software Capabilities Built for Accuracy
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-[#5A5E67] sm:text-base">
-            {BRAND.name} combines a hardened Rust + SQLite filesystem engine
-            with live FSEvents monitoring, magic-byte classification, and strict
-            macOS TCC safety—built to run 100% locally on your Mac.
+            From byte-level format detection and PDF OCR to running-balance
+            continuity checks and XLSX/CSV export, explore what runs inside
+            every tie-out.
           </p>
         </div>
 
-        {/* Implemented Capabilities Explorer */}
+        {/* Interactive Capabilities Explorer */}
         <div className="mt-10 rounded-[24px] bg-[#F7F8F9] p-5 sm:mt-12 sm:rounded-[28px] sm:p-8">
           <div className="flex flex-col gap-4 border-b border-slate-200/80 pb-5 md:flex-row md:items-center md:justify-between">
             <div
               role="tablist"
-              aria-label="Implemented FolderFlow Capabilities"
+              aria-label="ClearTie Reconciliation Capabilities"
               className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2 sm:flex sm:flex-wrap"
             >
               {IMPLEMENTED_CAPABILITIES.map((cap) => {
@@ -102,7 +102,7 @@ export function ArchitectureFeaturesSection() {
             aria-labelledby={`tab-${activeCapability.id}`}
             className="mt-7 grid gap-6 lg:grid-cols-12 lg:gap-8"
           >
-            <div className="lg:col-span-5 space-y-4">
+            <div className="space-y-4 lg:col-span-5">
               <h3 className="text-xl font-semibold tracking-tight text-[#111214] sm:text-2xl">
                 {activeCapability.title}
               </h3>
@@ -110,32 +110,36 @@ export function ArchitectureFeaturesSection() {
                 {activeCapability.summary}
               </p>
 
-              <div className="inline-flex flex-wrap items-center gap-2 rounded-2xl bg-white px-4 py-2.5 text-xs shadow-xs">
-                <Database className="h-4 w-4 text-[#111214] shrink-0" />
-                <span className="font-semibold text-[#111214]">
-                  100% Local SQLite (SQLx)
-                </span>
-                <span className="text-[#5A5E67]">• Zero cloud dependency</span>
+              <div className="flex items-start gap-2.5 rounded-2xl bg-white px-4 py-3 text-xs shadow-xs">
+                <Database className="mt-0.5 h-4 w-4 shrink-0 text-[#111214]" />
+                <div>
+                  <h4 className="font-semibold text-[#111214]">
+                    {activeCapability.specLabel}
+                  </h4>
+                  <p className="mt-0.5 text-[#5A5E67]">
+                    {activeCapability.specDetail}
+                  </p>
+                </div>
               </div>
 
-              {activeCapability.id === "classifier" && (
+              {activeCapability.id === "ingestion" && (
                 <div className="rounded-2xl bg-white p-4 shadow-xs">
                   <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-[#111214]">
                     <span className="inline-flex items-center gap-1.5">
                       <Layers className="h-3.5 w-3.5 shrink-0" />
-                      13 Built-in File Categories
+                      Supported Statement &amp; Ledger Formats
                     </span>
                     <span className="font-mono text-[11px] text-[#5A5E67]">
-                      8,192B header check
+                      Detected from file bytes
                     </span>
                   </div>
                   <div className="flex flex-wrap gap-1.5">
-                    {BUILTIN_CATEGORIES.map((category) => (
+                    {SUPPORTED_FORMATS.map((fmt) => (
                       <span
-                        key={category}
+                        key={fmt}
                         className="rounded-full bg-[#F7F8F9] px-2.5 py-1 text-[11px] font-medium text-[#111214]"
                       >
-                        {category}
+                        {fmt}
                       </span>
                     ))}
                   </div>
@@ -146,7 +150,7 @@ export function ArchitectureFeaturesSection() {
                 <div className="rounded-2xl bg-white p-4 shadow-xs">
                   <div className="mb-2.5 flex items-center gap-1.5 text-xs font-semibold text-[#111214]">
                     <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-600" />
-                    Automatically Ignored Patterns
+                    Extraction Pipelines
                   </div>
                   <div className="flex flex-wrap gap-1.5 font-mono text-[11px]">
                     {activeCapability.codeChips.map((chip) => (
@@ -162,21 +166,28 @@ export function ArchitectureFeaturesSection() {
               )}
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:col-span-7">
-              {activeCapability.highlights.map((item) => (
-                <div
-                  key={item.label}
-                  className="rounded-2xl bg-white p-5 shadow-[0_10px_30px_rgba(17,18,20,0.04)]"
-                >
-                  <div className="flex items-center gap-2 text-sm font-semibold text-[#111214]">
-                    <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#BDF71D] ring-2 ring-[#111214]/15" />
-                    <span>{item.label}</span>
+            <div className="lg:col-span-7">
+              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[#5A5E67]">
+                Core Engine Capabilities
+              </h4>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {activeCapability.highlights.map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-2xl bg-white p-5 shadow-[0_10px_30px_rgba(17,18,20,0.04)]"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#BDF71D] ring-2 ring-[#111214]/15" />
+                      <h5 className="text-sm font-semibold text-[#111214]">
+                        {item.label}
+                      </h5>
+                    </div>
+                    <p className="mt-2 text-xs leading-relaxed text-[#5A5E67] sm:text-sm">
+                      {item.detail}
+                    </p>
                   </div>
-                  <p className="mt-2 text-xs leading-relaxed text-[#5A5E67] sm:text-sm">
-                    {item.detail}
-                  </p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
