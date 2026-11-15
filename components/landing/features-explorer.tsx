@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   CheckCircle2,
   Cpu,
@@ -35,10 +35,35 @@ export function FeaturesExplorerSection() {
   const [activeTabId, setActiveTabId] = useState<
     "ingestion" | "matching" | "audit" | "exports"
   >("ingestion");
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const activeCapability =
     IMPLEMENTED_CAPABILITIES.find((item) => item.id === activeTabId) ??
     IMPLEMENTED_CAPABILITIES[0];
+
+  const handleTabKeyDown = (
+    event: React.KeyboardEvent<HTMLButtonElement>,
+    index: number
+  ) => {
+    const count = IMPLEMENTED_CAPABILITIES.length;
+    let nextIndex: number | null = null;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (index + 1) % count;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex = (index - 1 + count) % count;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = count - 1;
+    }
+
+    if (nextIndex !== null) {
+      event.preventDefault();
+      const targetCap = IMPLEMENTED_CAPABILITIES[nextIndex];
+      setActiveTabId(targetCap.id);
+      tabRefs.current[nextIndex]?.focus();
+    }
+  };
 
   return (
     <section id="features" className="bg-white py-16 sm:py-24">
@@ -63,20 +88,25 @@ export function FeaturesExplorerSection() {
           <div className="flex flex-col gap-4 border-b border-slate-200/80 pb-5 md:flex-row md:items-center md:justify-between">
             <div
               role="tablist"
-              aria-label="ClearTie Reconciliation Capabilities"
+              aria-label="reconcilebankstatement Reconciliation Capabilities"
               className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2 sm:flex sm:flex-wrap"
             >
-              {IMPLEMENTED_CAPABILITIES.map((cap) => {
+              {IMPLEMENTED_CAPABILITIES.map((cap, index) => {
                 const isActive = cap.id === activeTabId;
                 return (
                   <button
                     key={cap.id}
+                    ref={(el) => {
+                      tabRefs.current[index] = el;
+                    }}
                     id={`tab-${cap.id}`}
                     role="tab"
+                    tabIndex={isActive ? 0 : -1}
                     aria-selected={isActive}
                     aria-controls={`panel-${cap.id}`}
                     type="button"
                     onClick={() => setActiveTabId(cap.id)}
+                    onKeyDown={(e) => handleTabKeyDown(e, index)}
                     className={`inline-flex min-h-[40px] items-center justify-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111214] sm:text-sm ${
                       isActive
                         ? "bg-[#111214] text-white shadow-sm"
@@ -167,9 +197,9 @@ export function FeaturesExplorerSection() {
             </div>
 
             <div className="lg:col-span-7">
-              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[#5A5E67]">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[#5A5E67]">
                 Core Engine Capabilities
-              </h4>
+              </p>
               <div className="grid gap-4 sm:grid-cols-2">
                 {activeCapability.highlights.map((item) => (
                   <div
@@ -178,9 +208,9 @@ export function FeaturesExplorerSection() {
                   >
                     <div className="flex items-center gap-2">
                       <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#BDF71D] ring-2 ring-[#111214]/15" />
-                      <h5 className="text-sm font-semibold text-[#111214]">
+                      <h4 className="text-sm font-semibold text-[#111214]">
                         {item.label}
-                      </h5>
+                      </h4>
                     </div>
                     <p className="mt-2 text-xs leading-relaxed text-[#5A5E67] sm:text-sm">
                       {item.detail}

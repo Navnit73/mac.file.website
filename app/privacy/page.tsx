@@ -28,10 +28,8 @@ export default function PrivacyPolicyPage() {
         { id: "rights-and-contact", label: "Privacy Rights & Contact" },
       ]}
       notice={{
-        title: "Verify Upstream Processor & Legal Jurisdiction Before Launch",
-        body: `Legal entity identity (${SITE_CONFIG.legalEntityName}) and upstream OCR backend storage sub-processors (` +
-          `OCR_API_BASE_URL` +
-          `) should be finalized before processing regulated EU, UK, or US customer data.`,
+        title: "Privacy Scope & Processing Architecture",
+        body: `Files uploaded on ${SITE_CONFIG.domain} are transmitted over HTTPS through our proxy route directly to the configured reconciliation engine solely to extract rows, compare balances, and generate downloadable reports.`,
       }}
       relatedLinks={[
         {
@@ -66,21 +64,22 @@ export default function PrivacyPolicyPage() {
             <strong className="text-[#111214]">
               Uploaded Financial Documents:
             </strong>{" "}
-            The bank statement (`bank_statement`) and business ledger
-            (`business_ledger`) files you upload (PDF, image, CSV, TSV, TXT,
-            XLSX, or XLSM) to generate a reconciliation report.
+            The bank statement (<code>bank_statement</code>) and business ledger
+            (<code>business_ledger</code>) files you upload (PDF, image, CSV,
+            TSV, TXT, XLSX, or XLSM) to generate a reconciliation report.
           </li>
           <li>
             <strong className="text-[#111214]">Reconciliation Options:</strong>{" "}
-            Date tolerance setting (`0–31 days`), description-matching toggle,
-            and transient PDF unlock passwords (if provided for encrypted PDFs).
+            Date tolerance setting (0–31 days), description-matching toggle, and
+            transient PDF unlock passwords (if provided for encrypted PDFs).
           </li>
           <li>
             <strong className="text-[#111214]">
               Optional API Metadata:
             </strong>{" "}
             Only if entered by you under Advanced API Options: an optional{" "}
-            `user_email` tag, HTTPS `webhook_url`, and optional `webhook_secret`.
+            <code>user_email</code> tag, HTTPS <code>webhook_url</code>, and
+            optional <code>webhook_secret</code>.
           </li>
           <li>
             <strong className="text-[#111214]">
@@ -101,7 +100,7 @@ export default function PrivacyPolicyPage() {
           2. Information We Do Not Request
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-[#5A5E67]">
-          ClearTie does not ask for your bank portal username, bank login
+          reconcilebankstatement does not ask for your bank portal username, bank login
           password, multi-factor codes, Open Banking credentials, payment card
           details (for the free utility), or third-party advertising cookies.
         </p>
@@ -118,8 +117,8 @@ export default function PrivacyPolicyPage() {
           Uploaded files are forwarded strictly to perform document parsing,
           OCR extraction, transaction comparison, balance verification, and
           report export (JSON preview and XLSX/CSV downloads) via our server
-          proxy route (`/api/reconciliation/*` configured with{" "}
-          `Cache-Control: no-store`). We do not sell uploaded statement records
+          proxy route (<code>/api/reconciliation/*</code> configured with{" "}
+          <code>Cache-Control: no-store</code>). We do not sell uploaded statement records
           or sell financial transaction histories to data brokers or advertisers.
         </p>
       </section>
@@ -129,14 +128,17 @@ export default function PrivacyPolicyPage() {
         className="rounded-[24px] border border-slate-200 bg-white p-6 sm:p-8"
       >
         <h2 className="text-xl font-semibold text-[#111214] sm:text-2xl">
-          4. Cookies &amp; Tab-Scoped Session Storage
+          4. Cookies, UX Diagnostics &amp; Tab-Scoped Session Storage
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-[#5A5E67]">
-          This web application sets no marketing or behavioral advertising
-          cookies. To let you reopen a recent run ID in the same tab, the
-          browser stores `cleartie:last-reconciliation-id` (and optionally{" "}
-          `rec-token:&lt;id&gt;` if guest token mode is enabled) in browser{" "}
-          `sessionStorage`, which is cleared automatically when the tab closes.
+          This web application sets no behavioral advertising or retargeting
+          pixels. We use Microsoft Clarity for aggregate UI diagnostics (with{" "}
+          <code>data-clarity-mask=&quot;true&quot;</code> applied around financial
+          reconciliation output views and masked PDF password fields). To let
+          you reopen a recent run ID in the same tab, the browser stores{" "}
+          <code>cleartie:last-reconciliation-id</code> (and optionally{" "}
+          <code>rec-token:&lt;id&gt;</code> if guest token mode is enabled) in browser{" "}
+          <code>sessionStorage</code>, which is cleared automatically when the tab closes.
           See our{" "}
           <Link href="/cookie-policy" className="font-semibold text-[#111214] underline">
             Cookie Policy
@@ -163,14 +165,15 @@ export default function PrivacyPolicyPage() {
           Depending on your jurisdiction (including GDPR/UK GDPR or applicable
           US state privacy laws), you may request access, correction, or early
           deletion of persisted reconciliation runs associated with your{" "}
-          `reconciliation_id` or optional `user_email` tag. Contact{" "}
+          <code>reconciliation_id</code> or optional <code>user_email</code>{" "}
+          tag. Contact{" "}
           <a
             href={`mailto:${SITE_CONFIG.contacts.privacyEmail}`}
             className="font-semibold text-[#111214] underline"
           >
             {SITE_CONFIG.contacts.privacyEmail}
           </a>{" "}
-          and include your `reconciliation_id` if applicable.
+          and include your <code>reconciliation_id</code> if applicable.
         </p>
       </section>
     </TrustPageShell>

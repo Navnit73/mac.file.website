@@ -15,7 +15,7 @@ export default function DataAccuracyPolicyPage() {
       path="/data-accuracy-policy"
       eyebrow="Accuracy & Transparency"
       title="Data Accuracy &amp; Automated Matching Policy"
-      lead="No OCR engine or reconciliation matcher can guarantee 100% accuracy on every degraded scan or irregular bank export. Instead of sweeping percentages, ClearTie pairs extraction with deterministic balance checks so errors cannot hide."
+      lead="No OCR engine or reconciliation matcher can guarantee 100% accuracy on every degraded scan or irregular bank export. Instead of sweeping percentages, reconcilebankstatement pairs extraction with deterministic balance checks so errors cannot hide."
       breadcrumbs={[
         { label: "Home", href: "/" },
         { label: "Data Accuracy Policy" },
@@ -59,7 +59,7 @@ export default function DataAccuracyPolicyPage() {
           when column headers and decimals are consistent. By contrast, scanned
           PDFs, photographed paper statements, skewed tables, or faded thermal
           receipts involve optical character recognition (OCR), where a smudged
-          `8` can resemble a `3` or a folded corner can omit a line. For that
+          8 can resemble a 3 or a folded corner can omit a line. For that
           reason, {SITE_CONFIG.domain} makes no blanket claim such as &quot;99.9%
           guaranteed OCR accuracy&quot;—instead, every report highlights arithmetic
           proof results directly.
@@ -76,7 +76,8 @@ export default function DataAccuracyPolicyPage() {
         <ul className="mt-4 space-y-3 text-sm leading-relaxed text-[#5A5E67]">
           <li>
             <strong className="text-[#111214]">
-              Three-State Balance Badges (`passed`, `failed`, `unverifiable`):
+              Three-State Balance Badges (<code>passed</code>,{" "}
+              <code>failed</code>, <code>unverifiable</code>):
             </strong>{" "}
             We never mark a check as &quot;passed&quot; unless stated opening
             and closing figures exist and agree mathematically with extracted
@@ -87,12 +88,13 @@ export default function DataAccuracyPolicyPage() {
               Running-Balance Break Pinpointing:
             </strong>{" "}
             If an OCR table omits or misreads one row inside a running-balance
-            statement, the running-balance audit identifies the exact
-            `transaction_id`, expected vs. stated balance, and arithmetic gap.
+            statement, the running-balance audit identifies the exact{" "}
+            <code>transaction_id</code>, expected vs. stated balance, and
+            arithmetic gap.
           </li>
           <li>
             <strong className="text-[#111214]">
-              Logged `amount_corrections`:
+              Logged <code>amount_corrections</code>:
             </strong>{" "}
             Normalized numbers keep an explicit audit list of any extracted text
             reformatted for calculation so reviewers can verify edge cases.
@@ -123,7 +125,7 @@ export default function DataAccuracyPolicyPage() {
           </li>
           <li>
             Files missing opening or closing balance headers (in which case
-            balance checks accurately report `unverifiable`).
+            balance checks accurately report <code>unverifiable</code>).
           </li>
         </ul>
       </section>
@@ -136,9 +138,11 @@ export default function DataAccuracyPolicyPage() {
           4. Recommended Bookkeeper Review Before Posting
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-[#5A5E67]">
-          Confirm `passed` balance status (or inspect `breaks`), spot-check any
-          `low` confidence matched pairs in the interactive table, and download
-          the `.xlsx` workpaper for permanent period close documentation. See our{" "}
+          Confirm <code>passed</code> balance status (or inspect{" "}
+          <code>breaks</code>), spot-check any <code>low</code> confidence
+          matched pairs in the interactive table, and download the{" "}
+          <code>.xlsx</code> workpaper for permanent period close documentation.
+          See our{" "}
           <Link href="/disclaimer" className="font-semibold text-[#111214] underline">
             Financial Disclaimer
           </Link>{" "}

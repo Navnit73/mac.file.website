@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Check, Copy, Plus } from "lucide-react";
 import { BrandLogoMark } from "@/components/landing/brand-logo";
 import { SiteFooter } from "@/components/landing/site-footer";
+import { useCopiedFeedback } from "@/hooks/use-copied-feedback";
 import { useReconciliation } from "@/hooks/use-reconciliation";
 import { BRAND } from "@/lib/landing-data";
+import { isValidReconciliationId } from "@/lib/reconciliation/validation";
 import { ReconciliationProgressCard } from "./reconciliation-progress-card";
 import { ReconciliationReportView } from "./reconciliation-report-view";
 
@@ -29,7 +31,8 @@ export function ReconciliationPreviewClient() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const routeId = decodeRouteId(params?.id);
-  const [copiedUrl, setCopiedUrl] = useState(false);
+  const hasValidRouteId = Boolean(routeId) && isValidReconciliationId(routeId);
+  const { copied: copiedUrl, copyText } = useCopiedFeedback();
 
   const {
     phase,
@@ -50,6 +53,7 @@ export function ReconciliationPreviewClient() {
     exportError,
     resume,
     cancelPolling,
+    retryTransactions,
     changeCategory,
     changePage,
     changePageSize,
@@ -57,21 +61,15 @@ export function ReconciliationPreviewClient() {
   } = useReconciliation();
 
   useEffect(() => {
-    if (!routeId) return;
+    if (!hasValidRouteId) return;
     void resume(routeId);
-  }, [routeId, resume]);
+  }, [hasValidRouteId, routeId, resume]);
 
-  const activeId = reconciliationId || routeId;
+  const activeId = hasValidRouteId ? reconciliationId || routeId : "";
 
-  const handleCopyPreviewLink = async () => {
+  const handleCopyPreviewLink = () => {
     if (!activeId || typeof window === "undefined") return;
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopiedUrl(true);
-      setTimeout(() => setCopiedUrl(false), 1800);
-    } catch {
-      // Ignore clipboard permission errors
-    }
+    void copyText(window.location.href);
   };
 
   const handleStartAnother = () => {
@@ -140,7 +138,10 @@ export function ReconciliationPreviewClient() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[79.2rem] flex-1 px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
+      <main
+        id="main-content"
+        className="mx-auto w-full max-w-[79.2rem] flex-1 px-4 py-6 sm:px-6 sm:py-10 lg:px-8"
+      >
         <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="font-mono text-[11px] font-semibold tracking-wider text-[#5A5E67] uppercase">
@@ -157,14 +158,15 @@ export function ReconciliationPreviewClient() {
           )}
         </div>
 
-        {!routeId && (
+        {!hasValidRouteId && (
           <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-xs sm:p-8">
             <h2 className="text-base font-semibold text-[#111214]">
-              Missing reconciliation ID
+              {routeId ? "Invalid reconciliation ID" : "Missing reconciliation ID"}
             </h2>
             <p className="mt-1.5 text-sm text-[#5A5E67]">
-              Open the reconciliation workbench to upload statements or load an
-              existing run ID.
+              {routeId
+                ? "Reconciliation IDs must contain 3 to 128 letters, numbers, hyphens, or underscores. Open the workbench to start a new run or paste a valid ID."
+                : "Open the reconciliation workbench to upload statements or load an existing run ID."}
             </p>
             <div className="mt-4">
               <Link
@@ -177,7 +179,7 @@ export function ReconciliationPreviewClient() {
           </div>
         )}
 
-        {routeId && phase !== "completed" && (
+        {hasValidRouteId && phase !== "completed" && (
           <div className="space-y-4">
             <ReconciliationProgressCard
               headingLevel="h2"
@@ -197,8 +199,9 @@ export function ReconciliationPreviewClient() {
           </div>
         )}
 
-        {routeId && phase === "completed" && report && activeId && (
+        {hasValidRouteId && phase === "completed" && report && activeId && (
           <ReconciliationReportView
+            headingLevel="h2"
             reconciliationId={activeId}
             report={report}
             transactions={transactions}
@@ -211,6 +214,7 @@ export function ReconciliationPreviewClient() {
             onCategoryChange={changeCategory}
             onPageChange={changePage}
             onPageSizeChange={changePageSize}
+            onRetryTransactions={retryTransactions}
             onExport={exportReport}
             exportingFormat={exportingFormat}
             exportError={exportError}

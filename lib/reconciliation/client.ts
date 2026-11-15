@@ -1,6 +1,4 @@
 import {
-  RECONCILIATION_ACCEPTED_EXTENSIONS,
-  RECONCILIATION_MAX_FILE_SIZE_BYTES,
   RECONCILIATION_MAX_FILE_SIZE_MB,
   type ApiErrorEnvelope,
   type ExportFormat,
@@ -11,6 +9,11 @@ import {
   type UploadReconciliationParams,
   type UploadReconciliationResponse,
 } from "./types";
+import {
+  isValidReconciliationId,
+  sanitizeDownloadFilename,
+  validateReconciliationFileMetadata,
+} from "./validation";
 
 const TOKEN_STORAGE_PREFIX = "rec-token:";
 
@@ -76,26 +79,7 @@ export function detectPdfPasswordIssue(
 }
 
 export function validateReconciliationFile(file: File): string | null {
-  if (file.size === 0) {
-    return `"${file.name}" is empty (0 bytes).`;
-  }
-  if (file.size > RECONCILIATION_MAX_FILE_SIZE_BYTES) {
-    return `"${file.name}" exceeds the ${RECONCILIATION_MAX_FILE_SIZE_MB} MB file size limit.`;
-  }
-
-  const dotIndex = file.name.lastIndexOf(".");
-  if (dotIndex !== -1) {
-    const ext = file.name.slice(dotIndex).toLowerCase();
-    if (ext === ".xls") {
-      return `Legacy .xls files are not supported ("${file.name}"). Please save it as .xlsx, .csv, or PDF.`;
-    }
-    const allowed: readonly string[] = RECONCILIATION_ACCEPTED_EXTENSIONS;
-    if (!allowed.includes(ext)) {
-      return `"${file.name}" (${ext}) is not a supported statement or ledger format.`;
-    }
-  }
-
-  return null;
+  return validateReconciliationFileMetadata(file);
 }
 
 export function formatFileSize(bytes: number): string {
@@ -183,12 +167,44 @@ function extractFilenameFromDisposition(
   header: string | null,
   fallback: string
 ): string {
-  if (!header) return fallback;
+  if (!header) return sanitizeDownloadFilename(null, fallback);
   const quoted = /filename="([^"]+)"/i.exec(header);
-  if (quoted?.[1]) return quoted[1];
+  if (quoted?.[1]) return sanitizeDownloadFilename(quoted[1], fallback);
   const plain = /filename=([^;]+)/i.exec(header);
-  if (plain?.[1]) return plain[1].trim();
-  return fallback;
+  if (plain?.[1]) return sanitizeDownloadFilename(plain[1].trim(), fallback);
+  return sanitizeDownloadFilename(null, fallback);
+}
+
+async function fetchWithNetworkHandling(
+  input: string,
+  init: RequestInit
+): Promise<Response> {
+  if (typeof navigator !== "undefined" && navigator.onLine === false) {
+    throw new ReconciliationApiError(
+      "You appear to be offline. Reconnect to the internet and try again.",
+      { status: 0 }
+    );
+  }
+  try {
+    return await fetch(input, init);
+  } catch (err) {
+    if ((err as Error)?.name === "AbortError") {
+      throw err;
+    }
+    throw new ReconciliationApiError(
+      "Network error while contacting the reconciliation service. Please check your connection and try again.",
+      { status: 0 }
+    );
+  }
+}
+
+function assertValidIdClient(reconciliationId: string): void {
+  if (!isValidReconciliationId(reconciliationId)) {
+    throw new ReconciliationApiError(
+      "Invalid reconciliation ID format. Expected 3-128 letters, numbers, hyphens, or underscores.",
+      { status: 400 }
+    );
+  }
 }
 
 function sleep(ms: number, signal?: AbortSignal): Promise<void> {
@@ -259,7 +275,7 @@ export function createReconciliationClient(
       form.append("user_email", params.userEmail);
     }
 
-    const res = await fetch(`${basePath}/upload`, {
+    const res = await fetchWithNetworkHandling(`${basePath}/upload`, {
       method: "POST",
       headers: buildHeaders(),
       body: form,
@@ -281,7 +297,8 @@ export function createReconciliationClient(
     reconciliationId: string,
     options?: { signal?: AbortSignal }
   ): Promise<ReconciliationStatusResponse> {
-    const res = await fetch(
+    assertValidIdClient(reconciliationId);
+    const res = await fetchWithNetworkHandling(
       `${basePath}/${encodeURIComponent(reconciliationId)}`,
       {
         method: "GET",
@@ -304,14 +321,17 @@ export function createReconciliationClient(
       signal?: AbortSignal;
     }
   ): Promise<ReconciliationStatusResponse> {
+    assertValidIdClient(reconciliationId);
     const baseIntervalMs = options?.intervalMs ?? 2500;
     const startedAt = Date.now();
+    let consecutiveNetworkErrors = 0;
 
     for (;;) {
       try {
         const snapshot = await getReconciliation(reconciliationId, {
           signal: options?.signal,
         });
+        consecutiveNetworkErrors = 0;
         options?.onProgress?.(snapshot);
 
         if (snapshot.status === "completed") {
@@ -328,13 +348,25 @@ export function createReconciliationClient(
         const delayMs = elapsed > 30_000 ? Math.max(baseIntervalMs, 5000) : baseIntervalMs;
         await sleep(delayMs, options?.signal);
       } catch (err) {
+        if (options?.signal?.aborted || (err as Error)?.name === "AbortError") {
+          throw err;
+        }
         if (
           err instanceof ReconciliationApiError &&
-          err.status === 429 &&
-          !options?.signal?.aborted
+          err.status === 429
         ) {
           const waitMs = Math.max((err.retryAfterSeconds ?? 5) * 1000, 3000);
           await sleep(waitMs, options?.signal);
+          continue;
+        }
+        if (
+          err instanceof ReconciliationApiError &&
+          err.status === 0 &&
+          (typeof navigator === "undefined" || navigator.onLine !== false) &&
+          consecutiveNetworkErrors < 2
+        ) {
+          consecutiveNetworkErrors += 1;
+          await sleep(1500 * consecutiveNetworkErrors, options?.signal);
           continue;
         }
         throw err;
@@ -347,6 +379,7 @@ export function createReconciliationClient(
     query: TransactionsQueryParams = {},
     options?: { signal?: AbortSignal }
   ): Promise<TransactionsPageResponse> {
+    assertValidIdClient(reconciliationId);
     const search = new URLSearchParams();
     if (query.status) search.set("status", query.status);
     if (typeof query.page === "number") search.set("page", String(query.page));
@@ -355,7 +388,7 @@ export function createReconciliationClient(
     }
 
     const qs = search.toString();
-    const res = await fetch(
+    const res = await fetchWithNetworkHandling(
       `${basePath}/${encodeURIComponent(reconciliationId)}/transactions${qs ? `?${qs}` : ""}`,
       {
         method: "GET",
@@ -375,7 +408,8 @@ export function createReconciliationClient(
     format: ExportFormat = "xlsx",
     options?: { signal?: AbortSignal }
   ): Promise<{ blob: Blob; filename: string }> {
-    const res = await fetch(
+    assertValidIdClient(reconciliationId);
+    const res = await fetchWithNetworkHandling(
       `${basePath}/${encodeURIComponent(reconciliationId)}/export?format=${format}`,
       {
         method: "GET",

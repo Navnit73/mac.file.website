@@ -26,8 +26,8 @@ export default function DataRetentionPolicyPage() {
         { id: "early-deletion", label: "Early Removal & Privacy Requests" },
       ]}
       notice={{
-        title: "Upstream Backend TTL Verification Required",
-        body: "Because uploaded documents and run summaries are processed by the upstream service configured via OCR_API_BASE_URL (which may return access_expires_at metadata), confirm exact server storage cleanup intervals before finalizing production SLA commitments.",
+        title: "Temporary Tab State & Run Expiration",
+        body: "Browser session identifiers expire automatically when your tab closes. Server-side run availability and export access depend on the upstream processing service retention schedule (surfaced via access_expires_at when provided).",
       }}
       relatedLinks={[
         {
@@ -45,7 +45,7 @@ export default function DataRetentionPolicyPage() {
         {
           title: "Cookie Policy",
           description:
-            "Inspect exact `sessionStorage` keys and absence of persistent cookies.",
+            "Inspect exact sessionStorage keys and absence of persistent cookies.",
           href: "/cookie-policy",
         },
       ]}
@@ -60,11 +60,12 @@ export default function DataRetentionPolicyPage() {
         <ul className="mt-4 space-y-3 text-sm leading-relaxed text-[#5A5E67]">
           <li>
             <strong className="text-[#111214]">
-              Run IDs in `sessionStorage`:
+              Run IDs in <code>sessionStorage</code>:
             </strong>{" "}
-            Keys `cleartie:last-reconciliation-id` and optional{" "}
-            `rec-token:&lt;id&gt;` remain only while your browser tab is open
-            and are removed automatically by your browser when the tab closes.
+            Keys <code>cleartie:last-reconciliation-id</code> and optional{" "}
+            <code>rec-token:&lt;id&gt;</code> remain only while your browser tab
+            is open and are removed automatically by your browser when the tab
+            closes.
           </li>
           <li>
             <strong className="text-[#111214]">PDF Unlock Passwords:</strong>{" "}
@@ -73,8 +74,9 @@ export default function DataRetentionPolicyPage() {
           </li>
           <li>
             <strong className="text-[#111214]">API Proxy Caching:</strong>{" "}
-            Next.js API proxy routes (`/api/reconciliation/*`) explicitly set{" "}
-            `Cache-Control: no-store` to prevent shared edge/CDN retention.
+            Next.js API proxy routes (<code>/api/reconciliation/*</code>)
+            explicitly set <code>Cache-Control: no-store</code> to prevent
+            shared edge/CDN retention.
           </li>
         </ul>
       </section>
@@ -88,18 +90,19 @@ export default function DataRetentionPolicyPage() {
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-[#5A5E67]">
           When you upload two documents, the upstream reconciliation service
-          generates a unique `reconciliation_id` (and may attach an{" "}
-          `access_expires_at` timestamp) so you can view the preview route
-          (`/reconcile-preview/&lt;id&gt;`), paginate category tables, and
-          download `.xlsx` or `.csv` files.
+          generates a unique <code>reconciliation_id</code> (and may attach an{" "}
+          <code>access_expires_at</code> timestamp) so you can view the preview
+          route (<code>/reconcile-preview/&lt;id&gt;</code>), paginate category
+          tables, and download <code>.xlsx</code> or <code>.csv</code> files.
         </p>
         <p className="mt-3 text-sm leading-relaxed text-[#5A5E67]">
           <strong className="text-[#111214]">
-            [Configurable Backend TTL Placeholder]:
+            Backend TTL &amp; Cleanup Schedule:
           </strong>{" "}
-          Update this clause with the exact server purge schedule (for example,
-          automated deletion after X hours/days) verified on your{" "}
-          `OCR_API_BASE_URL` backend host.
+          Report snapshots remain retrievable via{" "}
+          <code>reconciliation_id</code> until their server-side{" "}
+          <code>access_expires_at</code> expiration or automated backend purge
+          runs complete.
         </p>
       </section>
 
@@ -112,14 +115,14 @@ export default function DataRetentionPolicyPage() {
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-[#5A5E67]">
           If you need immediate verification or removal of a specific{" "}
-          `reconciliation_id`, contact{" "}
+          <code>reconciliation_id</code>, contact{" "}
           <a
             href={`mailto:${SITE_CONFIG.contacts.privacyEmail}`}
             className="font-semibold text-[#111214] underline"
           >
             {SITE_CONFIG.contacts.privacyEmail}
           </a>{" "}
-          with your `reconciliation_id`. Also review our{" "}
+          with your <code>reconciliation_id</code>. Also review our{" "}
           <Link
             href="/responsible-use"
             className="font-semibold text-[#111214] underline"

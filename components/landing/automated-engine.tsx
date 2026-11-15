@@ -28,7 +28,7 @@ export function AutomatedEngineSection() {
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-[#5A5E67] sm:text-base">
             Unlike heavy account reconciliation software locked behind sales
-            demos and ERP migrations, ClearTie runs directly from your exported
+            demos and ERP migrations, reconcilebankstatement runs directly from your exported
             files—pairing transactions, isolating exceptions, and exporting clean
             tie-outs in minutes.
           </p>
@@ -251,7 +251,7 @@ export function AutomatedEngineSection() {
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h3 className="text-xl font-semibold tracking-tight text-[#111214] sm:text-2xl">
-                ClearTie vs. Spreadsheets, PDF Converters &amp; Enterprise Suites
+                reconcilebankstatement vs. Spreadsheets, PDF Converters &amp; Enterprise Suites
               </h3>
               <p className="mt-1 text-sm text-[#5A5E67]">
                 Compare spreadsheets and basic converters against dedicated
@@ -264,7 +264,12 @@ export function AutomatedEngineSection() {
             </span>
           </div>
 
-          <div className="mt-6 overflow-x-auto rounded-2xl bg-white">
+          <div
+            tabIndex={0}
+            role="region"
+            aria-label="Reconciliation capability comparison table"
+            className="mt-6 overflow-x-auto rounded-2xl bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111214]"
+          >
             <table className="w-full min-w-[780px] text-left text-xs sm:text-sm">
               <thead className="border-b border-slate-100 text-[11px] font-semibold uppercase tracking-wider text-[#5A5E67]">
                 <tr>
@@ -279,7 +284,7 @@ export function AutomatedEngineSection() {
                     Enterprise Suites
                   </th>
                   <th className="bg-[#111214] px-4 py-3.5 text-[#BDF71D] sm:px-5 sm:py-4">
-                    ClearTie Utility
+                    reconcilebankstatement Utility
                   </th>
                 </tr>
               </thead>
@@ -301,7 +306,7 @@ export function AutomatedEngineSection() {
                     <td className="bg-[#111214]/[0.03] px-4 py-3.5 font-semibold text-[#111214] sm:px-5">
                       <span className="inline-flex items-center gap-1.5">
                         <Check className="h-3.5 w-3.5 shrink-0 text-emerald-600" />
-                        {row.cleartie}
+                        {row.reconcilebankstatement}
                       </span>
                     </td>
                   </tr>

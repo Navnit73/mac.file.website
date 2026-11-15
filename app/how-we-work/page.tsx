@@ -6,7 +6,7 @@ export const metadata = createPageMetadata({
   path: "/how-we-work",
   title: `How We Work | ${SITE_CONFIG.brandName} Engineering & Quality Standards`,
   description:
-    "How ClearTie develops bank statement reconciliation software: byte-level parsing, deterministic math checks, transparency over black-box automation, and known limits.",
+    "How reconcilebankstatement develops bank statement reconciliation software: byte-level parsing, deterministic math checks, transparency over black-box automation, and known limits.",
 });
 
 export default function HowWeWorkPage() {
@@ -81,9 +81,9 @@ export default function HowWeWorkPage() {
             </h3>
             <p className="mt-1.5 text-xs leading-relaxed text-[#5A5E67] sm:text-sm">
               Many regional banks download HTML tables or UTF-16 TSV files named
-              with a `.xls` or `.csv` extension. Our ingestion layer inspects
-              actual file bytes so valid exports don&apos;t break on strict
-              extension assumptions.
+              with a <code>.xls</code> or <code>.csv</code> extension. Our
+              ingestion layer inspects actual file bytes so valid exports
+              don&apos;t break on strict extension assumptions.
             </p>
           </div>
           <div className="rounded-2xl border border-slate-200/80 bg-[#F8FAFC] p-5">
@@ -91,9 +91,10 @@ export default function HowWeWorkPage() {
               Decimal Precision Preservation
             </h3>
             <p className="mt-1.5 text-xs leading-relaxed text-[#5A5E67] sm:text-sm">
-              European comma decimals (`1.250,40`), UK/US period decimals
-              (`1,250.40`), `Dr/Cr` suffixes, and accounting parentheses
-              `($35.00)` are normalized carefully before arithmetic checks.
+              European comma decimals (<code>1.250,40</code>), UK/US period
+              decimals (<code>1,250.40</code>), <code>Dr/Cr</code> suffixes, and
+              accounting parentheses <code>($35.00)</code> are normalized
+              carefully before arithmetic checks.
             </p>
           </div>
           <div className="rounded-2xl border border-slate-200/80 bg-[#F8FAFC] p-5">
@@ -129,9 +130,9 @@ export default function HowWeWorkPage() {
           Automated OCR and heuristic matching accelerate review, not replace
           professional judgment. Low-contrast scans, complex multi-invoice batch
           settlements (one deposit matching four separate ledger bills), or
-          ambiguous narration text can produce `unverifiable` balance checks or
-          unmatched exceptions that require bookkeeper verification. Learn more
-          in our{" "}
+          ambiguous narration text can produce <code>unverifiable</code> balance
+          checks or unmatched exceptions that require bookkeeper verification.
+          Learn more in our{" "}
           <Link
             href="/data-accuracy-policy"
             className="font-semibold text-[#111214] underline"

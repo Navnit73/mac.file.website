@@ -103,12 +103,12 @@ export function ReconciliationGuideSection() {
             </div>
 
             <div className="mt-6 rounded-2xl bg-white p-5 shadow-xs">
-              <h4 className="text-base font-semibold text-[#111214]">
+              <h3 className="text-base font-semibold text-[#111214]">
                 Exception-First Review Saves Close Hours
-              </h4>
+              </h3>
               <p className="mt-1.5 text-xs leading-relaxed text-[#5A5E67] sm:text-sm">
                 Instead of reading hundreds of matching rows line by line,
-                ClearTie verifies pairs automatically and brings only four
+                reconcilebankstatement verifies pairs automatically and brings only four
                 actionable exception groups—timing gaps, unrecorded fees,
                 suspected duplicates, and amount or sign mismatches—to the
                 front.
@@ -174,10 +174,10 @@ export function ReconciliationGuideSection() {
                     </div>
                     <div className="rounded-xl bg-white p-3">
                       <h5 className="text-[11px] font-semibold uppercase tracking-wider text-emerald-800">
-                        How ClearTie Fixes It
+                        How reconcilebankstatement Fixes It
                       </h5>
                       <p className="mt-1 text-xs leading-relaxed text-[#111214]">
-                        {problem.howClearTieFixesIt}
+                        {problem.howreconcilebankstatementFixesIt}
                       </p>
                     </div>
                   </div>

@@ -15,7 +15,7 @@ export const metadata = createPageMetadata({
   path: "/our-team",
   title: `Our Team & Contributor Profiles | ${SITE_CONFIG.brandName}`,
   description:
-    "View transparent product ownership, editorial responsibilities, and editable author and reviewer slots for reconcilebankstatement.online.",
+    "View transparent product ownership, editorial responsibilities, and role-based review attribution for reconcilebankstatement.online.",
 });
 
 export default function OurTeamPage() {
@@ -27,7 +27,7 @@ export default function OurTeamPage() {
       path="/our-team"
       eyebrow="Team & Contributors"
       title="Product & Editorial Contributors"
-      lead="Transparency starts with honesty about who builds and reviews financial software documentation. Rather than publishing fabricated staff names or invented accounting titles, this page exposes verified team functions and editable slots for named contributors."
+      lead="Transparency starts with honesty about who builds and reviews financial software documentation. Rather than publishing fabricated staff names or invented accounting titles, this page publishes verified engineering and documentation ownership."
       breadcrumbs={[
         { label: "Home", href: "/" },
         { label: "Our Team" },
@@ -39,7 +39,7 @@ export default function OurTeamPage() {
       ]}
       notice={{
         title: "No Fabricated Personas Policy",
-        body: "Named team member biographies, photographs, and licensed accounting reviewer credentials (such as CPA or ACCA) are intentionally held as editable placeholders in lib/site-config.ts until real individuals are assigned.",
+        body: "Attribution on reconcilebankstatement.online reflects the engineering, parsing, and documentation teams directly—without invented individual biographies or claimed external CPA/ACCA sign-off.",
       }}
       relatedLinks={[
         {
@@ -57,7 +57,7 @@ export default function OurTeamPage() {
         {
           title: "About Us",
           description:
-            "Learn about our mission, target users, and legal ownership placeholders.",
+            "Learn about our mission, target users, and company operating details.",
           href: "/about-us",
         },
       ]}

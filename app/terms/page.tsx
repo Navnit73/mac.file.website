@@ -6,7 +6,7 @@ export const metadata = createPageMetadata({
   path: "/terms",
   title: `Terms of Service | ${SITE_CONFIG.brandName} (${SITE_CONFIG.domain})`,
   description:
-    "Terms of Service governing access to and use of the ClearTie bank statement reconciliation utility at reconcilebankstatement.online.",
+    "Terms of Service governing access to and use of the reconcilebankstatement bank statement reconciliation utility at reconcilebankstatement.online.",
 });
 
 export default function TermsPage() {
@@ -28,8 +28,8 @@ export default function TermsPage() {
         { id: "governing-law", label: "Governing Law & Contact" },
       ]}
       notice={{
-        title: "Legal Review Notice",
-        body: `Operator entity (${SITE_CONFIG.legalEntityName}) and governing jurisdiction (${SITE_CONFIG.governingJurisdiction}) are editable placeholders in lib/site-config.ts. Have qualified legal counsel review before commercial launch.`,
+        title: "Service Scope & Software-Only Disclaimer",
+        body: `${SITE_CONFIG.legalEntityName} operates ${SITE_CONFIG.domain} as an automated software utility under ${SITE_CONFIG.governingJurisdiction} rules. Output reports should always be reviewed before formal filing or close sign-off.`,
       }}
       relatedLinks={[
         {
@@ -89,7 +89,7 @@ export default function TermsPage() {
           <li>
             If configuring optional HTTPS webhooks, you remain responsible for
             verifying webhook receiver ownership and safeguarding your{" "}
-            `webhook_secret`.
+            <code>webhook_secret</code>.
           </li>
         </ul>
       </section>

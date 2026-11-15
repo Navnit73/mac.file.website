@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AlertCircle,
   ArrowRight,
@@ -15,6 +15,11 @@ import type {
   PdfPasswordPrompt,
   UploadReconciliationParams,
 } from "@/lib/reconciliation/types";
+import {
+  isValidEmail,
+  isValidHttpsUrl,
+  isValidReconciliationId,
+} from "@/lib/reconciliation/validation";
 import { ReconciliationDropzone } from "./reconciliation-dropzone";
 
 export type ReconciliationUploadFormProps = {
@@ -41,7 +46,7 @@ export function ReconciliationUploadForm({
   onSubmit,
   onResumeId,
   lastSavedId = null,
-  isSubmitting = false,
+  isSubmitting: isExternalSubmitting = false,
   error = null,
   pdfPasswordPrompt = null,
   defaultToleranceDays = 2,
@@ -65,9 +70,27 @@ export function ReconciliationUploadForm({
 
   const [showResumeInput, setShowResumeInput] = useState(false);
   const [resumeIdInput, setResumeIdInput] = useState("");
+  const [localSubmitting, setLocalSubmitting] = useState(false);
   const [formValidationError, setFormValidationError] = useState<string | null>(
     null
   );
+
+  const actionBarRef = useRef<HTMLDivElement>(null);
+  const scrollTimerRef = useRef<number | null>(null);
+  const submittingRef = useRef(false);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      if (scrollTimerRef.current !== null) {
+        window.clearTimeout(scrollTimerRef.current);
+      }
+    };
+  }, []);
+
+  const isSubmitting = isExternalSubmitting || localSubmitting;
 
   const attachedCount = Number(Boolean(bankStatement)) + Number(Boolean(businessLedger));
   const filesReady = attachedCount === 2;
@@ -75,6 +98,33 @@ export function ReconciliationUploadForm({
   const hasAdvancedConfig = Boolean(
     webhookUrl.trim() || webhookSecret.trim() || userEmail.trim()
   );
+
+  const scrollToRunButton = () => {
+    if (scrollTimerRef.current !== null) {
+      window.clearTimeout(scrollTimerRef.current);
+    }
+    scrollTimerRef.current = window.setTimeout(() => {
+      actionBarRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }, 100);
+  };
+
+  const handleBankStatementChange = (file: File | null) => {
+    setBankStatement(file);
+    setBankPassword("");
+    setFormValidationError(null);
+  };
+
+  const handleBusinessLedgerChange = (file: File | null) => {
+    setBusinessLedger(file);
+    setLedgerPassword("");
+    setFormValidationError(null);
+    if (file) {
+      scrollToRunButton();
+    }
+  };
 
   const handleLoadSample = () => {
     const sample = createSampleReconciliationFiles();
@@ -85,8 +135,36 @@ export function ReconciliationUploadForm({
     setFormValidationError(null);
   };
 
+  const handleResumeLookup = async () => {
+    if (!onResumeId || isSubmitting || submittingRef.current) return;
+    const trimmedId = resumeIdInput.trim();
+    if (!trimmedId) {
+      setFormValidationError("Please enter a reconciliation ID to look up.");
+      return;
+    }
+    if (!isValidReconciliationId(trimmedId)) {
+      setFormValidationError(
+        "Invalid reconciliation ID format. Expected 3-128 letters, numbers, hyphens, or underscores."
+      );
+      return;
+    }
+    setFormValidationError(null);
+    submittingRef.current = true;
+    setLocalSubmitting(true);
+    try {
+      await onResumeId(trimmedId);
+    } finally {
+      submittingRef.current = false;
+      if (mountedRef.current) {
+        setLocalSubmitting(false);
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isSubmitting || submittingRef.current) return;
+
     setFormValidationError(null);
 
     if (!bankStatement || !businessLedger) {
@@ -108,158 +186,165 @@ export function ReconciliationUploadForm({
     }
 
     const trimmedWebhook = webhookUrl.trim();
-    if (trimmedWebhook && !trimmedWebhook.startsWith("https://")) {
-      setFormValidationError("Webhook URL must use HTTPS.");
+    if (trimmedWebhook && !isValidHttpsUrl(trimmedWebhook)) {
+      setFormValidationError("Please enter a valid HTTPS webhook URL.");
       return;
     }
 
-    await onSubmit({
-      bankStatement,
-      businessLedger,
-      dateToleranceDays,
-      descriptionMatching,
-      bankStatementPassword: bankPassword || undefined,
-      businessLedgerPassword: ledgerPassword || undefined,
-      webhookUrl: trimmedWebhook || undefined,
-      webhookSecret: webhookSecret.trim() || undefined,
-      userEmail: userEmail.trim() || undefined,
-    });
+    const trimmedEmail = userEmail.trim();
+    if (trimmedEmail && !isValidEmail(trimmedEmail)) {
+      setFormValidationError("Please enter a valid record tag email address.");
+      return;
+    }
+
+    submittingRef.current = true;
+    setLocalSubmitting(true);
+    try {
+      await onSubmit({
+        bankStatement,
+        businessLedger,
+        dateToleranceDays,
+        descriptionMatching,
+        bankStatementPassword: bankPassword || undefined,
+        businessLedgerPassword: ledgerPassword || undefined,
+        webhookUrl: trimmedWebhook || undefined,
+        webhookSecret: webhookSecret.trim() || undefined,
+        userEmail: trimmedEmail || undefined,
+      });
+    } finally {
+      submittingRef.current = false;
+      if (mountedRef.current) {
+        setLocalSubmitting(false);
+      }
+    }
   };
 
   const displayError = formValidationError || error;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-      {/* Live 3-Step Readiness Strip */}
-      <div className="grid gap-2.5 rounded-2xl bg-[#111214] px-4 py-3 text-xs text-white sm:grid-cols-3 sm:items-center sm:gap-4 sm:px-5">
-        <div className="flex items-center justify-between gap-2 sm:justify-start">
-          <div className="flex items-center gap-2.5">
+      {/* Unified Responsive Step & Quick-Start Bar */}
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#E6E9EE] px-3 py-1.5 text-xs font-medium text-[#111214]">
             <span
               className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full font-mono text-[10px] font-bold ${
                 filesReady
-                  ? "bg-emerald-400 text-[#111214]"
-                  : "bg-[#BDF71D] text-[#111214]"
+                  ? "bg-emerald-800 text-white"
+                  : "bg-[#111214] text-[#BDF71D]"
               }`}
             >
               {filesReady ? <Check className="h-3 w-3 stroke-[3]" /> : "1"}
             </span>
-            <span className="font-medium text-white">
-              Drop Statement &amp; Ledger
+            <span>Upload files</span>
+            <span className="rounded-full bg-white px-2 py-0.5 font-mono text-[10px] font-semibold text-[#111214]">
+              {attachedCount}/2
             </span>
           </div>
-          <span
-            className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold ${
-              filesReady
-                ? "bg-emerald-500/20 text-emerald-300"
-                : "bg-white/10 text-white/75"
-            }`}
-          >
-            {attachedCount}/2
-          </span>
-        </div>
 
-        <div className="flex items-center justify-between gap-2 sm:justify-start">
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/15 font-mono text-[10px] font-bold text-[#BDF71D]">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#E6E9EE] px-3 py-1.5 text-xs font-medium text-[#111214]">
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#111214]/15 font-mono text-[10px] font-bold text-[#111214]">
               2
             </span>
-            <span className="font-medium text-white/90">
-              Set Date Tolerance (0–31d)
+            <span>Tolerance</span>
+            <span className="rounded-full bg-white px-2 py-0.5 font-mono text-[10px] font-semibold text-[#111214]">
+              ±{dateToleranceDays}d
             </span>
           </div>
-          <span className="rounded-full bg-white/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-[#BDF71D]">
-            ±{dateToleranceDays}d
-          </span>
-        </div>
 
-        <div className="flex items-center justify-between gap-2 sm:justify-start">
-          <div className="flex items-center gap-2.5">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#E6E9EE] px-3 py-1.5 text-xs font-medium text-[#111214]">
             <span
               className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full font-mono text-[10px] font-bold ${
                 filesReady
-                  ? "bg-[#BDF71D] text-[#111214]"
-                  : "bg-white/10 text-white/60"
+                  ? "bg-[#FF8F00] text-[#111214]"
+                  : "bg-[#111214]/15 text-[#474B54]"
               }`}
             >
               3
             </span>
-            <span
-              className={`font-medium ${
-                filesReady ? "text-[#BDF71D]" : "text-white/70"
-              }`}
-            >
-              Inspect Gaps &amp; Export XLSX/CSV
-            </span>
+            <span>Preview &amp; export</span>
           </div>
         </div>
-      </div>
 
-      {/* Quick-Start & Session Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5 py-1">
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             disabled={isSubmitting}
             onClick={handleLoadSample}
-            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full bg-[#BDF71D] px-4 py-1.5 text-xs font-semibold text-[#111214] transition-all hover:bg-[#cffb4e] disabled:opacity-50"
+            className="inline-flex min-h-[38px] items-center gap-1.5 rounded-full bg-[#E6E9EE] px-4 py-1.5 text-xs font-semibold text-[#111214] transition-colors hover:bg-[#D7DCE4] disabled:opacity-50"
           >
-            <Sparkles className="h-3.5 w-3.5" />
+            <Sparkles className="h-3.5 w-3.5 text-[#FF8F00]" />
             Load Sample CSV Pair
           </button>
 
-          <span className="hidden text-xs text-[#5A5E67] lg:inline">
-            Try instant sample data or upload your own files below
-          </span>
-        </div>
+          {onResumeId && (
+            <>
+              {lastSavedId && (
+                <button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={() => onResumeId(lastSavedId)}
+                  className="inline-flex min-h-[38px] max-w-full items-center gap-1.5 rounded-full bg-emerald-100/80 px-3.5 py-1 text-xs font-medium text-[#111214] transition-colors hover:bg-emerald-200/70 disabled:opacity-50"
+                >
+                  <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-600" />
+                  <span>Resume</span>
+                  <span className="truncate font-mono text-[11px] font-semibold text-emerald-950">
+                    {lastSavedId}
+                  </span>
+                </button>
+              )}
 
-        {onResumeId && (
-          <div className="flex flex-wrap items-center gap-2">
-            {lastSavedId && (
               <button
                 type="button"
                 disabled={isSubmitting}
-                onClick={() => onResumeId(lastSavedId)}
-                className="inline-flex min-h-[34px] items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-medium text-[#111214] transition-colors hover:bg-emerald-100/80 disabled:opacity-50"
+                aria-expanded={showResumeInput}
+                aria-controls="rec-resume-panel"
+                onClick={() => setShowResumeInput((prev) => !prev)}
+                className={`inline-flex min-h-[38px] items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+                  showResumeInput
+                    ? "bg-[#111214] text-white"
+                    : "bg-[#E6E9EE] text-[#111214] hover:bg-[#D7DCE4]"
+                }`}
               >
-                <span className="h-2 w-2 rounded-full bg-emerald-600" />
-                <span>Resume</span>
-                <span className="font-mono text-[11px] font-semibold text-emerald-900">
-                  {lastSavedId}
-                </span>
+                <History className="h-3.5 w-3.5" />
+                {showResumeInput ? "Hide ID lookup" : "Open existing ID"}
               </button>
-            )}
-
-            <button
-              type="button"
-              disabled={isSubmitting}
-              onClick={() => setShowResumeInput((prev) => !prev)}
-              className={`inline-flex min-h-[34px] items-center gap-1.5 rounded-full px-3.5 py-1 text-xs font-medium transition-colors ${
-                showResumeInput
-                  ? "bg-[#111214] text-white"
-                  : "bg-[#F7F8F9] text-[#111214] hover:bg-slate-200/70"
-              }`}
-            >
-              <History className="h-3.5 w-3.5" />
-              {showResumeInput ? "Hide ID lookup" : "Open existing ID"}
-            </button>
-          </div>
-        )}
+            </>
+          )}
+        </div>
       </div>
 
       {onResumeId && showResumeInput && (
-        <div className="flex flex-col gap-2 rounded-2xl bg-[#F7F8F9] p-3 sm:flex-row sm:items-center">
+        <div
+          id="rec-resume-panel"
+          data-clarity-mask="true"
+          className="flex flex-col gap-2.5 rounded-2xl bg-[#E6E9EE] p-3 sm:flex-row sm:items-center sm:p-3.5"
+        >
+          <label htmlFor="rec-resume-id" className="sr-only">
+            Reconciliation ID
+          </label>
           <input
+            id="rec-resume-id"
             type="text"
             value={resumeIdInput}
-            onChange={(e) => setResumeIdInput(e.target.value)}
+            onChange={(e) => {
+              setResumeIdInput(e.target.value);
+              if (formValidationError) setFormValidationError(null);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                void handleResumeLookup();
+              }
+            }}
             placeholder="Paste reconciliation_id (e.g. rec_4f1c2a9be03d7781)"
-            className="flex-1 rounded-xl bg-white px-3.5 py-2 font-mono text-xs text-[#111214] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#111214]"
+            className="min-w-0 flex-1 rounded-xl bg-white px-3.5 py-2.5 font-mono text-xs text-[#111214] placeholder:text-[#5A5E67] focus:outline-none focus:ring-2 focus:ring-[#111214]"
           />
           <button
             type="button"
             disabled={isSubmitting || !resumeIdInput.trim()}
-            onClick={() => onResumeId(resumeIdInput.trim())}
-            className="inline-flex min-h-[36px] items-center justify-center rounded-full bg-[#111214] px-4 text-xs font-semibold text-white transition-colors hover:bg-black disabled:opacity-50"
+            onClick={() => void handleResumeLookup()}
+            className="inline-flex min-h-[40px] w-full items-center justify-center rounded-full bg-[#111214] px-5 text-xs font-semibold text-white transition-colors hover:bg-black disabled:opacity-50 sm:w-auto"
           >
             Fetch Report
           </button>
@@ -267,14 +352,14 @@ export function ReconciliationUploadForm({
       )}
 
       {/* Dual Dropzones */}
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 lg:gap-5">
         <ReconciliationDropzone
           label="1. Bank Statement"
           badge="Bank / Card File"
           variant="bank"
           helperText="PDF (digital or scanned), JPG/PNG/TIFF, CSV, TSV, TXT, XLSX, XLSM (max 100 MB, 200 PDF pages)"
           file={bankStatement}
-          onFileChange={setBankStatement}
+          onFileChange={handleBankStatementChange}
           password={bankPassword}
           onPasswordChange={setBankPassword}
           passwordError={
@@ -291,7 +376,7 @@ export function ReconciliationUploadForm({
           variant="ledger"
           helperText="Cash book, GL export, or invoice receipt (PDF, Image, CSV, TSV, TXT, XLSX, XLSM)"
           file={businessLedger}
-          onFileChange={setBusinessLedger}
+          onFileChange={handleBusinessLedgerChange}
           password={ledgerPassword}
           onPasswordChange={setLedgerPassword}
           passwordError={
@@ -304,18 +389,18 @@ export function ReconciliationUploadForm({
       </div>
 
       {/* Matching Controls */}
-      <div className="rounded-2xl bg-[#F7F8F9] p-4 sm:p-5">
+      <div className="rounded-2xl bg-[#E6E9EE] p-4 sm:p-6">
         <div className="grid gap-5 lg:grid-cols-12 lg:items-center">
           <div className="lg:col-span-7">
             <div className="flex items-center justify-between gap-2">
               <label
                 htmlFor="date-tolerance-days"
-                className="flex items-center gap-1.5 text-xs font-semibold text-[#111214]"
+                className="flex items-center gap-1.5 text-xs font-semibold text-[#111214] sm:text-sm"
               >
                 <SlidersHorizontal className="h-3.5 w-3.5 text-[#111214]" />
                 Date Tolerance Window
               </label>
-              <span className="rounded-full bg-[#111214] px-3 py-0.5 font-mono text-xs font-semibold text-[#BDF71D]">
+              <span className="rounded-full bg-[#111214] px-3 py-0.5 font-mono text-xs font-semibold text-[#FF8F00]">
                 ±{dateToleranceDays}{" "}
                 {dateToleranceDays === 1 ? "day" : "days"}
               </span>
@@ -333,12 +418,12 @@ export function ReconciliationUploadForm({
                 setDateToleranceDays(Number.parseInt(e.target.value, 10) || 0)
               }
               style={{
-                background: `linear-gradient(to right, #111214 0%, #111214 ${sliderPct}%, #E2E8F0 ${sliderPct}%, #E2E8F0 100%)`,
+                background: `linear-gradient(to right, #111214 0%, #111214 ${sliderPct}%, #CBD2DC ${sliderPct}%, #CBD2DC 100%)`,
               }}
               className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full accent-[#111214]"
             />
 
-            <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-1.5">
                 {TOLERANCE_PRESETS.map((preset) => {
                   const isActive = dateToleranceDays === preset.days;
@@ -348,10 +433,10 @@ export function ReconciliationUploadForm({
                       type="button"
                       disabled={isSubmitting}
                       onClick={() => setDateToleranceDays(preset.days)}
-                      className={`rounded-full px-2.5 py-1 font-mono text-[11px] font-medium transition-colors ${
+                      className={`inline-flex min-h-[34px] items-center rounded-full px-3 py-1 font-mono text-[11px] font-medium transition-colors ${
                         isActive
-                          ? "bg-[#111214] text-[#BDF71D]"
-                          : "bg-white text-[#5A5E67] hover:bg-slate-200/80 hover:text-[#111214]"
+                          ? "bg-[#111214] text-white"
+                          : "bg-white text-[#474B54] hover:bg-[#D7DCE4] hover:text-[#111214]"
                       }`}
                     >
                       {preset.label}
@@ -359,7 +444,7 @@ export function ReconciliationUploadForm({
                   );
                 })}
               </div>
-              <span className="font-mono text-[10px] text-[#5A5E67]">
+              <span className="font-mono text-[11px] text-[#474B54]">
                 Range: 0–31 days
               </span>
             </div>
@@ -367,23 +452,25 @@ export function ReconciliationUploadForm({
 
           <div
             className={`flex items-center justify-between gap-4 rounded-xl px-4 py-3.5 transition-colors lg:col-span-5 ${
-              descriptionMatching ? "bg-emerald-50/80" : "bg-white"
+              descriptionMatching ? "bg-emerald-50" : "bg-white"
             }`}
           >
             <div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-[#111214]">
-                <span>Description Similarity Scoring</span>
+              <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-[#111214]">
+                <span id="rec-desc-matching-label">
+                  Description Similarity Scoring
+                </span>
                 <span
                   className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold ${
                     descriptionMatching
-                      ? "bg-emerald-600 text-white"
-                      : "bg-slate-200 text-[#5A5E67]"
+                      ? "bg-emerald-800 text-white"
+                      : "bg-[#D7DCE4] text-[#474B54]"
                   }`}
                 >
                   {descriptionMatching ? "ON" : "OFF"}
                 </span>
               </div>
-              <div className="mt-0.5 text-[11px] text-[#5A5E67]">
+              <div className="mt-0.5 text-[11px] leading-relaxed text-[#474B54]">
                 Uses memo/narration similarity when ranking candidate matches
               </div>
             </div>
@@ -391,10 +478,11 @@ export function ReconciliationUploadForm({
               type="button"
               role="switch"
               aria-checked={descriptionMatching}
+              aria-labelledby="rec-desc-matching-label"
               disabled={isSubmitting}
               onClick={() => setDescriptionMatching((prev) => !prev)}
               className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111214] ${
-                descriptionMatching ? "bg-[#111214]" : "bg-slate-300"
+                descriptionMatching ? "bg-[#111214]" : "bg-[#AEB6C2]"
               }`}
             >
               <span
@@ -409,11 +497,14 @@ export function ReconciliationUploadForm({
         </div>
 
         {showWebhookOptions && (
-          <div className="mt-4 pt-3.5">
+          <div className="mt-4 pt-3">
             <button
               type="button"
+              disabled={isSubmitting}
+              aria-expanded={showAdvanced}
+              aria-controls="rec-advanced-options"
               onClick={() => setShowAdvanced((prev) => !prev)}
-              className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111214] transition-colors hover:bg-slate-200/75"
+              className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111214] transition-colors hover:bg-[#D7DCE4] disabled:opacity-50"
             >
               <ChevronDown
                 className={`h-3.5 w-3.5 transition-transform ${
@@ -427,7 +518,11 @@ export function ReconciliationUploadForm({
             </button>
 
             {showAdvanced && (
-              <div className="mt-3 grid gap-3 rounded-xl bg-white p-3.5 sm:grid-cols-3">
+              <div
+                id="rec-advanced-options"
+                data-clarity-mask="true"
+                className="mt-3 grid gap-3 rounded-xl bg-white p-4 sm:grid-cols-3"
+              >
                 <div>
                   <label
                     htmlFor="rec-webhook-url"
@@ -442,7 +537,7 @@ export function ReconciliationUploadForm({
                     value={webhookUrl}
                     onChange={(e) => setWebhookUrl(e.target.value)}
                     placeholder="https://example.com/hooks/rec"
-                    className="mt-1 w-full rounded-xl bg-[#F7F8F9] px-3 py-2 text-xs text-[#111214] placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#111214]"
+                    className="mt-1.5 w-full rounded-xl bg-[#E6E9EE] px-3 py-2 text-xs text-[#111214] placeholder:text-[#5A5E67] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#111214]"
                   />
                 </div>
                 <div>
@@ -461,7 +556,7 @@ export function ReconciliationUploadForm({
                     onChange={(e) => setWebhookSecret(e.target.value)}
                     placeholder="Optional signing secret"
                     autoComplete="off"
-                    className="mt-1 w-full rounded-xl bg-[#F7F8F9] px-3 py-2 text-xs text-[#111214] placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#111214]"
+                    className="mt-1.5 w-full rounded-xl bg-[#E6E9EE] px-3 py-2 text-xs text-[#111214] placeholder:text-[#5A5E67] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#111214]"
                   />
                 </div>
                 <div>
@@ -478,7 +573,7 @@ export function ReconciliationUploadForm({
                     value={userEmail}
                     onChange={(e) => setUserEmail(e.target.value)}
                     placeholder="finance@company.com"
-                    className="mt-1 w-full rounded-xl bg-[#F7F8F9] px-3 py-2 text-xs text-[#111214] placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#111214]"
+                    className="mt-1.5 w-full rounded-xl bg-[#E6E9EE] px-3 py-2 text-xs text-[#111214] placeholder:text-[#5A5E67] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#111214]"
                   />
                 </div>
               </div>
@@ -498,21 +593,24 @@ export function ReconciliationUploadForm({
       )}
 
       {/* High-Contrast Submit Action Bar */}
-      <div className="flex flex-col gap-3 rounded-2xl bg-[#111214] p-4 text-white sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      <div
+        ref={actionBarRef}
+        className="scroll-mt-24 scroll-mb-6 flex flex-col gap-4 rounded-2xl bg-[#111214] p-4 text-white sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5"
+      >
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs font-semibold">
+          <div className="flex items-center gap-2 text-xs font-semibold sm:text-sm">
             <span
-              className={`h-2 w-2 rounded-full ${
-                filesReady ? "bg-emerald-400" : "bg-amber-400"
+              className={`h-2.5 w-2.5 shrink-0 rounded-full ${
+                filesReady ? "bg-emerald-400" : "bg-[#FF8F00]"
               }`}
             />
-            <span className={filesReady ? "text-[#BDF71D]" : "text-white"}>
+            <span className={filesReady ? "text-emerald-300" : "text-white"}>
               {filesReady
                 ? "2/2 files ready for tie-out"
                 : `${attachedCount}/2 files selected — add both documents to run`}
             </span>
           </div>
-          <p className="text-[11px] leading-relaxed text-white/70">
+          <p className="text-[11px] leading-relaxed text-[#CBD2DC] sm:text-xs">
             Supports multi-currency ISO 4217 statements, PDF OCR (up to 200
             pages), and deterministic balance verification.
           </p>
@@ -521,7 +619,7 @@ export function ReconciliationUploadForm({
         <button
           type="submit"
           disabled={isSubmitting || !filesReady}
-          className={`inline-flex min-h-[46px] shrink-0 items-center justify-center rounded-full px-7 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF8F00] focus-visible:ring-offset-2 focus-visible:ring-offset-[#111214] sm:text-sm ${
+          className={`inline-flex min-h-[48px] w-full shrink-0 items-center justify-center rounded-full px-7 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF8F00] focus-visible:ring-offset-2 focus-visible:ring-offset-[#111214] sm:w-auto sm:text-sm ${
             filesReady
               ? "bg-[#FF8F00] text-[#111214] shadow-md hover:bg-[#FFA000]"
               : "cursor-not-allowed bg-[#FF8F00]/70 text-[#111214]"

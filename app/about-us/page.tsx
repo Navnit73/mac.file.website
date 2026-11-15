@@ -6,13 +6,14 @@ export const metadata = createPageMetadata({
   path: "/about-us",
   title: `About Us | ${SITE_CONFIG.brandName} (${SITE_CONFIG.domain})`,
   description:
-    "Learn why reconcilebankstatement.online (ClearTie) was built, who we serve across the US, UK, and EU, and how our document-first reconciliation software works.",
+    "Learn why reconcilebankstatement.online (reconcilebankstatement) was built, who we serve across the US, UK, and EU, and how our document-first reconciliation software works.",
 });
 
 export default function AboutUsPage() {
   return (
     <TrustPageShell
       path="/about-us"
+      pageType="AboutPage"
       eyebrow="Company Overview"
       title={`About ${SITE_CONFIG.brandName} (${SITE_CONFIG.domain})`}
       lead="Practical, transparent bank statement and business ledger reconciliation software designed for small business owners, bookkeepers, finance teams, and accountants—without requiring live banking credentials or full ERP migrations."
@@ -23,12 +24,12 @@ export default function AboutUsPage() {
       sections={[
         { id: "problem-we-solve", label: "The Problem We Solve" },
         { id: "mission-vision", label: "Mission & Vision" },
-        { id: "who-we-serve", label: "Who Uses ClearTie" },
+        { id: "who-we-serve", label: "Who Uses reconcilebankstatement" },
         { id: "company-ownership", label: "Ownership & Business Details" },
       ]}
       notice={{
-        title: "Business Registration Notice",
-        body: `Company legal name and registered mailing address placeholders are displayed below and in ${SITE_CONFIG.domain}'s footer. Replace bracketed values in lib/site-config.ts prior to public launch.`,
+        title: "Operator & Support Disclosure",
+        body: `Company operating details, jurisdictional scope, and direct support contacts for ${SITE_CONFIG.domain} are listed below and linked from the site footer.`,
       }}
       relatedLinks={[
         {
@@ -64,13 +65,13 @@ export default function AboutUsPage() {
           or credit card statement against an internal business ledger when both
           sources arrive in incompatible formats. Banks regularly issue locked
           or scanned PDF statements, multi-column Excel tables, HTML/XML pseudo
-          `.xls` exports, or UTF-16 CSV files formatted differently across US,
+          <code>.xls</code> exports, or UTF-16 CSV files formatted differently across US,
           UK, and European banking standards.
         </p>
         <p className="mt-3 text-sm leading-relaxed text-[#5A5E67] sm:text-base">
           Many teams either spend hours eyeballing spreadsheets with fragile
-          `VLOOKUP` formulas or are forced to adopt heavyweight subscription
-          suites requiring permanent OAuth bank connections. ClearTie fills the
+          <code>VLOOKUP</code> formulas or are forced to adopt heavyweight subscription
+          suites requiring permanent OAuth bank connections. reconcilebankstatement fills the
           practical gap between manual spreadsheet matching and full ERP
           implementations: upload the two exported files directly, configure date
           tolerances and description scoring, verify opening and closing
@@ -143,7 +144,7 @@ export default function AboutUsPage() {
               Finance &amp; Controller Teams
             </h3>
             <p className="mt-1.5 text-xs leading-relaxed text-[#5A5E67] sm:text-sm">
-              Isolate unmatched items, timing differences (`±0–31 days`), potential
+              Isolate unmatched items, timing differences (±0–31 days), potential
               duplicates, and Dr/Cr reversal errors with downloadable XLSX audit
               workpapers.
             </p>
@@ -176,7 +177,7 @@ export default function AboutUsPage() {
           Ownership &amp; Business Transparency
         </h2>
         <p className="mt-2 text-xs leading-relaxed text-[#5A5E67] sm:text-sm">
-          We publish direct contact addresses and ownership placeholders openly
+          We publish direct contact addresses and operating details openly
           in accordance with transparent SaaS operating standards:
         </p>
         <dl className="mt-4 divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-[#F8FAFC] text-xs sm:text-sm">

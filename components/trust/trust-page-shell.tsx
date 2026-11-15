@@ -8,9 +8,12 @@ import { EditorialAttributionBar } from "@/components/trust/author-reviewer-card
 import {
   buildBreadcrumbSchema,
   buildOrganizationSchema,
+  buildWebPageSchema,
   buildWebsiteSchema,
   JsonLdScript,
+  normalizeCanonicalUrl,
   type BreadcrumbItem,
+  type SchemaWebPageType,
 } from "@/components/trust/structured-data";
 import {
   SITE_CONFIG,
@@ -43,6 +46,8 @@ export type TrustPageShellProps = {
     title: string;
     body: string;
   };
+  pageType?: SchemaWebPageType;
+  mainEntityId?: string;
   relatedLinks?: RelatedResourceLink[];
   extraSchemas?: Record<string, unknown>[];
   children: ReactNode;
@@ -59,16 +64,28 @@ export function TrustPageShell({
   reviewer,
   updatedLabel = SITE_CONFIG.lastReviewedLabel,
   notice,
+  pageType = "WebPage",
+  mainEntityId,
   relatedLinks = [],
   extraSchemas = [],
   children,
 }: TrustPageShellProps) {
+  const breadcrumbSchema = buildBreadcrumbSchema(breadcrumbs, path);
+  const pageUrl = normalizeCanonicalUrl(path);
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       buildOrganizationSchema(),
       buildWebsiteSchema(),
-      buildBreadcrumbSchema(breadcrumbs, path),
+      buildWebPageSchema({
+        type: pageType,
+        path,
+        title,
+        description: lead,
+        breadcrumbId: `${pageUrl}/#breadcrumb`,
+        mainEntityId,
+      }),
+      breadcrumbSchema,
       ...extraSchemas,
     ],
   };
@@ -78,7 +95,7 @@ export function TrustPageShell({
       <JsonLdScript data={jsonLd} />
       <Navbar />
 
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         {/* Clean Editorial Page Header */}
         <section className="border-b border-slate-200/80 bg-[#F8FAFC] py-10 sm:py-14">
           <div className="mx-auto max-w-[79.2rem] px-4 sm:px-6 lg:px-8">

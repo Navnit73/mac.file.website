@@ -26,7 +26,7 @@ const EXTRA_POLICY_FAQS: FaqDirectoryEntry[] = [
   {
     id: "cookies-vs-session-storage",
     category: "policies",
-    question: "Does ClearTie use tracking cookies or sell statement data?",
+    question: "Does reconcilebankstatement use tracking cookies or sell statement data?",
     answer:
       "No marketing or behavioral tracking cookies are used by this application, and we do not sell statement records. Only tab-scoped sessionStorage is used to let you reopen a recent reconciliation ID before closing the browser tab.",
     linkLabel: "Inspect Cookie & Storage Policy",
@@ -35,9 +35,9 @@ const EXTRA_POLICY_FAQS: FaqDirectoryEntry[] = [
   {
     id: "security-and-passwords",
     category: "policies",
-    question: "Does ClearTie need my bank username or password?",
+    question: "Does reconcilebankstatement need my bank username or password?",
     answer:
-      "Never. ClearTie processes files you export and upload yourself—no bank portal credentials or Open Banking tokens are ever requested. Optional PDF unlock passwords are sent transiently for decryption without persistent frontend storage.",
+      "Never. reconcilebankstatement processes files you export and upload yourself—no bank portal credentials or Open Banking tokens are ever requested. Optional PDF unlock passwords are sent transiently for decryption without persistent frontend storage.",
     linkLabel: "Review Security Architecture",
     linkHref: "/security",
   },
@@ -53,7 +53,7 @@ export default function FaqPage() {
       linkLabel:
         item.category === "concepts"
           ? "Read the Bank Reconciliation Guide"
-          : "See How ClearTie Works",
+          : "See How reconcilebankstatement Works",
       linkHref:
         item.category === "concepts"
           ? "/bank-reconciliation-guide"
@@ -62,21 +62,10 @@ export default function FaqPage() {
     ...EXTRA_POLICY_FAQS,
   ];
 
-  const faqSchema = {
-    "@type": "FAQPage",
-    mainEntity: allFaqs.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
-  };
-
   return (
     <TrustPageShell
       path="/faq"
+      pageType="CollectionPage"
       eyebrow="Help & Knowledge Base"
       title="Frequently Asked Questions"
       lead="Practical answers covering supported statement formats, matching controls, accounting definitions, security safeguards, and data retention policies."
@@ -84,7 +73,6 @@ export default function FaqPage() {
         { label: "Home", href: "/" },
         { label: "FAQ" },
       ]}
-      extraSchemas={[faqSchema]}
       relatedLinks={[
         {
           title: "Bank Reconciliation Guide",

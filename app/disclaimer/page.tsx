@@ -15,7 +15,7 @@ export default function DisclaimerPage() {
       path="/disclaimer"
       eyebrow="Legal Disclaimer"
       title="Financial &amp; Accounting Disclaimer"
-      lead="ClearTie is reconciliation software—not a CPA practice, Chartered Accountant firm, tax advisor, legal counsel, or financial fiduciary. Understand the boundaries of automated statement comparison before relying on exported workpapers."
+      lead="reconcilebankstatement is reconciliation software—not a CPA practice, Chartered Accountant firm, tax advisor, legal counsel, or financial fiduciary. Understand the boundaries of automated statement comparison before relying on exported workpapers."
       breadcrumbs={[
         { label: "Home", href: "/" },
         { label: "Financial Disclaimer" },
@@ -29,7 +29,7 @@ export default function DisclaimerPage() {
         {
           title: "Data Accuracy Policy",
           description:
-            "Review how `passed`, `failed`, and `unverifiable` balance checks work.",
+            "Review how passed, failed, and unverifiable balance checks work.",
           href: "/data-accuracy-policy",
         },
         {
@@ -71,9 +71,9 @@ export default function DisclaimerPage() {
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-[#5A5E67]">
           Scanned documents, skewed tables, low-DPI images, non-standard CSV
-          layouts, or wide tolerance windows (`0–31 days`) can lead to omitted
+          layouts, or wide tolerance windows (0–31 days) can lead to omitted
           OCR lines, false-positive matches across identical recurring amounts,
-          or `unverifiable` balance states. See our{" "}
+          or <code>unverifiable</code> balance states. See our{" "}
           <Link
             href="/data-accuracy-policy"
             className="font-semibold text-[#111214] underline"

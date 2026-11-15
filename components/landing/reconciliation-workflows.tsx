@@ -120,12 +120,12 @@ export function ReconciliationWorkflowsSection() {
                   </div>
 
                   <div className="mt-6 border-t border-slate-200/80 pt-4">
-                    <h4 className="font-mono text-[11px] font-semibold uppercase tracking-wider text-[#5A5E67]">
+                    <p className="font-mono text-[11px] font-semibold uppercase tracking-wider text-[#5A5E67]">
                       {item.eyebrow}
-                    </h4>
-                    <h5 className="mt-1.5 text-sm font-semibold text-[#111214]">
+                    </p>
+                    <h4 className="mt-1.5 text-sm font-semibold text-[#111214]">
                       {item.subhead}
-                    </h5>
+                    </h4>
                     <p className="mt-1 text-xs leading-relaxed text-[#5A5E67]">
                       {item.detail}
                     </p>
@@ -177,9 +177,9 @@ export function ReconciliationWorkflowsSection() {
                     </h4>
                   </div>
 
-                  <h5 className="mt-4 text-xs font-medium text-white/70">
+                  <p className="mt-4 text-xs font-medium text-white/75">
                     Timing Items vs. Book Adjustments
-                  </h5>
+                  </p>
                   <div className="mt-1 font-mono text-2xl font-semibold tracking-tight text-[#BDF71D]">
                     $86,600.00
                   </div>
@@ -224,12 +224,12 @@ export function ReconciliationWorkflowsSection() {
               </div>
 
               <div className="mt-6 border-t border-slate-200/80 pt-4">
-                <h4 className="font-mono text-[11px] font-semibold uppercase tracking-wider text-[#5A5E67]">
+                <p className="font-mono text-[11px] font-semibold uppercase tracking-wider text-[#5A5E67]">
                   Currency Normalization
-                </h4>
-                <h5 className="mt-1.5 text-sm font-semibold text-[#111214]">
+                </p>
+                <h4 className="mt-1.5 text-sm font-semibold text-[#111214]">
                   Handles Dr/Cr &amp; Parentheses
-                </h5>
+                </h4>
                 <p className="mt-1 text-xs leading-relaxed text-[#5A5E67]">
                   Preserves decimal precision across European, UK, and US bank
                   export conventions.

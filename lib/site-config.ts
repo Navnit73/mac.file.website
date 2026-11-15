@@ -41,22 +41,18 @@ export const SITE_CONFIG = {
   url: SITE_URL,
   domain: BRAND.domain,
   brandName: BRAND.name,
-  productName: "ClearTie Bank Statement Reconciliation",
+  productName: "reconcilebankstatement Bank Statement Reconciliation",
   tagline: BRAND.tagline,
   copyrightYear: 2026,
   lastReviewedDate: "2026-11-15",
   lastReviewedLabel: "November 15, 2026",
-  /**
-   * EDITABLE COMPANY PLACEHOLDERS:
-   * Replace bracketed values with registered company details before public launch.
-   */
   legalEntityName: "Reconcile Bank Statement",
-  registeredAddress: "Khadda kushinagar uttar pradesh india",
+  registeredAddress: "Khadda, Kushinagar, Uttar Pradesh, India",
   registrationNumber:
-    "[Company Registration / EIN / VAT ID Placeholder — Add Only If Applicable]",
-  governingJurisdiction: "Uttar Pradesh",
+    "Independent pre-commercial software release (formal corporate registration details will be published prior to paid billing)",
+  governingJurisdiction: "Uttar Pradesh, India",
   billingStatusNote:
-    "The web reconciliation utility currently operates free of charge ($0.00). Subscription tiers and commercial billing terms apply only when paid plans are activated.",
+    "The web reconciliation utility currently operates free of charge ($0.00). Subscription tiers and commercial billing terms apply only when paid plans are launched.",
   contacts: {
     supportEmail: "support@reconcilebankstatement.online",
     privacyEmail: "privacy@reconcilebankstatement.online",
@@ -72,10 +68,10 @@ export const AUTHORS: Record<"editorialProduct", AuthorProfile> = {
   editorialProduct: {
     id: "editorial-product-team",
     isNamedIndividual: false,
-    fullName: "ClearTie Editorial & Product Documentation Team",
+    fullName: "reconcilebankstatement Editorial & Product Documentation Team",
     title: "Reconciliation Software Engineering & Accounting Workflows",
     experience:
-      "Authors technical documentation and workflow guides grounded directly in ClearTie's parser, matching engine, and balance-verification logic.",
+      "Authors technical documentation and workflow guides grounded directly in reconcilebankstatement's parser, matching engine, and balance-verification logic.",
     areasOfExpertise: [
       "PDF & Spreadsheet Statement Parsing",
       "Date-Window Transaction Matching",
@@ -83,32 +79,29 @@ export const AUTHORS: Record<"editorialProduct", AuthorProfile> = {
       "US, UK & EU Format Normalization",
     ],
     biography:
-      "Maintains product, security, methodology, and educational resources for reconcilebankstatement.online. Replace this placeholder profile in lib/site-config.ts with a named author's verified biography and photo prior to naming an individual contributor.",
+      "Maintains product, security, methodology, and educational resources for reconcilebankstatement.online based on verified platform behavior and public accounting standards.",
     photoUrl: null,
     profilePath: "/our-team#author-profiles",
-    placeholderNotice:
-      "Editable placeholder profile — replace with named contributor details only when verified.",
   },
 };
 
 export const REVIEWERS: Record<"technicalReview", ReviewerProfile> = {
   technicalReview: {
-    id: "pending-accounting-review",
+    id: "technical-verification-review",
     isNamedIndividual: false,
-    fullName:
-      "[Named Accounting Reviewer Placeholder — Unassigned Pending Review]",
+    fullName: "Product Engineering & QA Documentation Review",
     credentials:
-      "[Verified CPA / ACCA / Chartered Accountant Designation — Do Not Fabricate]",
+      "Technical accuracy review against source code (independent CPA review not claimed)",
     experience:
-      "Product behavior and technical claims have been verified against the application source code. Assign a named accounting professional here once independent accounting review is completed.",
+      "Product behavior and technical claims have been verified directly against the implemented parser, matching, and export workflows. Exported workpapers remain decision-support materials for review with a qualified accountant.",
     areasOfExpertise: [
-      "US GAAP Cash Reconciliation Controls",
+      "US GAAP Cash Reconciliation Concepts",
       "UK & EU Bank Statement Formats",
       "Month-End Close Workpapers",
       "Audit Trail Documentation",
     ],
     placeholderNotice:
-      "Accounting credential slot is intentionally blank until a real reviewer is appointed.",
+      "Published documentation reflects engineering QA verification; it does not substitute for advice from a licensed CPA or chartered accountant.",
   },
 };
 

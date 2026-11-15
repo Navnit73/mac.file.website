@@ -74,12 +74,12 @@ export function SiteFooter() {
                 <h2 className="text-xs font-semibold uppercase tracking-wider text-[#111214]">
                   {group.heading}
                 </h2>
-                <ul className="mt-3.5 space-y-2 text-xs sm:text-[13px]">
+                <ul className="mt-3 space-y-1 text-xs sm:text-[13px]">
                   {group.links.map((item) => (
                     <li key={item.href}>
                       <Link
                         href={item.href}
-                        className="inline-block py-0.5 text-[#5A5E67] transition-colors hover:text-[#111214] hover:underline hover:underline-offset-4"
+                        className="inline-flex min-h-[28px] min-w-[28px] items-center py-1 text-[#5A5E67] transition-colors hover:text-[#111214] hover:underline hover:underline-offset-4"
                       >
                         {item.label}
                       </Link>
@@ -104,28 +104,49 @@ export function SiteFooter() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] font-medium">
-            <Link href="/about-us" className="hover:text-[#111214]">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-medium">
+            <Link
+              href="/about-us"
+              className="inline-flex min-h-[28px] min-w-[28px] items-center py-1 hover:text-[#111214]"
+            >
               About Us
             </Link>
-            <Link href="/contact-us" className="hover:text-[#111214]">
+            <Link
+              href="/contact-us"
+              className="inline-flex min-h-[28px] min-w-[28px] items-center py-1 hover:text-[#111214]"
+            >
               Contact Us
             </Link>
-            <Link href="/privacy" className="hover:text-[#111214]">
+            <Link
+              href="/privacy"
+              className="inline-flex min-h-[28px] min-w-[28px] items-center py-1 hover:text-[#111214]"
+            >
               Privacy
             </Link>
-            <Link href="/terms" className="hover:text-[#111214]">
+            <Link
+              href="/terms"
+              className="inline-flex min-h-[28px] min-w-[28px] items-center py-1 hover:text-[#111214]"
+            >
               Terms
             </Link>
-            <Link href="/security" className="hover:text-[#111214]">
+            <Link
+              href="/security"
+              className="inline-flex min-h-[28px] min-w-[28px] items-center py-1 hover:text-[#111214]"
+            >
               Security
             </Link>
-            <Link href="/refund-policy" className="hover:text-[#111214]">
+            <Link
+              href="/refund-policy"
+              className="inline-flex min-h-[28px] min-w-[28px] items-center py-1 hover:text-[#111214]"
+            >
               Refund Policy
             </Link>
-            <Link href="/sitemap.xml" className="hover:text-[#111214]">
+            <a
+              href="/sitemap.xml"
+              className="inline-flex min-h-[28px] min-w-[28px] items-center py-1 hover:text-[#111214]"
+            >
               Sitemap
-            </Link>
+            </a>
           </div>
         </div>
       </div>

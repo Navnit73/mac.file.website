@@ -8,7 +8,7 @@ export const metadata = createPageMetadata({
   path: "/contact-us",
   title: `Contact Us | ${SITE_CONFIG.brandName} (${SITE_CONFIG.domain})`,
   description:
-    "Contact ClearTie support, security, privacy, accessibility, or business inquiries at reconcilebankstatement.online with clear response expectations.",
+    "Contact reconcilebankstatement support, security, privacy, accessibility, or business inquiries at reconcilebankstatement.online with clear response expectations.",
 });
 
 const CONTACT_CHANNELS = [
@@ -46,8 +46,9 @@ export default function ContactUsPage() {
   return (
     <TrustPageShell
       path="/contact-us"
+      pageType="ContactPage"
       eyebrow="Contact & Support"
-      title="Contact ClearTie Support"
+      title="Contact reconcilebankstatement Support"
       lead="Reach the appropriate team directly by email—without bots, ticket portals, or dead forms. Include your reconciliation_id (for example rec_...) without attaching sensitive raw statements unless requested during troubleshooting."
       breadcrumbs={[
         { label: "Home", href: "/" },
@@ -60,8 +61,8 @@ export default function ContactUsPage() {
         { id: "business-details", label: "Operator Details" },
       ]}
       notice={{
-        title: "Verify Mailboxes Before Production DNS Cutover",
-        body: "Role-based addresses on reconcilebankstatement.online are configured as standard contact routes. Ensure MX forwarding and support ticketing are active on your domain DNS before going live.",
+        title: "Sensitive Financial Document Precaution",
+        body: "When writing for troubleshooting help, please share only your reconciliation_id and error details first. Avoid sending unredacted PDF statements or unlock passwords over email unless needed.",
       }}
       relatedLinks={[
         {
@@ -159,7 +160,7 @@ export default function ContactUsPage() {
         <ul className="mt-4 space-y-2.5 text-sm leading-relaxed text-[#5A5E67]">
           <li>
             <strong className="text-[#111214]">1. Reconciliation ID:</strong>{" "}
-            Share your run identifier (e.g. `rec_...`) if troubleshooting a
+            Share your run identifier (e.g. <code>rec_...</code>) if troubleshooting a
             specific report or timeout.
           </li>
           <li>

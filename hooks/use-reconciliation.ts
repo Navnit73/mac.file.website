@@ -14,6 +14,7 @@ import {
   ReconciliationApiError,
   type ReconciliationAuthMode,
 } from "@/lib/reconciliation/client";
+import { isValidReconciliationId } from "@/lib/reconciliation/validation";
 import type {
   ExportFormat,
   PdfPasswordPrompt,
@@ -49,7 +50,7 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
     mode = "proxy",
     pollIntervalMs = 2500,
     defaultPageSize = 25,
-    sessionStorageKey = "cleartie:last-reconciliation-id",
+    sessionStorageKey = "reconcilebankstatement:last-reconciliation-id",
     skipInitialTransactionsFetch = false,
     onCompleted,
   } = options;
@@ -93,11 +94,19 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
 
   const pollAbortRef = useRef<AbortController | null>(null);
   const txAbortRef = useRef<AbortController | null>(null);
+  const exportAbortRef = useRef<AbortController | null>(null);
+  const mountedRef = useRef<boolean>(true);
+  const runEpochRef = useRef<number>(0);
+  const defaultPageSizeRef = useRef<number>(defaultPageSize);
   const onCompletedRef = useRef(onCompleted);
 
   useEffect(() => {
     onCompletedRef.current = onCompleted;
   }, [onCompleted]);
+
+  useEffect(() => {
+    defaultPageSizeRef.current = defaultPageSize;
+  }, [defaultPageSize]);
 
   const storedSessionId = useSyncExternalStore(
     useCallback(
@@ -125,9 +134,13 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
   const lastSavedId = sessionIdOverride ?? storedSessionId;
 
   useEffect(() => {
+    mountedRef.current = true;
     return () => {
+      mountedRef.current = false;
+      runEpochRef.current += 1;
       pollAbortRef.current?.abort();
       txAbortRef.current?.abort();
+      exportAbortRef.current?.abort();
     };
   }, []);
 
@@ -149,7 +162,8 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
       id: string,
       category: TransactionsCategoryFilter,
       nextPage: number,
-      nextPageSize: number
+      nextPageSize: number,
+      epoch = runEpochRef.current
     ) => {
       txAbortRef.current?.abort();
       const controller = new AbortController();
@@ -168,20 +182,40 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
           },
           { signal: controller.signal }
         );
-        if (controller.signal.aborted) return;
+        if (
+          controller.signal.aborted ||
+          !mountedRef.current ||
+          epoch !== runEpochRef.current ||
+          txAbortRef.current !== controller
+        ) {
+          return;
+        }
         setTransactions(res.transactions ?? []);
         setTransactionsTotal(res.total ?? 0);
         setPage(res.page ?? nextPage);
         setPageSize(res.page_size ?? nextPageSize);
       } catch (err) {
-        if ((err as Error)?.name === "AbortError") return;
+        if (
+          (err as Error)?.name === "AbortError" ||
+          controller.signal.aborted ||
+          !mountedRef.current ||
+          epoch !== runEpochRef.current ||
+          txAbortRef.current !== controller
+        ) {
+          return;
+        }
         const message =
           err instanceof Error
             ? err.message
             : "Unable to load reconciliation transactions.";
         setTransactionsError(message);
       } finally {
-        if (!controller.signal.aborted) {
+        if (
+          !controller.signal.aborted &&
+          mountedRef.current &&
+          epoch === runEpochRef.current &&
+          txAbortRef.current === controller
+        ) {
           setTransactionsLoading(false);
         }
       }
@@ -190,19 +224,45 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
   );
 
   const pollAndHydrate = useCallback(
-    async (id: string, controller: AbortController) => {
+    async (
+      id: string,
+      controller: AbortController,
+      epoch: number,
+      persistOnFirstSnapshot = false
+    ) => {
+      let persisted = !persistOnFirstSnapshot;
       const finalSnapshot = await client.pollReconciliation(id, {
         intervalMs: pollIntervalMs,
         signal: controller.signal,
         onProgress: (snap) => {
+          if (
+            controller.signal.aborted ||
+            !mountedRef.current ||
+            epoch !== runEpochRef.current
+          ) {
+            return;
+          }
+          if (!persisted) {
+            persisted = true;
+            persistId(id);
+          }
           setStatusResponse(snap);
           setProgress(snap.progress ?? 0);
           setStatusMessage(snap.message || "Processing reconciliation...");
         },
       });
 
-      if (controller.signal.aborted) return;
+      if (
+        controller.signal.aborted ||
+        !mountedRef.current ||
+        epoch !== runEpochRef.current
+      ) {
+        return;
+      }
 
+      if (!persisted) {
+        persistId(id);
+      }
       setStatusResponse(finalSnapshot);
       setProgress(100);
       setStatusMessage(
@@ -218,14 +278,16 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
         return;
       }
 
+      const initialPageSize = defaultPageSizeRef.current;
       setActiveCategory("all");
       setPage(1);
-      await fetchTransactionsPage(id, "all", 1, pageSize);
+      setPageSize(initialPageSize);
+      await fetchTransactionsPage(id, "all", 1, initialPageSize, epoch);
     },
     [
       client,
       fetchTransactionsPage,
-      pageSize,
+      persistId,
       pollIntervalMs,
       skipInitialTransactionsFetch,
     ]
@@ -233,13 +295,18 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
 
   const start = useCallback(
     async (params: UploadReconciliationParams) => {
+      const epoch = runEpochRef.current + 1;
+      runEpochRef.current = epoch;
       pollAbortRef.current?.abort();
       txAbortRef.current?.abort();
+      exportAbortRef.current?.abort();
+      exportAbortRef.current = null;
       const controller = new AbortController();
       pollAbortRef.current = controller;
 
       setError(null);
       setExportError(null);
+      setExportingFormat(null);
       setPdfPasswordPrompt(null);
       setStatusResponse(null);
       setTransactions([]);
@@ -255,7 +322,13 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
         const uploadRes = await client.startReconciliation(params, {
           signal: controller.signal,
         });
-        if (controller.signal.aborted) return;
+        if (
+          controller.signal.aborted ||
+          !mountedRef.current ||
+          epoch !== runEpochRef.current
+        ) {
+          return;
+        }
 
         const id = uploadRes.reconciliation_id;
         setReconciliationId(id);
@@ -269,9 +342,16 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
           uploadRes.message || "Documents uploaded. Reconciliation queued."
         );
 
-        await pollAndHydrate(id, controller);
+        await pollAndHydrate(id, controller, epoch, false);
       } catch (err) {
-        if ((err as Error)?.name === "AbortError") return;
+        if (
+          (err as Error)?.name === "AbortError" ||
+          controller.signal.aborted ||
+          !mountedRef.current ||
+          epoch !== runEpochRef.current
+        ) {
+          return;
+        }
         const message =
           err instanceof Error
             ? err.message
@@ -293,28 +373,52 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
       const trimmed = id.trim();
       if (!trimmed) return;
 
+      const epoch = runEpochRef.current + 1;
+      runEpochRef.current = epoch;
       pollAbortRef.current?.abort();
       txAbortRef.current?.abort();
-      const controller = new AbortController();
-      pollAbortRef.current = controller;
+      exportAbortRef.current?.abort();
+      exportAbortRef.current = null;
 
       setError(null);
       setExportError(null);
+      setExportingFormat(null);
       setPdfPasswordPrompt(null);
       setStatusResponse(null);
       setTransactions([]);
       setTransactionsTotal(0);
       setTransactionsError(null);
+
+      if (!isValidReconciliationId(trimmed)) {
+        setReconciliationId(null);
+        setPhase("failed");
+        setProgress(0);
+        setStatusMessage("");
+        setError(
+          "Invalid reconciliation ID format. Expected 3-128 letters, numbers, hyphens, or underscores."
+        );
+        return;
+      }
+
+      const controller = new AbortController();
+      pollAbortRef.current = controller;
+
       setReconciliationId(trimmed);
-      persistId(trimmed);
       setPhase("processing");
       setProgress(10);
       setStatusMessage("Loading saved reconciliation status...");
 
       try {
-        await pollAndHydrate(trimmed, controller);
+        await pollAndHydrate(trimmed, controller, epoch, true);
       } catch (err) {
-        if ((err as Error)?.name === "AbortError") return;
+        if (
+          (err as Error)?.name === "AbortError" ||
+          controller.signal.aborted ||
+          !mountedRef.current ||
+          epoch !== runEpochRef.current
+        ) {
+          return;
+        }
         const message =
           err instanceof Error
             ? err.message
@@ -323,20 +427,27 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
         setPhase("failed");
       }
     },
-    [persistId, pollAndHydrate]
+    [pollAndHydrate]
   );
 
   const cancelPolling = useCallback(() => {
+    runEpochRef.current += 1;
     pollAbortRef.current?.abort();
     txAbortRef.current?.abort();
+    exportAbortRef.current?.abort();
+    exportAbortRef.current = null;
+    setExportingFormat(null);
     setPhase("idle");
     setProgress(0);
     setStatusMessage("");
   }, []);
 
   const reset = useCallback(() => {
+    runEpochRef.current += 1;
     pollAbortRef.current?.abort();
     txAbortRef.current?.abort();
+    exportAbortRef.current?.abort();
+    exportAbortRef.current = null;
     setPhase("idle");
     setReconciliationId(null);
     setStatusResponse(null);
@@ -347,11 +458,20 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
     setAccessExpiresAt(null);
     setTransactions([]);
     setTransactionsTotal(0);
+    setTransactionsLoading(false);
     setTransactionsError(null);
+    setExportingFormat(null);
     setExportError(null);
     setActiveCategory("all");
     setPage(1);
+    setPageSize(defaultPageSizeRef.current);
   }, []);
+
+  const retryTransactions = useCallback(async () => {
+    if (reconciliationId && phase === "completed") {
+      await fetchTransactionsPage(reconciliationId, activeCategory, page, pageSize);
+    }
+  }, [activeCategory, fetchTransactionsPage, page, pageSize, phase, reconciliationId]);
 
   const changeCategory = useCallback(
     async (nextCategory: TransactionsCategoryFilter) => {
@@ -399,17 +519,37 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
 
   const exportReport = useCallback(
     async (format: ExportFormat) => {
-      if (!reconciliationId) return;
+      if (!reconciliationId || exportAbortRef.current) return;
+
+      const epoch = runEpochRef.current;
+      const controller = new AbortController();
+      exportAbortRef.current = controller;
+
       setExportingFormat(format);
       setExportError(null);
       try {
-        await client.downloadReport(reconciliationId, format);
+        await client.downloadReport(reconciliationId, format, {
+          signal: controller.signal,
+        });
       } catch (err) {
+        if (
+          (err as Error)?.name === "AbortError" ||
+          controller.signal.aborted ||
+          !mountedRef.current ||
+          epoch !== runEpochRef.current
+        ) {
+          return;
+        }
         const message =
           err instanceof Error ? err.message : "Unable to export report.";
         setExportError(message);
       } finally {
-        setExportingFormat(null);
+        if (exportAbortRef.current === controller) {
+          exportAbortRef.current = null;
+        }
+        if (mountedRef.current && epoch === runEpochRef.current) {
+          setExportingFormat(null);
+        }
       }
     },
     [client, reconciliationId]
@@ -439,6 +579,7 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
     resume,
     cancelPolling,
     reset,
+    retryTransactions,
     changeCategory,
     changePage,
     changePageSize,

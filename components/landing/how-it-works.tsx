@@ -109,7 +109,7 @@ export function HowItWorksSection() {
               </h3>
               <p className="mt-2.5 text-sm leading-relaxed text-[#5A5E67]">
                 Stop spending hours reconciling bank statements row by row in
-                Excel. ClearTie separates explained timing items and unrecorded
+                Excel. reconcilebankstatement separates explained timing items and unrecorded
                 wire fees from unexplained residual variance automatically.
               </p>
             </div>
@@ -154,9 +154,9 @@ export function HowItWorksSection() {
             <h3 className="mt-4 text-lg font-semibold text-[#111214]">
               1. Amount, Date &amp; Memo Matching
             </h3>
-            <h4 className="mt-1 text-xs font-semibold uppercase tracking-wider text-[#5A5E67]">
+            <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-[#5A5E67]">
               Configurable ±0 to 31 Day Window
-            </h4>
+            </p>
             <p className="mt-2 text-sm leading-relaxed text-[#5A5E67]">
               Pair entries by exact amount and flow direction within your chosen
               tolerance window, boosted by narration similarity and reference ID
@@ -171,9 +171,9 @@ export function HowItWorksSection() {
             <h3 className="mt-4 text-lg font-semibold text-[#111214]">
               2. Bank vs. Ledger Balance Proof
             </h3>
-            <h4 className="mt-1 text-xs font-semibold uppercase tracking-wider text-[#5A5E67]">
+            <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-[#5A5E67]">
               Running-Balance Continuity Check
-            </h4>
+            </p>
             <p className="mt-2 text-sm leading-relaxed text-[#5A5E67]">
               Independently verify opening and closing math on both records,
               catch mid-statement running-balance breaks, and confirm book-to-bank
@@ -188,9 +188,9 @@ export function HowItWorksSection() {
             <h3 className="mt-4 text-lg font-semibold text-[#111214]">
               3. Isolate Duplicates &amp; Mismatches
             </h3>
-            <h4 className="mt-1 text-xs font-semibold uppercase tracking-wider text-[#5A5E67]">
+            <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-[#5A5E67]">
               Dr/Cr Sign &amp; Amount Delta Detection
-            </h4>
+            </p>
             <p className="mt-2 text-sm leading-relaxed text-[#5A5E67]">
               Surface suspected duplicate groups on either file, near-matches
               with digit transpositions, and inverted debit or credit entries in

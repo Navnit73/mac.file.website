@@ -1,10 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server";
 import {
-  buildUpstreamAuthHeaders,
+  buildSafeAttachmentDisposition,
   createJsonErrorResponse,
+  fetchUpstream,
   forwardUpstreamJson,
-  getReconciliationUpstreamBaseUrl,
   isValidReconciliationId,
+  mapUpstreamProxyError,
 } from "@/lib/reconciliation/server";
 
 const ALLOWED_FORMATS = new Set(["xlsx", "csv"]);
@@ -30,14 +31,13 @@ export async function GET(
   }
 
   try {
-    const baseUrl = getReconciliationUpstreamBaseUrl();
-    const upstream = await fetch(
-      `${baseUrl}/${encodeURIComponent(reconciliationId)}/export?format=${format}`,
+    const upstream = await fetchUpstream(
+      `/${encodeURIComponent(reconciliationId)}/export?format=${format}`,
+      request.headers,
       {
         method: "GET",
-        headers: buildUpstreamAuthHeaders(request.headers),
-        redirect: "error",
-        cache: "no-store",
+        signal: request.signal,
+        timeoutMs: 45_000,
       }
     );
 
@@ -45,8 +45,16 @@ export async function GET(
       return await forwardUpstreamJson(upstream);
     }
 
+    if (!upstream.body) {
+      return createJsonErrorResponse(
+        "Reconciliation export stream was empty.",
+        502
+      );
+    }
+
     const headers = new Headers();
     headers.set("Cache-Control", "no-store");
+    headers.set("X-Content-Type-Options", "nosniff");
 
     const contentType =
       upstream.headers.get("content-type") ??
@@ -54,21 +62,22 @@ export async function GET(
         ? "text/csv; charset=utf-8"
         : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     headers.set("Content-Type", contentType);
-
-    const contentDisposition =
-      upstream.headers.get("content-disposition") ??
-      `attachment; filename="${reconciliationId}.${format}"`;
-    headers.set("Content-Disposition", contentDisposition);
+    headers.set(
+      "Content-Disposition",
+      buildSafeAttachmentDisposition(
+        upstream.headers.get("content-disposition"),
+        `${reconciliationId}.${format}`
+      )
+    );
 
     return new NextResponse(upstream.body, {
       status: upstream.status,
       headers,
     });
   } catch (err) {
-    const message =
-      err instanceof Error
-        ? err.message
-        : "Unable to export reconciliation report.";
-    return createJsonErrorResponse(message, 502);
+    return mapUpstreamProxyError(
+      err,
+      "Unable to export reconciliation report."
+    );
   }
 }

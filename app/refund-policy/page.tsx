@@ -26,8 +26,8 @@ export default function RefundPolicyPage() {
         { id: "how-to-request", label: "Billing Support & Cancellation" },
       ]}
       notice={{
-        title: "No Active Payment Gateway Yet",
-        body: `${SITE_CONFIG.billingStatusNote} Replace the placeholder commercial terms below only when a payment processor (e.g. Stripe) and pricing tiers are launched.`,
+        title: "Pre-Commercial Free Access",
+        body: `${SITE_CONFIG.billingStatusNote} No payment gateway is active today; the commercial standards below apply if paid tiers or billing plans are introduced later.`,
       }}
       relatedLinks={[
         {
@@ -94,11 +94,11 @@ export default function RefundPolicyPage() {
           </li>
           <li>
             <strong className="text-[#111214]">
-              [Commercial Refund Window Placeholder]:
+              Commercial Refund Window &amp; Statutory Rights:
             </strong>{" "}
-            Specific day-window eligibility (e.g., 14-day initial plan review
-            window or statutory EU/UK cooling-off rules for digital services)
-            must be confirmed by the operator prior to enabling paid billing.
+            Any paid plan checkout page will state its exact refund review window
+            and applicable statutory EU/UK digital cancellation rights before payment
+            is collected.
           </li>
         </ul>
       </section>

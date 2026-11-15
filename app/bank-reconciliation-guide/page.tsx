@@ -48,7 +48,7 @@ export default function BankReconciliationGuidePage() {
         {
           title: "Reconciliation Methodology",
           description:
-            "See how ClearTie compares uploaded statements and ledgers algorithmically.",
+            "See how reconcilebankstatement compares uploaded statements and ledgers algorithmically.",
           href: "/bank-reconciliation-methodology",
         },
         {
@@ -162,7 +162,7 @@ export default function BankReconciliationGuidePage() {
             </h3>
             <p className="mt-1.5 text-xs leading-relaxed text-[#5A5E67] sm:text-sm">
               Customer receipts, card batches, or checks recorded in your book
-              ledger before cutoff (`30th/31st`) that settle on the bank
+              ledger before cutoff (30th/31st) that settle on the bank
               statement 1–3 banking days later. Add these to the unadjusted
               bank balance.
             </p>
@@ -195,7 +195,7 @@ export default function BankReconciliationGuidePage() {
             <p className="mt-1.5 text-xs leading-relaxed text-[#5A5E67] sm:text-sm">
               Manual double-entry mistakes in spreadsheets, overlapping CSV
               imports, or omitted cash-card charges distort book balances. Check
-              opening balances (`Opening + Net Flow = Closing`) before trusting
+              opening balances (<code>Opening + Net Flow = Closing</code>) before trusting
               individual lines.
             </p>
           </div>
@@ -274,12 +274,15 @@ export default function BankReconciliationGuidePage() {
           5. US, UK &amp; EU Formatting Differences to Watch For
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-[#5A5E67]">
-          When reconciling across US (`MM/DD/YYYY`, comma thousands `1,250.00`),
-          UK (`DD/MM/YYYY`, BACS/Faster Payments references), and Continental EU
-          (`DD.MM.YYYY`, SEPA transfers, period thousands with comma decimals
-          `1.250,00`, `Soll/Haben` or `Débit/Crédit`) formats, date swap errors
-          (`04/07` read as April 7 vs. July 4) and decimal swaps silently break
-          manual spreadsheets. Learn how ClearTie handles normalization in our{" "}
+          When reconciling across US (<code>MM/DD/YYYY</code>, comma thousands{" "}
+          <code>1,250.00</code>), UK (<code>DD/MM/YYYY</code>, BACS/Faster
+          Payments references), and Continental EU (<code>DD.MM.YYYY</code>,
+          SEPA transfers, period thousands with comma decimals{" "}
+          <code>1.250,00</code>, <code>Soll/Haben</code> or{" "}
+          <code>Débit/Crédit</code>) formats, date swap errors (
+          <code>04/07</code> read as April 7 vs. July 4) and decimal swaps
+          silently break manual spreadsheets. Learn how reconcilebankstatement
+          handles normalization in our{" "}
           <Link
             href="/bank-reconciliation-methodology"
             className="font-semibold text-[#111214] underline"

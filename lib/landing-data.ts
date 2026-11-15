@@ -41,7 +41,7 @@ export type UtilityComparisonRow = {
   manualSpreadsheets: string;
   genericPdfTools: string;
   enterpriseSuites: string;
-  cleartie: string;
+  reconcilebankstatement: string;
 };
 
 export type ReconciliationProblem = {
@@ -49,7 +49,7 @@ export type ReconciliationProblem = {
   badge: string;
   title: string;
   whyItHappens: string;
-  howClearTieFixesIt: string;
+  howreconcilebankstatementFixesIt: string;
 };
 
 export type BenefitPillar = {
@@ -63,7 +63,7 @@ export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://reconcilebankstatement.online";
 
 export const BRAND = {
-  name: "ClearTie",
+  name: "reconcilebankstatement",
   domain: "reconcilebankstatement.online",
   tagline: "Bank Statement & Business Ledger Reconciliation Utility",
   stackSummary:
@@ -122,7 +122,7 @@ export const RECONCILIATION_PROBLEMS: ReconciliationProblem[] = [
     title: "Deposits in Transit & Uncleared Checks",
     whyItHappens:
       "Payments recorded in your cash book at month-end often settle at the bank 1 to 3 business days later, creating temporary gaps.",
-    howClearTieFixesIt:
+    howreconcilebankstatementFixesIt:
       "Configure date tolerances up to ±31 days to match delayed settlements, while true period-end cutoffs isolate cleanly in Unmatched Ledger.",
   },
   {
@@ -131,7 +131,7 @@ export const RECONCILIATION_PROBLEMS: ReconciliationProblem[] = [
     title: "Unrecorded Bank Fees, Interest & NSF Reversals",
     whyItHappens:
       "Wire charges, monthly maintenance fees, bounced customer checks, and earned interest appear on bank statements before reaching your ledger.",
-    howClearTieFixesIt:
+    howreconcilebankstatementFixesIt:
       "Every unposted bank line surfaces in Unmatched Bank with exact dates, amounts, and descriptions ready for adjusting journal entries.",
   },
   {
@@ -140,7 +140,7 @@ export const RECONCILIATION_PROBLEMS: ReconciliationProblem[] = [
     title: "Transposed Amounts & Flipped Debit/Credit Signs",
     whyItHappens:
       "Manual keying swaps digits (like $850 vs. $840) or logs a withdrawal as a deposit when switching between bank and book conventions.",
-    howClearTieFixesIt:
+    howreconcilebankstatementFixesIt:
       "Automatic direction convention detection and near-match analysis isolate exact amount deltas and Dr/Cr sign inversions in Amount Mismatches.",
   },
   {
@@ -149,7 +149,7 @@ export const RECONCILIATION_PROBLEMS: ReconciliationProblem[] = [
     title: "Duplicate Imports & Running-Balance Gaps",
     whyItHappens:
       "Overlapping CSV exports or missing OCR rows introduce duplicate transactions and break statement math mid-period.",
-    howClearTieFixesIt:
+    howreconcilebankstatementFixesIt:
       "Possible Duplicates groups suspect repeats on either record, while row-by-row running-balance checks pinpoint the exact row of any break.",
   },
 ];
@@ -209,12 +209,12 @@ export const IMPLEMENTED_CAPABILITIES: ImplementedCapability[] = [
       {
         label: "Configurable Date Tolerance Window",
         detail:
-          "Set `date_tolerance_days` between 0 and 31 days (default ±2 days) so clearing delays never hide valid matches.",
+          "Set the date tolerance window between 0 and 31 days (default ±2 days) so clearing delays never hide valid matches.",
       },
       {
         label: "Reference & Narration Matching",
         detail:
-          "Matches UTR, cheque numbers, voucher IDs, and toggleable description similarity (`description_matching`) with confidence scores and match reasons.",
+          "Matches UTR, cheque numbers, voucher IDs, and toggleable description similarity scoring with confidence labels and match reasons.",
       },
       {
         label: "Direction Convention Detection",
@@ -224,7 +224,7 @@ export const IMPLEMENTED_CAPABILITIES: ImplementedCapability[] = [
       {
         label: "Single-Total Invoice/Receipt Fallback",
         detail:
-          "Even if you upload an invoice or receipt PDF as your business ledger, ClearTie extracts and reconciles its printed total with an explanatory warning.",
+          "Even if you upload an invoice or receipt PDF as your business ledger, reconcilebankstatement extracts and reconciles its printed total with an explanatory warning.",
       },
     ],
   },
@@ -242,7 +242,7 @@ export const IMPLEMENTED_CAPABILITIES: ImplementedCapability[] = [
       {
         label: "Bank-Only & Book-Only Gaps",
         detail:
-          "Separates unrecorded bank fees, interest, or unposted wires (`unmatched_bank`) from deposits in transit or uncleared checks (`unmatched_ledger`).",
+          "Separates unrecorded bank fees, interest, or unposted wires from deposits in transit or uncleared checks in dedicated tabs.",
       },
       {
         label: "Duplicate & Amount Mismatch Alerts",
@@ -275,7 +275,7 @@ export const IMPLEMENTED_CAPABILITIES: ImplementedCapability[] = [
       {
         label: "Formatted XLSX & CSV Export",
         detail:
-          "Download complete reconciliation workbooks in `.xlsx` or `.csv` containing summary KPIs, balance checks, and all categorized rows.",
+          "Download complete reconciliation workbooks in XLSX or CSV format containing summary KPIs, balance checks, and all categorized rows.",
       },
       {
         label: "Paginated Category Explorer",
@@ -285,12 +285,12 @@ export const IMPLEMENTED_CAPABILITIES: ImplementedCapability[] = [
       {
         label: "Session Resume by Reconciliation ID",
         detail:
-          "Reload recent runs automatically or enter any `reconciliation_id` (e.g. `rec_...`) to reopen saved results within the retention window.",
+          "Reload recent runs automatically or enter any reconciliation ID (e.g. rec_...) to reopen saved results within the retention window.",
       },
       {
         label: "Optional HTTPS Webhooks",
         detail:
-          "Attach an HTTPS `webhook_url` and optional HMAC-SHA256 `webhook_secret` when kicking off long scanned-PDF jobs.",
+          "Attach an HTTPS webhook URL and optional HMAC-SHA256 signing secret when kicking off long scanned-PDF jobs.",
       },
     ],
   },
@@ -302,42 +302,42 @@ export const UTILITY_COMPARISON: UtilityComparisonRow[] = [
     manualSpreadsheets: "Manual formula & tab setup",
     genericPdfTools: "Converter limits or paywalls",
     enterpriseSuites: "Weeks of ERP onboarding & sales demos",
-    cleartie: "Instant browser utility — no subscription",
+    reconcilebankstatement: "Instant browser utility — no subscription",
   },
   {
     dimension: "Scanned & Locked PDFs",
     manualSpreadsheets: "Manual re-keying line by line",
     genericPdfTools: "Must unlock PDFs separately first",
     enterpriseSuites: "Requires clean ERP or bank feeds",
-    cleartie: "Built-in PDF OCR + in-memory unlock",
+    reconcilebankstatement: "Built-in PDF OCR + in-memory unlock",
   },
   {
     dimension: "Date Tolerance & Matching",
     manualSpreadsheets: "Fragile exact VLOOKUP formulas",
     genericPdfTools: "No ledger comparison engine",
     enterpriseSuites: "Complex custom rule scripting",
-    cleartie: "±0–31 day window + reference & memo scoring",
+    reconcilebankstatement: "±0–31 day window + reference & memo scoring",
   },
   {
     dimension: "Duplicates & Sign Flips",
     manualSpreadsheets: "Missed without custom pivots",
     genericPdfTools: "Not checked",
     enterpriseSuites: "Batch rules after feed sync",
-    cleartie: "Dedicated duplicates & Dr/Cr flip alerts",
+    reconcilebankstatement: "Dedicated duplicates & Dr/Cr flip alerts",
   },
   {
     dimension: "Balance & Variance Proof",
     manualSpreadsheets: "Manual ending tie-out formulas",
     genericPdfTools: "Raw table dump only",
     enterpriseSuites: "Tied to full close platform",
-    cleartie: "Opening/closing, running balance & proof",
+    reconcilebankstatement: "Opening/closing, running balance & proof",
   },
   {
     dimension: "Export Deliverable",
     manualSpreadsheets: "Ad-hoc copy-paste sheets",
     genericPdfTools: "Unstructured CSV dump",
     enterpriseSuites: "Proprietary close workspace",
-    cleartie: "Clean XLSX workbook & CSV report export",
+    reconcilebankstatement: "Clean XLSX workbook & CSV report export",
   },
 ];
 
@@ -398,7 +398,7 @@ export const HOW_TO_USE_PLAYBOOK: PlaybookPhase[] = [
       {
         heading: "Separate Bank Gaps from Book Gaps",
         detail:
-          "Filter directly to `Unmatched Bank` (wires, fees, interest) and `Unmatched Ledger` (deposits in transit, uncashed checks).",
+          "Filter directly to Unmatched Bank (wires, fees, interest) and Unmatched Ledger (deposits in transit, uncashed checks).",
       },
       {
         heading: "Verify Duplicates & Amount Mismatches",
@@ -429,7 +429,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     id: "how-to-reconcile-step-by-step",
     category: "tool",
-    question: "How do I reconcile bank statement files with ClearTie step by step?",
+    question: "How do I reconcile bank statement files with reconcilebankstatement step by step?",
     answer:
       "Open the Reconciliation Tool page (/reconcile), drop your bank statement (PDF, image, CSV, TSV, TXT, or XLSX/XLSM) into Slot 1 and your business ledger or cash book into Slot 2, adjust the date tolerance window (0–31 days, default ±2 days) and description similarity toggle, and click Run Bank Reconciliation. Once processing completes, review Matched, Unmatched Bank, Unmatched Ledger, Duplicates, and Mismatches, verify the balance checks, and export your XLSX or CSV report. You can also click Load Sample CSV Pair to test the workflow instantly.",
   },
@@ -445,14 +445,14 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "tool",
     question: "What document and spreadsheet formats are supported?",
     answer:
-      "Both uploads support digital or scanned PDFs (.pdf), images (.jpg, .jpeg, .png, .webp, .tiff, .tif), and spreadsheets (.csv, .tsv, .txt, .xlsx, .xlsm). ClearTie detects true format from file bytes rather than extensions, so UTF-16 Unicode bank exports and HTML/XML spreadsheets parse cleanly. Legacy .xls files are not supported—resave them as .xlsx, .csv, or PDF first.",
+      "Both uploads support digital or scanned PDFs (.pdf), images (.jpg, .jpeg, .png, .webp, .tiff, .tif), and spreadsheets (.csv, .tsv, .txt, .xlsx, .xlsm). reconcilebankstatement detects true format from file bytes rather than extensions, so UTF-16 Unicode bank exports and HTML/XML spreadsheets parse cleanly. Legacy .xls files are not supported—resave them as .xlsx, .csv, or PDF first.",
   },
   {
     id: "password-pdfs",
     category: "tool",
-    question: "How does ClearTie handle password-protected PDF statements?",
+    question: "How does reconcilebankstatement handle password-protected PDF statements?",
     answer:
-      "Enter an optional PDF password per document before submitting—or enter it when prompted if an encrypted PDF is detected. Your PDF is decrypted strictly in memory on the server, and ClearTie never stores or logs passwords.",
+      "Enter an optional PDF password per document before submitting—or enter it when prompted if an encrypted PDF is detected. Your PDF is decrypted strictly in memory on the server, and reconcilebankstatement never stores or logs passwords.",
   },
   {
     id: "limits",
@@ -471,9 +471,9 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     id: "difference-from-enterprise-software",
     category: "concepts",
-    question: "How does ClearTie differ from subscription financial reconciliation software?",
+    question: "How does reconcilebankstatement differ from subscription financial reconciliation software?",
     answer:
-      "Traditional reconciliation platforms and accounting suites require connecting live bank credentials, paying monthly per-seat subscriptions, or configuring full ERP integrations. ClearTie works directly from exported statements and ledgers with built-in PDF OCR, configurable tolerances, balance verification, and XLSX/CSV exports—no account or subscription required.",
+      "Traditional reconciliation platforms and accounting suites require connecting live bank credentials, paying monthly per-seat subscriptions, or configuring full ERP integrations. reconcilebankstatement works directly from exported statements and ledgers with built-in PDF OCR, configurable tolerances, balance verification, and XLSX/CSV exports—no account or subscription required.",
   },
   {
     id: "what-report-includes",

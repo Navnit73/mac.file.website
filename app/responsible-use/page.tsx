@@ -79,8 +79,9 @@ export default function ResponsibleUsePage() {
             files.
           </li>
           <li>
-            Close shared workstation tabs after exporting your `.xlsx`/`.csv`
-            workpapers so `sessionStorage` identifiers clear automatically.
+            Close shared workstation tabs after exporting your{" "}
+            <code>.xlsx</code>/<code>.csv</code> workpapers so{" "}
+            <code>sessionStorage</code> identifiers clear automatically.
           </li>
           <li>
             When attaching optional completion webhooks, inspect HMAC-SHA256
@@ -98,7 +99,7 @@ export default function ResponsibleUsePage() {
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-[#5A5E67]">
           Do not upload files containing malicious payloads, attempt unauthorized
-          access to another user&apos;s `reconciliation_id`, or submit regulated
+          access to another user&apos;s <code>reconciliation_id</code>, or submit regulated
           payment card CVVs or restricted personal identity documents unrelated
           to bank statement reconciliation. See also our{" "}
           <Link href="/terms" className="font-semibold text-[#111214] underline">

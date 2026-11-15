@@ -30,9 +30,9 @@ export function AuthorProfileCard({ author }: { author: AuthorProfile }) {
               Author Profile
             </span>
             {!author.isNamedIndividual && (
-              <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[10px] font-medium text-amber-900">
+              <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-[10px] font-medium text-[#5A5E67]">
                 <Info className="h-3 w-3" />
-                Editable Placeholder
+                Editorial Team
               </span>
             )}
           </div>
@@ -96,9 +96,9 @@ export function ReviewerProfileCard({
               Reviewer Profile
             </span>
             {!reviewer.isNamedIndividual && (
-              <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[10px] font-medium text-amber-900">
+              <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-[10px] font-medium text-[#5A5E67]">
                 <Info className="h-3 w-3" />
-                Credentials Placeholder
+                Verification Scope
               </span>
             )}
           </div>

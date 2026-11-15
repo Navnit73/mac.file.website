@@ -1,25 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import { Check, Copy } from "lucide-react";
+import { useCopiedFeedback } from "@/hooks/use-copied-feedback";
 
 export function CopyEmailButton({ email }: { email: string }) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(email);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {
-      // Ignore clipboard permission denials
-    }
-  };
+  const { copied, copyText } = useCopiedFeedback();
 
   return (
     <button
       type="button"
-      onClick={handleCopy}
+      aria-live="polite"
+      onClick={() => void copyText(email)}
       className="inline-flex min-h-[34px] items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-[#111214] transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111214]"
     >
       {copied ? (

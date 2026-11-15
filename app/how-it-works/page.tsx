@@ -1,31 +1,20 @@
 import Link from "next/link";
 import { HOW_TO_USE_STEPS } from "@/lib/landing-data";
 import { createPageMetadata, SITE_CONFIG } from "@/lib/site-config";
+import { buildSoftwareApplicationSchema } from "@/components/trust/structured-data";
 import { TrustPageShell } from "@/components/trust/trust-page-shell";
 
 export const metadata = createPageMetadata({
   path: "/how-it-works",
-  title: `How ClearTie Works | Bank & Ledger Reconciliation Workflow`,
+  title: "How reconcilebankstatement Works | Bank & Ledger Reconciliation Workflow",
   description:
     "Step-by-step walkthrough of how reconcilebankstatement.online ingests PDF OCR, image, CSV, and XLSX files, matches entries, verifies balances, and exports reports.",
 });
 
 export default function HowItWorksPage() {
-  const softwareSchema = {
-    "@type": ["WebApplication", "SoftwareApplication"],
-    name: SITE_CONFIG.productName,
-    applicationCategory: "FinanceApplication",
-    applicationSubCategory: "Bank Statement & Ledger Reconciliation Software",
-    operatingSystem: "Web",
-    url: `${SITE_CONFIG.url}/how-it-works`,
+  const softwareSchema = buildSoftwareApplicationSchema({
     description:
       "Browser-based bank statement and business ledger comparison utility supporting PDF OCR (up to 200 pages), images, CSV, TSV, TXT, and XLSX/XLSM exports up to 100 MB.",
-    isAccessibleForFree: true,
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
-    },
     featureList: [
       "Direct upload of PDF, JPG, JPEG, PNG, WEBP, TIFF, CSV, TSV, TXT, XLSX, and XLSM files (up to 100 MB, 200 PDF pages)",
       "Transient PDF unlock password input for encrypted bank statements",
@@ -34,13 +23,13 @@ export default function HowItWorksPage() {
       "Opening, closing, running-balance, and book-to-bank bridge checks",
       "Formatted XLSX workbook and CSV export",
     ],
-  };
+  });
 
   return (
     <TrustPageShell
       path="/how-it-works"
       eyebrow="Product Workflow"
-      title="How ClearTie Reconciles Statements &amp; Ledgers"
+      title="How reconcilebankstatement Reconciles Statements &amp; Ledgers"
       lead="From raw bank PDFs or spreadsheet exports to categorized tie-out exceptions and audit-ready XLSX workpapers—see every technical stage in the reconciliation pipeline."
       breadcrumbs={[
         { label: "Home", href: "/" },
@@ -52,6 +41,7 @@ export default function HowItWorksPage() {
         { id: "output-categories", label: "Report Output Categories" },
         { id: "preview-and-export", label: "Preview Page & Exports" },
       ]}
+      mainEntityId={`${SITE_CONFIG.url}/#software`}
       extraSchemas={[softwareSchema]}
       relatedLinks={[
         {
@@ -111,11 +101,14 @@ export default function HowItWorksPage() {
               Document &amp; Spreadsheet Extensions
             </h3>
             <p className="mt-1.5 text-xs leading-relaxed text-[#5A5E67] sm:text-sm">
-              Digital or scanned `.pdf`, images (`.jpg`, `.jpeg`, `.png`,
-              `.webp`, `.tiff`, `.tif`), text tables (`.csv`, `.tsv`, `.txt`,
-              including UTF-16 Unicode and HTML/XML bank exports), and Excel
-              workbooks (`.xlsx`, `.xlsm`). Legacy binary `.xls` files should be
-              resaved as `.xlsx` or `.csv`.
+              Digital or scanned <code>.pdf</code>, images (<code>.jpg</code>,{" "}
+              <code>.jpeg</code>, <code>.png</code>, <code>.webp</code>,{" "}
+              <code>.tiff</code>, <code>.tif</code>), text tables (
+              <code>.csv</code>, <code>.tsv</code>, <code>.txt</code>, including
+              UTF-16 Unicode and HTML/XML bank exports), and Excel workbooks (
+              <code>.xlsx</code>, <code>.xlsm</code>). Legacy binary{" "}
+              <code>.xls</code> files should be resaved as <code>.xlsx</code>{" "}
+              or <code>.csv</code>.
             </p>
           </div>
           <div className="rounded-2xl border border-slate-200/80 bg-[#F8FAFC] p-5">
@@ -143,8 +136,8 @@ export default function HowItWorksPage() {
           <li>
             <strong className="text-[#111214]">Matched:</strong> Paired
             statement and ledger rows agreeing on amount and direction within
-            your selected tolerance window (`±0–31 days`), labeled by confidence
-            (`high`, `medium`, `low`).
+            your selected tolerance window (±0–31 days), labeled by confidence
+            (<code>high</code>, <code>medium</code>, <code>low</code>).
           </li>
           <li>
             <strong className="text-[#111214]">Unmatched Bank:</strong> Lines
@@ -165,8 +158,9 @@ export default function HowItWorksPage() {
           </li>
           <li>
             <strong className="text-[#111214]">Amount Mismatches:</strong>{" "}
-            Same-event pairs showing a minor amount gap (`amount_mismatch`), a
-            debit/credit sign inversion (`direction_mismatch`), or both.
+            Same-event pairs showing a minor amount gap (
+            <code>amount_mismatch</code>), a debit/credit sign inversion (
+            <code>direction_mismatch</code>), or both.
           </li>
         </ul>
       </section>
@@ -180,9 +174,10 @@ export default function HowItWorksPage() {
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-[#5A5E67]">
           Once processing completes, the browser navigates automatically to a
-          dedicated preview route (`/reconcile-preview/&lt;id&gt;`) displaying
-          status badges (`passed`, `failed`, or `unverifiable`), searchable
-          category tabs, and one-click `.xlsx` and `.csv` report downloads. For
+          dedicated preview route (<code>/reconcile-preview/&lt;id&gt;</code>)
+          displaying status badges (<code>passed</code>, <code>failed</code>,
+          or <code>unverifiable</code>), searchable category tabs, and one-click{" "}
+          <code>.xlsx</code> and <code>.csv</code> report downloads. For
           matching internals, read our{" "}
           <Link
             href="/bank-reconciliation-methodology"

@@ -6,7 +6,7 @@ export const metadata = createPageMetadata({
   path: "/accessibility",
   title: `Accessibility Statement | ${SITE_CONFIG.brandName} (${SITE_CONFIG.domain})`,
   description:
-    "ClearTie's accessibility commitment for reconcilebankstatement.online: keyboard support, contrast, semantic landmarks, ARIA controls, and accessibility contact.",
+    "reconcilebankstatement's accessibility commitment for reconcilebankstatement.online: keyboard support, contrast, semantic landmarks, ARIA controls, and accessibility contact.",
 });
 
 export default function AccessibilityPage() {
@@ -56,29 +56,31 @@ export default function AccessibilityPage() {
         <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-[#5A5E67]">
           <li>
             <strong className="text-[#111214]">Semantic Landmarks:</strong>{" "}
-            Single-level progressive heading hierarchies (`h1` to `h5` without
-            skipped levels), labeled navigation regions, and explicit{" "}
-            <code>&lt;label&gt;</code> bindings across inputs, sliders, and file
-            dropzones.
+            Single-level progressive heading hierarchies (<code>h1</code> through{" "}
+            <code>h4</code> without skipped levels), labeled navigation regions,
+            and explicit <code>&lt;label&gt;</code> bindings across inputs,
+            sliders, and file dropzones.
           </li>
           <li>
             <strong className="text-[#111214]">
               Keyboard &amp; Focus Visibility:
             </strong>{" "}
-            Interactive buttons, switches (`role=&quot;switch&quot;` +
-            `aria-checked`), FAQ accordions (`aria-expanded` / `aria-controls`),
-            and file browse triggers expose visible focus rings.
+            Interactive buttons, switches (<code>role=&quot;switch&quot;</code> +{" "}
+            <code>aria-checked</code>), FAQ accordions (
+            <code>aria-expanded</code> / <code>aria-controls</code>), and file
+            browse triggers expose visible focus rings.
           </li>
           <li>
             <strong className="text-[#111214]">Readable Contrast:</strong>{" "}
-            Dark charcoal (`#111214`) typography on white and light neutral
-            surfaces (`#F8FAFC`) without text traps or motion-heavy animation
-            barriers.
+            Dark charcoal (<code>#111214</code>) typography on white and light
+            neutral surfaces (<code>#F8FAFC</code>) without text traps or
+            motion-heavy animation barriers.
           </li>
           <li>
             <strong className="text-[#111214]">Live Error Announcements:</strong>{" "}
-            Form and upload validation alerts use `role=&quot;alert&quot;` so
-            screen readers announce missing files or password issues promptly.
+            Form and upload validation alerts use{" "}
+            <code>role=&quot;alert&quot;</code> so screen readers announce
+            missing files or password issues promptly.
           </li>
         </ul>
       </section>
@@ -91,10 +93,11 @@ export default function AccessibilityPage() {
           2. Ongoing Improvement Scope
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-[#5A5E67]">
-          We aim toward WCAG 2.1 Level AA usability across all public pages and
-          workbenches. Because downloadable `.xlsx` spreadsheets and third-party
-          scanned bank PDFs originate outside the browser, complex external PDFs
-          may present visual layout limitations unrelated to the web interface.
+          We aim toward WCAG 2.2 Level AA usability across all public pages and
+          workbenches. Because downloadable <code>.xlsx</code> spreadsheets and
+          third-party scanned bank PDFs originate outside the browser, complex
+          external PDFs may present visual layout limitations unrelated to the
+          web interface.
         </p>
       </section>
 

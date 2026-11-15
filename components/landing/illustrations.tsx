@@ -4,7 +4,7 @@ export function HeroReconciliationIllustration() {
       viewBox="0 16 600 388"
       className="h-auto w-full overflow-visible select-none"
       role="img"
-      aria-label="Diagram illustrating bank statement and business ledger files flowing into ClearTie matching engine to produce a verified $0.00 variance report"
+      aria-label="Diagram illustrating bank statement and business ledger files flowing into reconcilebankstatement matching engine to produce a verified $0.00 variance report"
     >
       <defs>
         <linearGradient id="heroLimeGrad" x1="0" y1="0" x2="1" y2="1">
@@ -622,7 +622,7 @@ export function ExceptionIsolationIllustration() {
           stroke="#CBD5E1"
           strokeDasharray="4 4"
         />
-        <text x="418" y="134" textAnchor="middle" fill="#94A3B8" fontSize="10" fontWeight="500">
+        <text x="418" y="134" textAnchor="middle" fill="#5A5E67" fontSize="10" fontWeight="500">
           Missing in Ledger — Post Entry
         </text>
 

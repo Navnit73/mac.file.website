@@ -1,10 +1,10 @@
 import type { NextRequest } from "next/server";
 import {
-  buildUpstreamAuthHeaders,
   createJsonErrorResponse,
+  fetchUpstream,
   forwardUpstreamJson,
-  getReconciliationUpstreamBaseUrl,
   isValidReconciliationId,
+  mapUpstreamProxyError,
 } from "@/lib/reconciliation/server";
 
 export async function GET(
@@ -17,22 +17,17 @@ export async function GET(
   }
 
   try {
-    const baseUrl = getReconciliationUpstreamBaseUrl();
-    const upstream = await fetch(
-      `${baseUrl}/${encodeURIComponent(reconciliationId)}`,
+    const upstream = await fetchUpstream(
+      `/${encodeURIComponent(reconciliationId)}`,
+      request.headers,
       {
         method: "GET",
-        headers: buildUpstreamAuthHeaders(request.headers),
-        redirect: "error",
-        cache: "no-store",
+        signal: request.signal,
+        timeoutMs: 15_000,
       }
     );
     return await forwardUpstreamJson(upstream);
   } catch (err) {
-    const message =
-      err instanceof Error
-        ? err.message
-        : "Unable to reach reconciliation API.";
-    return createJsonErrorResponse(message, 502);
+    return mapUpstreamProxyError(err, "Unable to reach reconciliation API.");
   }
 }

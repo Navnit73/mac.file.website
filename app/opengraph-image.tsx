@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const alt =
-  "ClearTie — Bank Statement and Business Ledger Reconciliation Utility";
+  "reconcilebankstatement — Bank Statement and Business Ledger Reconciliation Utility";
 export const size = {
   width: 1200,
   height: 630,
@@ -65,7 +65,7 @@ export default function OpenGraphImage() {
                 letterSpacing: "0.08em",
               }}
             >
-              CLEARTIE
+              reconcilebankstatement
             </span>
           </div>
 

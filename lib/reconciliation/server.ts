@@ -1,24 +1,31 @@
 import "server-only";
 
 import { NextResponse } from "next/server";
+import {
+  isValidReconciliationId,
+  sanitizeDownloadFilename,
+} from "./validation";
 
-const RECONCILIATION_ID_PATTERN = /^[a-zA-Z0-9_-]{3,128}$/;
+export { isValidReconciliationId };
 
 export function getReconciliationUpstreamBaseUrl(): string {
   const rawBase = process.env.OCR_API_BASE_URL?.trim();
   if (!rawBase) {
-    throw new Error(
-      "OCR_API_BASE_URL is not configured on the server environment."
-    );
+    throw new Error("UPSTREAM_NOT_CONFIGURED");
+  }
+  let parsed: URL;
+  try {
+    parsed = new URL(rawBase);
+  } catch {
+    throw new Error("UPSTREAM_INVALID_URL");
+  }
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    throw new Error("UPSTREAM_INVALID_PROTOCOL");
   }
   const normalized = rawBase.replace(/\/+$/, "");
   return normalized.endsWith("/reconciliation")
     ? normalized
     : `${normalized}/reconciliation`;
-}
-
-export function isValidReconciliationId(id: string): boolean {
-  return RECONCILIATION_ID_PATTERN.test(id);
 }
 
 export function buildUpstreamAuthHeaders(incomingHeaders: Headers): HeadersInit {
@@ -46,6 +53,7 @@ export function createJsonErrorResponse(
 ): NextResponse {
   const headers = new Headers(extraHeaders);
   headers.set("Cache-Control", "no-store");
+  headers.set("X-Content-Type-Options", "nosniff");
   return NextResponse.json(
     {
       status: "error",
@@ -56,11 +64,80 @@ export function createJsonErrorResponse(
   );
 }
 
+export async function fetchUpstream(
+  pathSuffix: string,
+  incomingHeaders: Headers,
+  options: {
+    method: "GET" | "POST";
+    body?: BodyInit;
+    signal?: AbortSignal;
+    timeoutMs?: number;
+  }
+): Promise<Response> {
+  const baseUrl = getReconciliationUpstreamBaseUrl();
+  const timeoutSignal = AbortSignal.timeout(options.timeoutMs ?? 20_000);
+  const combinedSignal = options.signal
+    ? AbortSignal.any([options.signal, timeoutSignal])
+    : timeoutSignal;
+
+  return fetch(`${baseUrl}${pathSuffix}`, {
+    method: options.method,
+    headers: buildUpstreamAuthHeaders(incomingHeaders),
+    body: options.body,
+    redirect: "error",
+    cache: "no-store",
+    signal: combinedSignal,
+  });
+}
+
+export function mapUpstreamProxyError(
+  err: unknown,
+  fallbackMessage = "Unable to reach reconciliation service."
+): NextResponse {
+  if (err instanceof DOMException && err.name === "TimeoutError") {
+    return createJsonErrorResponse(
+      "Reconciliation service request timed out. Please try again.",
+      504
+    );
+  }
+  if (err instanceof Error) {
+    if (
+      err.message === "UPSTREAM_NOT_CONFIGURED" ||
+      err.message === "UPSTREAM_INVALID_URL" ||
+      err.message === "UPSTREAM_INVALID_PROTOCOL"
+    ) {
+      return createJsonErrorResponse(
+        "Reconciliation service is temporarily unavailable.",
+        503
+      );
+    }
+    if (err.name === "AbortError") {
+      return createJsonErrorResponse("Request was cancelled.", 499);
+    }
+  }
+  return createJsonErrorResponse(fallbackMessage, 502);
+}
+
+export function buildSafeAttachmentDisposition(
+  rawHeader: string | null,
+  fallbackFilename: string
+): string {
+  const quoted = rawHeader ? /filename="([^"]+)"/i.exec(rawHeader)?.[1] : null;
+  const plain =
+    !quoted && rawHeader ? /filename=([^;]+)/i.exec(rawHeader)?.[1] : null;
+  const safeName = sanitizeDownloadFilename(
+    quoted ?? plain ?? null,
+    fallbackFilename
+  );
+  return `attachment; filename="${safeName}"`;
+}
+
 export async function forwardUpstreamJson(
   upstream: Response
 ): Promise<NextResponse> {
   const headers = new Headers();
   headers.set("Cache-Control", "no-store");
+  headers.set("X-Content-Type-Options", "nosniff");
 
   const retryAfter = upstream.headers.get("retry-after");
   if (retryAfter) {
@@ -81,10 +158,13 @@ export async function forwardUpstreamJson(
     }
   }
 
-  const text = await upstream.text();
-  return createJsonErrorResponse(
-    text || `Upstream error (${upstream.status})`,
-    upstream.status,
-    headers
-  );
+  const rawText = await upstream.text();
+  const trimmed = rawText.trim();
+  const isHtmlOrOversized =
+    trimmed.length > 500 || /<(?:!doctype|html|head|body)\b/i.test(trimmed);
+  const safeMessage = isHtmlOrOversized
+    ? `Reconciliation service returned an unexpected response (${upstream.status}).`
+    : trimmed || `Upstream error (${upstream.status}).`;
+
+  return createJsonErrorResponse(safeMessage, upstream.status, headers);
 }

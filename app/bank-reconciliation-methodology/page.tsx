@@ -12,7 +12,7 @@ export const metadata = createPageMetadata({
   path: "/bank-reconciliation-methodology",
   title: `Bank Reconciliation Methodology & Matching Logic | ${SITE_CONFIG.brandName}`,
   description:
-    "Technical explanation of ClearTie's reconciliation methodology: date tolerance windows (0–31 days), direction convention inference, similarity scoring, duplicate flags, and balance equations.",
+    "Technical explanation of reconcilebankstatement's reconciliation methodology: date tolerance windows (0–31 days), direction convention inference, similarity scoring, duplicate flags, and balance equations.",
   type: "article",
 });
 
@@ -22,7 +22,7 @@ export default function BankReconciliationMethodologyPage() {
       path="/bank-reconciliation-methodology"
       eyebrow="Matching & Verification Logic"
       title="Bank Reconciliation Methodology"
-      lead="Every discrepancy surfaced by ClearTie comes from explicit matching rules and arithmetic balance equations. This page documents how transactions are normalized, paired, and classified across reports."
+      lead="Every discrepancy surfaced by reconcilebankstatement comes from explicit matching rules and arithmetic balance equations. This page documents how transactions are normalized, paired, and classified across reports."
       breadcrumbs={[
         { label: "Home", href: "/" },
         { label: "Reconciliation Methodology" },
@@ -74,9 +74,11 @@ export default function BankReconciliationMethodologyPage() {
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-[#5A5E67] sm:text-base">
           Before comparing lines, both documents are parsed into structured
-          transactions containing `date`, `description`, `reference`, `debit`,
-          `credit`, absolute `amount`, `flow` (`&quot;in&quot;` or `&quot;out&quot;`),
-          and optional running `balance`.
+          transactions containing <code>date</code>, <code>description</code>,{" "}
+          <code>reference</code>, <code>debit</code>, <code>credit</code>,
+          absolute <code>amount</code>, <code>flow</code> (
+          <code>&quot;in&quot;</code> or <code>&quot;out&quot;</code>), and
+          optional running <code>balance</code>.
         </p>
         <p className="mt-3 text-sm leading-relaxed text-[#5A5E67] sm:text-base">
           Because business ledgers sometimes export cash flows using bank
@@ -86,8 +88,8 @@ export default function BankReconciliationMethodologyPage() {
           <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-[#111214]">
             ledger_direction_convention
           </code>{" "}
-          (`bank` or `book`) so reversals can be diagnosed accurately instead of
-          producing false failures.
+          (<code>bank</code> or <code>book</code>) so reversals can be diagnosed
+          accurately instead of producing false failures.
         </p>
       </section>
 
@@ -101,12 +103,13 @@ export default function BankReconciliationMethodologyPage() {
         <ul className="mt-4 space-y-3 text-sm leading-relaxed text-[#5A5E67]">
           <li>
             <strong className="text-[#111214]">Exact Amount &amp; Flow:</strong>{" "}
-            Primary match candidates share identical currency magnitude (`amount`)
-            and matching cash direction (`in` vs. `out`).
+            Primary match candidates share identical currency magnitude (
+            <code>amount</code>) and matching cash direction (<code>in</code>{" "}
+            vs. <code>out</code>).
           </li>
           <li>
             <strong className="text-[#111214]">
-              Configurable Date Window (`date_tolerance_days`):
+              Configurable Date Window (<code>date_tolerance_days</code>):
             </strong>{" "}
             Defaults to <strong className="text-[#111214]">±2 days</strong> and
             is adjustable from <strong className="text-[#111214]">0 days</strong>{" "}
@@ -116,7 +119,7 @@ export default function BankReconciliationMethodologyPage() {
           </li>
           <li>
             <strong className="text-[#111214]">
-              Description Similarity Scoring (`description_matching`):
+              Description Similarity Scoring (<code>description_matching</code>):
             </strong>{" "}
             When enabled, payee names, check/reference tokens, and memo strings
             break ties when multiple transactions share the same dollar/euro
@@ -124,7 +127,8 @@ export default function BankReconciliationMethodologyPage() {
             <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-[#111214]">
               match_basis
             </code>{" "}
-            and confidence (`high`, `medium`, `low`).
+            and confidence (<code>high</code>, <code>medium</code>,{" "}
+            <code>low</code>).
           </li>
         </ul>
       </section>
@@ -143,8 +147,8 @@ export default function BankReconciliationMethodologyPage() {
             </h3>
             <p className="mt-1.5 text-xs leading-relaxed text-[#5A5E67] sm:text-sm">
               Every un-paired transaction stays separated by source with an
-              explanatory `reason` so bank-only charges (wire fees, interest,
-              NSF) are never mixed with book-only timing items.
+              explanatory <code>reason</code> so bank-only charges (wire fees,
+              interest, NSF) are never mixed with book-only timing items.
             </p>
           </div>
           <div className="rounded-2xl border border-slate-200/80 bg-[#F8FAFC] p-5">
@@ -153,8 +157,9 @@ export default function BankReconciliationMethodologyPage() {
             </h3>
             <p className="mt-1.5 text-xs leading-relaxed text-[#5A5E67] sm:text-sm">
               Surfaces near-matches classified explicitly as{" "}
-              `amount_mismatch`, `direction_mismatch` (a debit posted as credit
-              or refund entered backward), or `amount_and_direction_mismatch`.
+              <code>amount_mismatch</code>, <code>direction_mismatch</code> (a
+              debit posted as credit or refund entered backward), or{" "}
+              <code>amount_and_direction_mismatch</code>.
             </p>
           </div>
           <div className="rounded-2xl border border-slate-200/80 bg-[#F8FAFC] p-5">
@@ -162,8 +167,9 @@ export default function BankReconciliationMethodologyPage() {
               Possible Duplicate Clusters
             </h3>
             <p className="mt-1.5 text-xs leading-relaxed text-[#5A5E67] sm:text-sm">
-              Groups repeated transactions on the same source side (`bank` or
-              `ledger`) showing `count`, `transaction_ids`, and underlying
+              Groups repeated transactions on the same source side (
+              <code>bank</code> or <code>ledger</code>) showing{" "}
+              <code>count</code>, <code>transaction_ids</code>, and underlying
               lines so legitimate split payments are easily distinguished from
               duplicate imports.
             </p>
@@ -174,8 +180,8 @@ export default function BankReconciliationMethodologyPage() {
             </h3>
             <p className="mt-1.5 text-xs leading-relaxed text-[#5A5E67] sm:text-sm">
               Any OCR or delimiter cleanup adjustment is logged under{" "}
-              `amount_corrections` showing the raw extracted string alongside
-              the normalized figure.
+              <code>amount_corrections</code> showing the raw extracted string
+              alongside the normalized figure.
             </p>
           </div>
         </div>
@@ -190,31 +196,34 @@ export default function BankReconciliationMethodologyPage() {
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-[#5A5E67]">
           Whenever opening, closing, or running balances appear in either
-          document, ClearTie evaluates three arithmetic proofs (`passed`,
-          `failed`, or `unverifiable` when balance headers/columns are absent):
+          document, reconcilebankstatement evaluates three arithmetic proofs (
+          <code>passed</code>, <code>failed</code>, or{" "}
+          <code>unverifiable</code> when balance headers/columns are absent):
         </p>
         <ul className="mt-3 space-y-2 text-sm leading-relaxed text-[#5A5E67]">
           <li>
             <strong className="text-[#111214]">Period Equation:</strong>{" "}
-            `Opening Balance + Net Extracted Cash Flow = Closing Balance`
+            <code>
+              Opening Balance + Net Extracted Cash Flow = Closing Balance
+            </code>
           </li>
           <li>
             <strong className="text-[#111214]">Line-by-Line Running Balance:</strong>{" "}
-            Checks sequential stated balances (`breaks_count` and exact line
+            Checks sequential stated balances (<code>breaks_count</code> and exact line
             indices when an OCR row drop causes a discontinuity).
           </li>
           <li>
             <strong className="text-[#111214]">Book-to-Bank Bridge:</strong>{" "}
             Tests whether closing balance differences equal explained
-            unmatched/mismatch timing items, flagging any residual
-            `unexplained_difference`. Review our{" "}
+            unmatched/mismatch timing items, flagging any residual{" "}
+            <code>unexplained_difference</code>. Review our{" "}
             <Link
               href="/data-accuracy-policy"
               className="font-semibold text-[#111214] underline"
             >
               Data Accuracy Policy
             </Link>{" "}
-            for guidance when `unverifiable` appears.
+            for guidance when <code>unverifiable</code> appears.
           </li>
         </ul>
       </section>

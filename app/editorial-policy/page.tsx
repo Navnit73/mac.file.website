@@ -50,7 +50,7 @@ export default function EditorialPolicyPage() {
         {
           title: "Our Team & Author Profiles",
           description:
-            "Inspect contributor roles, placeholder profile notices, and review slots.",
+            "Inspect contributor roles, review attribution, and editorial ownership.",
           href: "/our-team#author-profiles",
         },
         {
@@ -118,10 +118,9 @@ export default function EditorialPolicyPage() {
               <strong className="text-[#111214]">
                 Application Code &amp; Schema Verification:
               </strong>{" "}
-              Every file size cap (`100 MB`), PDF page cap (`200 pages`),
-              date tolerance range (`0–31 days`), transaction category, and
-              storage key documented on our site matches actual implementation
-              parameters.
+              Every file size cap (100 MB), PDF page cap (200 pages), date
+              tolerance range (0–31 days), transaction category, and storage key
+              documented on our site matches actual implementation parameters.
             </li>
             <li>
               <strong className="text-[#111214]">
@@ -176,10 +175,10 @@ export default function EditorialPolicyPage() {
           >
             Our Team contributor profiles
           </Link>{" "}
-          alongside the most recent verification date. When a guide relies on an
-          editable organizational placeholder awaiting licensed CPA or Chartered
-          Accountant sign-off, that status is disclosed visibly rather than
-          masked behind an assumed persona.
+          alongside the most recent verification date. When a guide relies on
+          role-based engineering and QA review rather than independent CPA or
+          Chartered Accountant sign-off, that status is disclosed visibly rather
+          than masked behind an assumed persona.
         </p>
       </section>
 

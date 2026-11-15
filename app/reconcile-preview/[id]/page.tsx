@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { ReconciliationPreviewClient } from "@/components/reconciliation";
 
 export const metadata: Metadata = {
-  title: "Reconciliation Preview | ClearTie",
+  title: "Reconciliation Preview | reconcilebankstatement",
   description:
     "Inspect balance verification checks, matched transactions, discrepancies, and XLSX/CSV exports for your bank statement reconciliation run.",
   robots: {

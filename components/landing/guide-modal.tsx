@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
 import type { QuickGuide } from "@/lib/landing-data";
@@ -11,15 +11,50 @@ type GuideModalProps = {
 };
 
 export function GuideModal({ guide, onClose }: GuideModalProps) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     if (!guide) return;
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        event.preventDefault();
         onClose();
+        return;
+      }
+
+      if (event.key === "Tab" && dialogRef.current) {
+        const focusable = Array.from(
+          dialogRef.current.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          )
+        );
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     };
+
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = prevOverflow;
+      previouslyFocused?.focus?.();
+    };
   }, [guide, onClose]);
 
   if (!guide) return null;
@@ -33,6 +68,7 @@ export function GuideModal({ guide, onClose }: GuideModalProps) {
       aria-labelledby="guide-modal-title"
     >
       <div
+        ref={dialogRef}
         onClick={(e) => e.stopPropagation()}
         className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-[24px] bg-white p-5 shadow-2xl sm:rounded-[28px] sm:p-6"
       >
@@ -41,15 +77,16 @@ export function GuideModal({ guide, onClose }: GuideModalProps) {
             <span className="inline-block rounded-full bg-[#BDF71D] px-3 py-0.5 text-[11px] font-semibold text-[#111214]">
               Quick Guide
             </span>
-            <h3
+            <h2
               id="guide-modal-title"
               className="mt-2 text-lg font-semibold text-[#111214]"
             >
               {guide.title}
-            </h3>
+            </h2>
             <p className="mt-1 text-sm text-[#5A5E67]">{guide.subtitle}</p>
           </div>
           <button
+            ref={closeButtonRef}
             type="button"
             onClick={onClose}
             aria-label="Close guide"

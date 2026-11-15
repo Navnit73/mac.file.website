@@ -62,6 +62,7 @@ export function BankReconciliationWorkbench({
     changeCategory,
     changePage,
     changePageSize,
+    retryTransactions,
     exportReport,
   } = useReconciliation({
     apiBasePath,
@@ -118,19 +119,19 @@ export function BankReconciliationWorkbench({
         report &&
         reconciliationId &&
         hideReportOnComplete && (
-          <div className="rounded-2xl bg-[#F7F8F9] p-6 sm:p-8">
+          <div className="rounded-2xl bg-[#E6E9EE] p-5 sm:p-8">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
               <div className="flex items-start gap-3.5">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#111214] text-[#BDF71D]">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#111214] text-[#FF8F00]">
                   <Loader2 className="h-5 w-5 animate-spin" />
                 </div>
                 <div>
                   <StatusHeading className="text-base font-semibold text-[#111214] sm:text-lg">
                     Reconciliation Complete — Opening Preview
                   </StatusHeading>
-                  <p className="mt-1 text-xs text-[#5A5E67] sm:text-sm">
+                  <p className="mt-1 text-xs text-[#474B54] sm:text-sm">
                     Redirecting to{" "}
-                    <code className="rounded bg-[#F7F8F9] px-1.5 py-0.5 font-mono text-[11px] text-[#111214]">
+                    <code className="rounded bg-white px-1.5 py-0.5 font-mono text-[11px] text-[#111214]">
                       {`${previewHrefBase}/${reconciliationId}`}
                     </code>
                     ...
@@ -138,10 +139,10 @@ export function BankReconciliationWorkbench({
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2.5">
+              <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
                 <Link
                   href={`${previewHrefBase}/${encodeURIComponent(reconciliationId)}`}
-                  className="inline-flex h-10 items-center gap-1.5 rounded-full bg-[#111214] px-4 text-xs font-semibold text-white transition hover:bg-black"
+                  className="inline-flex min-h-[42px] items-center justify-center gap-1.5 rounded-full bg-[#FF8F00] px-5 text-xs font-semibold text-[#111214] transition hover:bg-[#FFA000]"
                 >
                   Open Preview Page
                   <ArrowUpRight className="h-3.5 w-3.5" />
@@ -149,7 +150,7 @@ export function BankReconciliationWorkbench({
                 <button
                   type="button"
                   onClick={reset}
-                  className="inline-flex h-10 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 text-xs font-medium text-[#111214] transition hover:bg-slate-50"
+                  className="inline-flex min-h-[42px] items-center justify-center gap-1.5 rounded-full bg-white px-5 text-xs font-semibold text-[#111214] transition hover:bg-[#D7DCE4]"
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
                   New Run
@@ -176,6 +177,7 @@ export function BankReconciliationWorkbench({
             onCategoryChange={changeCategory}
             onPageChange={changePage}
             onPageSizeChange={changePageSize}
+            onRetryTransactions={retryTransactions}
             onExport={exportReport}
             exportingFormat={exportingFormat}
             exportError={exportError}

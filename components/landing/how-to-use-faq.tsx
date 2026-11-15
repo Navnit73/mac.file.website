@@ -26,7 +26,7 @@ export function HowToUseAndFaqSection() {
         <div className="mx-auto max-w-[79.2rem] px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#111214] sm:text-5xl sm:leading-[1.12]">
-              How to Use ClearTie to Reconcile Bank Statement Files
+              How to Use reconcilebankstatement to Reconcile Bank Statement Files
             </h2>
             <p className="mt-4 text-sm text-[#5A5E67] sm:text-base">
               Follow these five steps to compare your bank statement and
@@ -117,7 +117,7 @@ export function HowToUseAndFaqSection() {
               Frequently Asked Questions About Bank &amp; Account Reconciliation
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm text-[#5A5E67] sm:text-base">
-              Everything you need to know about using ClearTie, supported
+              Everything you need to know about using reconcilebankstatement, supported
               document formats, matching tolerances, and reconciliation best
               practices.
             </p>
@@ -126,8 +126,9 @@ export function HowToUseAndFaqSection() {
             <div className="mt-6 flex flex-wrap justify-center gap-2">
               <button
                 type="button"
+                aria-pressed={faqFilter === "all"}
                 onClick={() => setFaqFilter("all")}
-                className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
+                className={`min-h-[36px] rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
                   faqFilter === "all"
                     ? "bg-[#111214] text-white"
                     : "bg-[#F7F8F9] text-[#5A5E67] hover:text-[#111214]"
@@ -137,19 +138,21 @@ export function HowToUseAndFaqSection() {
               </button>
               <button
                 type="button"
+                aria-pressed={faqFilter === "tool"}
                 onClick={() => setFaqFilter("tool")}
-                className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
+                className={`min-h-[36px] rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
                   faqFilter === "tool"
                     ? "bg-[#111214] text-white"
                     : "bg-[#F7F8F9] text-[#5A5E67] hover:text-[#111214]"
                 }`}
               >
-                Using ClearTie
+                Using reconcilebankstatement
               </button>
               <button
                 type="button"
+                aria-pressed={faqFilter === "concepts"}
                 onClick={() => setFaqFilter("concepts")}
-                className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
+                className={`min-h-[36px] rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
                   faqFilter === "concepts"
                     ? "bg-[#111214] text-white"
                     : "bg-[#F7F8F9] text-[#5A5E67] hover:text-[#111214]"
@@ -169,34 +172,35 @@ export function HowToUseAndFaqSection() {
                   key={item.id}
                   className="rounded-3xl bg-[#F7F8F9] px-5 py-4 transition-colors sm:px-6 sm:py-5"
                 >
-                  <button
-                    type="button"
-                    aria-expanded={isOpen}
-                    aria-controls={panelId}
-                    onClick={() =>
-                      setOpenFaqId((prev) => (prev === item.id ? "" : item.id))
-                    }
-                    className="flex w-full items-center justify-between gap-4 rounded-xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111214]"
-                  >
-                    <h3 className="text-sm font-semibold text-[#111214] sm:text-base">
-                      {item.question}
-                    </h3>
-                    <span
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors ${
-                        isOpen
-                          ? "bg-[#111214] text-[#BDF71D]"
-                          : "bg-white text-[#111214]"
-                      }`}
+                  <h3 className="text-sm font-semibold text-[#111214] sm:text-base">
+                    <button
+                      type="button"
+                      aria-expanded={isOpen}
+                      aria-controls={panelId}
+                      onClick={() =>
+                        setOpenFaqId((prev) => (prev === item.id ? "" : item.id))
+                      }
+                      className="flex w-full items-center justify-between gap-4 rounded-xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111214]"
                     >
-                      <ChevronDown
-                        className={`h-4 w-4 transition-transform duration-200 ${
-                          isOpen ? "rotate-180" : ""
+                      <span>{item.question}</span>
+                      <span
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors ${
+                          isOpen
+                            ? "bg-[#111214] text-[#BDF71D]"
+                            : "bg-white text-[#111214]"
                         }`}
-                      />
-                    </span>
-                  </button>
+                      >
+                        <ChevronDown
+                          className={`h-4 w-4 transition-transform duration-200 ${
+                            isOpen ? "rotate-180" : ""
+                          }`}
+                        />
+                      </span>
+                    </button>
+                  </h3>
                   <p
                     id={panelId}
+                    hidden={!isOpen}
                     className={`mt-3 pr-2 text-sm leading-relaxed text-[#5A5E67] sm:pr-10 ${
                       isOpen ? "block" : "hidden"
                     }`}
@@ -218,7 +222,7 @@ export function HowToUseAndFaqSection() {
               Ready to Reconcile Bank Statement Data Without Spreadsheets?
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-white/75 sm:text-base">
-              Open the ClearTie workbench to reconcile bank statement PDFs,
+              Open the reconcilebankstatement workbench to reconcile bank statement PDFs,
               images, CSV, or XLSX files against your business ledger and review
               matches, gaps, duplicates, and balance proofs in one run.
             </p>

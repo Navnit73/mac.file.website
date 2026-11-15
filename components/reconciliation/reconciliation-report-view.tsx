@@ -17,6 +17,7 @@ import {
   ShieldCheck,
   XCircle,
 } from "lucide-react";
+import { useCopiedFeedback } from "@/hooks/use-copied-feedback";
 import type { TransactionsCategoryFilter } from "@/hooks/use-reconciliation";
 import type {
   AmountMismatchItem,
@@ -41,9 +42,11 @@ export type ReconciliationReportViewProps = {
   activeCategory: TransactionsCategoryFilter;
   page: number;
   pageSize: number;
+  headingLevel?: "h2" | "h3";
   onCategoryChange: (category: TransactionsCategoryFilter) => void;
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
+  onRetryTransactions?: () => void;
   onExport: (format: ExportFormat) => void;
   exportingFormat: ExportFormat | null;
   exportError?: string | null;
@@ -134,6 +137,7 @@ function BalanceCard({
   closingSource,
   runningBalance,
   currency,
+  headingLevel = "h4",
 }: {
   title: string;
   opening: string | null | undefined;
@@ -145,14 +149,18 @@ function BalanceCard({
   closingSource?: string | null;
   runningBalance?: RunningBalanceCheck;
   currency: string | null;
+  headingLevel?: "h3" | "h4";
 }) {
   const [showBreaks, setShowBreaks] = useState(false);
+  const CardHeading = headingLevel;
 
   return (
     <div className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
       <div>
         <div className="flex items-center justify-between gap-2">
-          <h4 className="text-sm font-semibold text-[#111214]">{title}</h4>
+          <CardHeading className="text-sm font-semibold text-[#111214]">
+            {title}
+          </CardHeading>
           <StatusBadge status={status} />
         </div>
 
@@ -161,7 +169,7 @@ function BalanceCard({
             <dt className="text-[#5A5E67]">
               Opening{" "}
               {openingSource && (
-                <span className="text-[10px] text-slate-400">
+                <span className="text-[10px] text-[#5A5E67]">
                   ({formatSourceLabel(openingSource)})
                 </span>
               )}
@@ -175,7 +183,7 @@ function BalanceCard({
             <dt className="text-[#5A5E67]">
               Stated Closing{" "}
               {closingSource && (
-                <span className="text-[10px] text-slate-400">
+                <span className="text-[10px] text-[#5A5E67]">
                   ({formatSourceLabel(closingSource)})
                 </span>
               )}
@@ -213,6 +221,7 @@ function BalanceCard({
             <div className="mt-2">
               <button
                 type="button"
+                aria-expanded={showBreaks}
                 onClick={() => setShowBreaks((prev) => !prev)}
                 className="inline-flex items-center gap-1 font-semibold text-red-700 hover:underline"
               >
@@ -525,15 +534,20 @@ export function ReconciliationReportView({
   activeCategory,
   page,
   pageSize,
+  headingLevel = "h3",
   onCategoryChange,
   onPageChange,
   onPageSizeChange,
+  onRetryTransactions,
   onExport,
   exportingFormat,
   exportError,
   onNewReconciliation,
 }: ReconciliationReportViewProps) {
-  const [copiedId, setCopiedId] = useState(false);
+  const ReportHeading = headingLevel;
+  const cardHeadingLevel = headingLevel === "h2" ? "h3" : "h4";
+  const CardHeading = cardHeadingLevel;
+  const { copied: copiedId, copyText } = useCopiedFeedback();
   const [showCorrections, setShowCorrections] = useState(false);
 
   const { summary, balance_check, warnings, amount_corrections } = report;
@@ -591,18 +605,12 @@ export function ReconciliationReportView({
     },
   ];
 
-  const handleCopyId = async () => {
-    try {
-      await navigator.clipboard.writeText(reconciliationId);
-      setCopiedId(true);
-      setTimeout(() => setCopiedId(false), 1800);
-    } catch {
-      // Ignore clipboard failure
-    }
+  const handleCopyId = () => {
+    void copyText(reconciliationId);
   };
 
   return (
-    <div className="space-y-6">
+    <div data-clarity-mask="true" className="space-y-6">
       {/* Top Report Action Header */}
       <div className="rounded-[24px] bg-[#111214] p-5 text-white sm:p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -626,13 +634,14 @@ export function ReconciliationReportView({
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              <h3 className="text-lg font-semibold tracking-tight sm:text-xl">
+              <ReportHeading className="text-lg font-semibold tracking-tight sm:text-xl">
                 {matchRate}% Bank Lines Matched ({summary.matched}/
                 {summary.bank_transactions})
-              </h3>
+              </ReportHeading>
               <button
                 type="button"
                 onClick={handleCopyId}
+                aria-label={`Copy reconciliation ID ${reconciliationId}`}
                 className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 font-mono text-[11px] text-white/85 hover:bg-white/20 transition-colors"
               >
                 {reconciliationId}
@@ -787,6 +796,7 @@ export function ReconciliationReportView({
           closingSource={balance_check.closing_balance_source}
           runningBalance={balance_check.running_balance}
           currency={currency}
+          headingLevel={cardHeadingLevel}
         />
 
         {balance_check.ledger && (
@@ -801,6 +811,7 @@ export function ReconciliationReportView({
             closingSource={balance_check.ledger.closing_balance_source}
             runningBalance={balance_check.ledger.running_balance}
             currency={currency}
+            headingLevel={cardHeadingLevel}
           />
         )}
 
@@ -808,10 +819,10 @@ export function ReconciliationReportView({
           <div className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
             <div>
               <div className="flex items-center justify-between gap-2">
-                <h4 className="flex items-center gap-1.5 text-sm font-semibold text-[#111214]">
+                <CardHeading className="flex items-center gap-1.5 text-sm font-semibold text-[#111214]">
                   <Scale className="h-4 w-4 text-[#5A5E67]" />
                   Book-to-Bank Proof
-                </h4>
+                </CardHeading>
                 <StatusBadge status={balance_check.book_to_bank.status} />
               </div>
 
@@ -892,6 +903,7 @@ export function ReconciliationReportView({
             <div className="rounded-2xl border border-slate-200 bg-white p-4">
               <button
                 type="button"
+                aria-expanded={showCorrections}
                 onClick={() => setShowCorrections((prev) => !prev)}
                 className="flex w-full items-center justify-between text-left text-xs font-semibold text-[#111214]"
               >
@@ -907,7 +919,12 @@ export function ReconciliationReportView({
               </button>
 
               {showCorrections && (
-                <div className="mt-3 overflow-x-auto">
+                <div
+                  tabIndex={0}
+                  role="region"
+                  aria-label="Normalized amount corrections ledger"
+                  className="mt-3 overflow-x-auto rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111214]"
+                >
                   <table className="w-full min-w-[480px] text-left text-xs">
                     <thead className="border-b border-slate-100 text-[11px] uppercase text-[#5A5E67]">
                       <tr>
@@ -953,6 +970,7 @@ export function ReconciliationReportView({
                 <button
                   key={cat.id}
                   type="button"
+                  aria-pressed={isActive}
                   onClick={() => onCategoryChange(cat.id)}
                   className={`inline-flex min-h-[34px] items-center gap-1.5 rounded-full px-3.5 py-1 text-xs font-semibold transition-colors ${
                     isActive
@@ -999,8 +1017,21 @@ export function ReconciliationReportView({
               Loading paginated transactions...
             </div>
           ) : transactionsError ? (
-            <div className="rounded-2xl bg-red-50 px-4 py-3 text-xs text-red-700">
-              {transactionsError}
+            <div
+              role="alert"
+              className="flex flex-col items-start justify-between gap-3 rounded-2xl bg-red-50 px-4 py-3 text-xs text-red-700 sm:flex-row sm:items-center"
+            >
+              <span>{transactionsError}</span>
+              {onRetryTransactions && (
+                <button
+                  type="button"
+                  onClick={onRetryTransactions}
+                  className="inline-flex min-h-[32px] shrink-0 items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-semibold text-red-800 shadow-xs transition hover:bg-red-100"
+                >
+                  <RotateCcw className="h-3 w-3" />
+                  Retry
+                </button>
+              )}
             </div>
           ) : transactions.length === 0 ? (
             <div className="rounded-2xl bg-[#F7F8F9] px-4 py-10 text-center text-xs text-[#5A5E67]">

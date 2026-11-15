@@ -1,4 +1,4 @@
-# ClearTie — Bank Statement & Business Ledger Reconciliation Utility
+# reconcilebankstatement — Bank Statement & Business Ledger Reconciliation Utility
 
 Compare a bank statement against a business ledger (cash book / general ledger export) to identify matched transactions, bank-only and book-only gaps, possible duplicates, amount or direction mismatches, opening/closing & running-balance checks, and downloadable XLSX or CSV reports.
 

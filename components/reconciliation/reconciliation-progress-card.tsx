@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   AlertTriangle,
   Check,
@@ -9,6 +8,7 @@ import {
   RotateCcw,
   XCircle,
 } from "lucide-react";
+import { useCopiedFeedback } from "@/hooks/use-copied-feedback";
 import type { ReconciliationPhase } from "@/hooks/use-reconciliation";
 import type { ReconciliationStatus } from "@/lib/reconciliation/types";
 
@@ -38,24 +38,21 @@ export function ReconciliationProgressCard({
   onReset,
 }: ReconciliationProgressCardProps) {
   const HeadingTag = headingLevel;
-  const [copied, setCopied] = useState(false);
+  const { copied, copyText } = useCopiedFeedback();
 
   const isFailed = phase === "failed" || status === "failed";
   const clampedProgress = Math.max(0, Math.min(100, progress));
 
-  const handleCopyId = async () => {
+  const handleCopyId = () => {
     if (!reconciliationId) return;
-    try {
-      await navigator.clipboard.writeText(reconciliationId);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {
-      // Ignore clipboard permission errors
-    }
+    void copyText(reconciliationId);
   };
 
   return (
-    <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-xs sm:p-7">
+    <div
+      data-clarity-mask="true"
+      className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-xs sm:p-7"
+    >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-start gap-3.5">
           <div
