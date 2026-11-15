@@ -16,6 +16,7 @@ export type BankReconciliationWorkbenchProps = UseReconciliationOptions & {
   showWebhookOptions?: boolean;
   hideReportOnComplete?: boolean;
   previewHrefBase?: string;
+  statusHeadingLevel?: "h2" | "h3";
   className?: string;
 };
 
@@ -32,6 +33,7 @@ export function BankReconciliationWorkbench({
   showWebhookOptions = true,
   hideReportOnComplete = false,
   previewHrefBase = "/reconcile-preview",
+  statusHeadingLevel = "h3",
   className = "",
 }: BankReconciliationWorkbenchProps) {
   const {
@@ -73,6 +75,7 @@ export function BankReconciliationWorkbench({
 
   const showUploadForm =
     phase === "idle" || (phase === "failed" && !reconciliationId);
+  const StatusHeading = statusHeadingLevel;
 
   return (
     <div className={className}>
@@ -94,6 +97,7 @@ export function BankReconciliationWorkbench({
         phase === "processing" ||
         (phase === "failed" && Boolean(reconciliationId))) && (
         <ReconciliationProgressCard
+          headingLevel={statusHeadingLevel}
           phase={phase}
           reconciliationId={reconciliationId}
           status={statusResponse?.status}
@@ -114,16 +118,16 @@ export function BankReconciliationWorkbench({
         report &&
         reconciliationId &&
         hideReportOnComplete && (
-          <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-xs sm:p-8">
+          <div className="rounded-2xl bg-[#F7F8F9] p-6 sm:p-8">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
               <div className="flex items-start gap-3.5">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#111214] text-[#BDF71D]">
                   <Loader2 className="h-5 w-5 animate-spin" />
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold text-[#111214] sm:text-lg">
+                  <StatusHeading className="text-base font-semibold text-[#111214] sm:text-lg">
                     Reconciliation Complete — Opening Preview
-                  </h3>
+                  </StatusHeading>
                   <p className="mt-1 text-xs text-[#5A5E67] sm:text-sm">
                     Redirecting to{" "}
                     <code className="rounded bg-[#F7F8F9] px-1.5 py-0.5 font-mono text-[11px] text-[#111214]">

@@ -49,11 +49,13 @@ export default function OpenGraphImage() {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="#111214"
-                strokeWidth="3"
+                strokeWidth="2.4"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
-                <path d="M5 12l5 5L20 7" />
+                <path d="M5 9h14" />
+                <path d="M5 15h8.5" />
+                <path d="m16.5 13 2 2 3-3" />
               </svg>
             </div>
             <span
@@ -107,17 +109,23 @@ export default function OpenGraphImage() {
         <div
           style={{
             display: "flex",
-            gap: "24px",
+            justifyContent: "space-between",
+            alignItems: "center",
             fontSize: "20px",
             color: "#BDF71D",
             fontWeight: 600,
           }}
         >
-          <span>PDF OCR, Images, CSV &amp; XLSX</span>
-          <span>|</span>
-          <span>Matches, Gaps &amp; Duplicates</span>
-          <span>|</span>
-          <span>Balance Check &amp; Export</span>
+          <div style={{ display: "flex", gap: "20px" }}>
+            <span>PDF OCR, Images, CSV &amp; XLSX</span>
+            <span>|</span>
+            <span>Matches, Gaps &amp; Duplicates</span>
+            <span>|</span>
+            <span>Balance Check &amp; Export</span>
+          </div>
+          <span style={{ color: "#94A3B8", fontWeight: 500 }}>
+            reconcilebankstatement.online
+          </span>
         </div>
       </div>
     ),

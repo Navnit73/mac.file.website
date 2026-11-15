@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { X } from "lucide-react";
 import type { QuickGuide } from "@/lib/landing-data";
 
@@ -72,13 +73,13 @@ export function GuideModal({ guide, onClose }: GuideModalProps) {
         </div>
 
         <div className="mt-6 flex justify-end gap-2">
-          <a
-            href="#reconcile-workbench"
+          <Link
+            href="/reconcile"
             onClick={onClose}
             className="inline-flex min-h-[40px] items-center justify-center rounded-full bg-[#BDF71D] px-5 text-xs font-semibold text-[#111214] hover:bg-[#ccff3d]"
           >
             Open Tool
-          </a>
+          </Link>
           <button
             type="button"
             onClick={onClose}

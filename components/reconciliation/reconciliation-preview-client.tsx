@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Check, Copy, Plus } from "lucide-react";
+import { BrandLogoMark } from "@/components/landing/brand-logo";
+import { SiteFooter } from "@/components/landing/site-footer";
 import { useReconciliation } from "@/hooks/use-reconciliation";
 import { BRAND } from "@/lib/landing-data";
 import { ReconciliationProgressCard } from "./reconciliation-progress-card";
@@ -74,11 +76,11 @@ export function ReconciliationPreviewClient() {
 
   const handleStartAnother = () => {
     cancelPolling();
-    router.push("/#reconcile-workbench");
+    router.push("/reconcile");
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F8F9] text-[#111214]">
+    <div className="flex min-h-screen flex-col bg-[#F7F8F9] text-[#111214]">
       <header className="sticky top-0 z-40 w-full bg-[#F7F8F9]/90 pt-3 pb-2 backdrop-blur-md sm:pt-4">
         <div className="mx-auto max-w-[79.2rem] px-3 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center justify-between gap-2 rounded-full bg-[#111214] px-3 py-2 shadow-lg shadow-black/10 sm:px-4">
@@ -88,20 +90,7 @@ export function ReconciliationPreviewClient() {
                 className="group flex items-center gap-2 rounded-full pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#BDF71D] sm:gap-2.5 sm:pl-1.5"
               >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#BDF71D] text-[#111214] transition-transform duration-200 group-hover:scale-105">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-4 w-4"
-                    aria-hidden="true"
-                  >
-                    <path d="M5 9h14" />
-                    <path d="M5 15h9" />
-                    <path d="m17 13 2 2 3-3" />
-                  </svg>
+                  <BrandLogoMark className="h-4 w-4" />
                 </span>
                 <span className="text-xs font-semibold tracking-wider text-white uppercase sm:text-sm">
                   {BRAND.name}
@@ -140,7 +129,7 @@ export function ReconciliationPreviewClient() {
                 <span className="hidden sm:inline">Home</span>
               </Link>
               <Link
-                href="/#reconcile-workbench"
+                href="/reconcile"
                 className="inline-flex h-8 items-center gap-1.5 rounded-full bg-[#BDF71D] px-3.5 text-xs font-semibold text-[#111214] transition hover:bg-[#cffb4e]"
               >
                 <Plus className="h-3.5 w-3.5" />
@@ -151,7 +140,7 @@ export function ReconciliationPreviewClient() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-[79.2rem] px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
+      <main className="mx-auto w-full max-w-[79.2rem] flex-1 px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
         <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="font-mono text-[11px] font-semibold tracking-wider text-[#5A5E67] uppercase">
@@ -174,11 +163,12 @@ export function ReconciliationPreviewClient() {
               Missing reconciliation ID
             </h2>
             <p className="mt-1.5 text-sm text-[#5A5E67]">
-              Return to the homepage workbench to upload statements or open an existing run ID.
+              Open the reconciliation workbench to upload statements or load an
+              existing run ID.
             </p>
             <div className="mt-4">
               <Link
-                href="/#reconcile-workbench"
+                href="/reconcile"
                 className="inline-flex h-10 items-center gap-2 rounded-full bg-[#111214] px-5 text-xs font-semibold text-white transition hover:bg-black"
               >
                 Go to Reconciliation Workbench
@@ -190,6 +180,7 @@ export function ReconciliationPreviewClient() {
         {routeId && phase !== "completed" && (
           <div className="space-y-4">
             <ReconciliationProgressCard
+              headingLevel="h2"
               phase={phase === "idle" ? "processing" : phase}
               reconciliationId={activeId}
               status={statusResponse?.status}
@@ -227,6 +218,8 @@ export function ReconciliationPreviewClient() {
           />
         )}
       </main>
+
+      <SiteFooter />
     </div>
   );
 }

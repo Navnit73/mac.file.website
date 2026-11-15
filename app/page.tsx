@@ -1,4 +1,5 @@
 import { LandingPage } from "@/components/landing/landing-page";
+import { buildOrganizationSchema } from "@/components/trust/structured-data";
 import {
   BRAND,
   FAQ_ITEMS,
@@ -10,10 +11,13 @@ export default function Home() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
+      buildOrganizationSchema(),
       {
         "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
         name: BRAND.name,
         url: SITE_URL,
+        publisher: { "@id": `${SITE_URL}/#organization` },
         inLanguage: ["en-US", "en-GB"],
       },
       {

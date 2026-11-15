@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, ArrowUp, CheckCircle2, ChevronDown } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, CheckCircle2, ChevronDown } from "lucide-react";
 import {
-  BRAND,
   FAQ_ITEMS,
   HOW_TO_USE_PLAYBOOK,
   HOW_TO_USE_STEPS,
@@ -54,13 +54,13 @@ export function HowToUseAndFaqSection() {
           </ol>
 
           <div className="mt-6 flex justify-center">
-            <a
-              href="#reconcile-workbench"
+            <Link
+              href="/reconcile"
               className="inline-flex items-center gap-1.5 rounded-full bg-[#F7F8F9] px-5 py-2 text-xs font-semibold text-[#111214] transition-colors hover:bg-slate-200/70"
             >
-              Jump back to the upload workbench
-              <ArrowUp className="h-3.5 w-3.5" />
-            </a>
+              Open the reconciliation tool
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
 
           {/* Detailed 3-Phase How-to-Use Playbook */}
@@ -218,19 +218,19 @@ export function HowToUseAndFaqSection() {
               Ready to Reconcile Bank Statement Data Without Spreadsheets?
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-white/75 sm:text-base">
-              Upload your bank statement and business ledger in PDF, image, CSV,
-              or XLSX format to review matches, gaps, duplicates, and balance
-              proofs in one run.
+              Open the ClearTie workbench to reconcile bank statement PDFs,
+              images, CSV, or XLSX files against your business ledger and review
+              matches, gaps, duplicates, and balance proofs in one run.
             </p>
 
             <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-              <a
-                href="#reconcile-workbench"
+              <Link
+                href="/reconcile"
                 className="inline-flex min-h-[46px] items-center justify-center rounded-full bg-[#BDF71D] px-7 text-xs font-semibold text-[#111214] transition-transform hover:scale-[1.02] hover:bg-[#ccff3d] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:text-sm"
               >
                 Open Reconciliation Tool
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </a>
+              </Link>
               <a
                 href="#how-to-use"
                 className="inline-flex min-h-[46px] items-center justify-center rounded-full border border-white/25 px-7 text-xs font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#BDF71D] sm:text-sm"
@@ -241,103 +241,6 @@ export function HowToUseAndFaqSection() {
           </div>
         </div>
       </section>
-
-      <footer className="border-t border-slate-100 bg-white py-12 text-[#5A5E67]">
-        <div className="mx-auto max-w-[79.2rem] px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
-            <div>
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#111214] text-[#BDF71D]">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-3.5 w-3.5"
-                    aria-hidden="true"
-                  >
-                    <path d="M5 9h14" />
-                    <path d="M5 15h9" />
-                    <path d="m17 13 2 2 3-3" />
-                  </svg>
-                </span>
-                <span className="text-sm font-semibold tracking-wider text-[#111214] uppercase">
-                  {BRAND.name}
-                </span>
-                <span className="text-xs text-[#5A5E67]">
-                  — {BRAND.tagline}
-                </span>
-              </div>
-              <p className="mt-2 text-xs text-[#5A5E67]">
-                Supports digital &amp; scanned PDFs, JPG/PNG/TIFF, CSV/TSV/TXT,
-                and XLSX/XLSM across ISO 4217 currencies.
-              </p>
-            </div>
-
-            <nav
-              aria-label="Footer navigation"
-              className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-medium sm:gap-x-6"
-            >
-              <a
-                href="#reconcile-workbench"
-                className="transition-colors hover:text-[#111214]"
-              >
-                Upload Tool
-              </a>
-              <a
-                href="#how-it-works"
-                className="transition-colors hover:text-[#111214]"
-              >
-                How It Works
-              </a>
-              <a
-                href="#reconciliation-guide"
-                className="transition-colors hover:text-[#111214]"
-              >
-                Account Meaning
-              </a>
-              <a
-                href="#common-problems"
-                className="transition-colors hover:text-[#111214]"
-              >
-                Common Problems
-              </a>
-              <a
-                href="#use-cases"
-                className="transition-colors hover:text-[#111214]"
-              >
-                Use Cases
-              </a>
-              <a
-                href="#comparison"
-                className="transition-colors hover:text-[#111214]"
-              >
-                Comparison
-              </a>
-              <a
-                href="#features"
-                className="transition-colors hover:text-[#111214]"
-              >
-                Capabilities
-              </a>
-              <a
-                href="#how-to-use"
-                className="transition-colors hover:text-[#111214]"
-              >
-                How to Use
-              </a>
-              <a
-                href="#faq"
-                className="transition-colors hover:text-[#111214]"
-              >
-                FAQ
-              </a>
-            </nav>
-          </div>
-        </div>
-      </footer>
     </>
   );
 }

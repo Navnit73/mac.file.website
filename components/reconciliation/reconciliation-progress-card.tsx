@@ -20,6 +20,7 @@ export type ReconciliationProgressCardProps = {
   message: string;
   error: string | null;
   createdAt?: string;
+  headingLevel?: "h2" | "h3";
   onCancel?: () => void;
   onReset: () => void;
 };
@@ -32,9 +33,11 @@ export function ReconciliationProgressCard({
   message,
   error,
   createdAt,
+  headingLevel = "h3",
   onCancel,
   onReset,
 }: ReconciliationProgressCardProps) {
+  const HeadingTag = headingLevel;
   const [copied, setCopied] = useState(false);
 
   const isFailed = phase === "failed" || status === "failed";
@@ -70,13 +73,13 @@ export function ReconciliationProgressCard({
           </div>
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-base font-semibold text-[#111214] sm:text-lg">
+              <HeadingTag className="text-base font-semibold text-[#111214] sm:text-lg">
                 {isFailed
                   ? "Reconciliation Could Not Complete"
                   : phase === "uploading"
                     ? "Uploading Statements"
                     : "Reconciling Bank Statement & Ledger"}
-              </h3>
+              </HeadingTag>
               {status && (
                 <span
                   className={`rounded-full px-2.5 py-0.5 font-mono text-[11px] font-semibold uppercase ${

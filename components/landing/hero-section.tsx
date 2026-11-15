@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   ArrowRight,
   CheckCircle2,
@@ -39,13 +40,13 @@ export function HeroSection() {
             </p>
 
             <div className="mt-6 flex flex-col items-stretch gap-3 min-[440px]:flex-row min-[440px]:items-center">
-              <a
-                href="#reconcile-workbench"
-                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-[#111214] px-7 text-xs font-semibold text-white shadow-sm transition-transform hover:scale-[1.02] hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111214] focus-visible:ring-offset-2 sm:text-sm"
+              <Link
+                href="/reconcile"
+                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-amber-700 px-7 text-xs font-semibold text-white shadow-sm transition-all hover:scale-[1.02] hover:bg-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-700 focus-visible:ring-offset-2 sm:text-sm"
               >
                 Start Reconciliation Tool
-                <ArrowRight className="h-4 w-4 text-[#BDF71D]" />
-              </a>
+                <ArrowRight className="h-4 w-4 text-amber-100" />
+              </Link>
               <a
                 href="#how-to-use"
                 className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-slate-300 bg-white px-6 text-xs font-semibold text-[#111214] transition-colors hover:bg-[#F7F8F9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111214] focus-visible:ring-offset-2 sm:text-sm"

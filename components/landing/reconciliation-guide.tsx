@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowRight, BookOpen, CheckCircle2, ShieldAlert } from "lucide-react";
 import { ExceptionIsolationIllustration } from "@/components/landing/illustrations";
 import { RECONCILIATION_PROBLEMS } from "@/lib/landing-data";
@@ -85,13 +86,13 @@ export function ReconciliationGuideSection() {
                 <CheckCircle2 className="h-4 w-4 text-emerald-700" />
                 Goal: Adjusted Bank = Adjusted Book ($0.00 variance)
               </span>
-              <a
-                href="#reconcile-workbench"
+              <Link
+                href="/reconcile"
                 className="inline-flex items-center gap-1 text-xs font-semibold text-[#111214] underline decoration-slate-400 underline-offset-4 hover:decoration-[#111214]"
               >
                 Open the tie-out tool
                 <ArrowRight className="h-3.5 w-3.5" />
-              </a>
+              </Link>
             </div>
           </div>
 

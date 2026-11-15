@@ -60,10 +60,11 @@ export type BenefitPillar = {
 };
 
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://cleartie.com";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://reconcilebankstatement.online";
 
 export const BRAND = {
   name: "ClearTie",
+  domain: "reconcilebankstatement.online",
   tagline: "Bank Statement & Business Ledger Reconciliation Utility",
   stackSummary:
     "Byte-Detected OCR & Spreadsheet Engine • Direct Tie-Out Utility",
@@ -430,7 +431,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "tool",
     question: "How do I reconcile bank statement files with ClearTie step by step?",
     answer:
-      "Scroll to the Reconciliation Utility above, drop your bank statement (PDF, image, CSV, TSV, TXT, or XLSX/XLSM) into Slot 1 and your business ledger or cash book into Slot 2, adjust the date tolerance window (0–31 days, default ±2 days) and description similarity toggle, and click Run Bank Reconciliation. Once processing completes, review Matched, Unmatched Bank, Unmatched Ledger, Duplicates, and Mismatches, verify the balance checks, and export your XLSX or CSV report. You can also click Load Sample CSV Pair to test the workflow instantly.",
+      "Open the Reconciliation Tool page (/reconcile), drop your bank statement (PDF, image, CSV, TSV, TXT, or XLSX/XLSM) into Slot 1 and your business ledger or cash book into Slot 2, adjust the date tolerance window (0–31 days, default ±2 days) and description similarity toggle, and click Run Bank Reconciliation. Once processing completes, review Matched, Unmatched Bank, Unmatched Ledger, Duplicates, and Mismatches, verify the balance checks, and export your XLSX or CSV report. You can also click Load Sample CSV Pair to test the workflow instantly.",
   },
   {
     id: "account-reconciliation-meaning-faq",
