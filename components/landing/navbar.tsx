@@ -18,7 +18,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white/90 pt-3 pb-2 backdrop-blur-md sm:pt-4">
-      <div className="mx-auto max-w-6xl px-3 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[79.2rem] px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between rounded-full bg-[#111214] px-3 py-2 shadow-lg shadow-black/10 sm:px-4">
           <a
             href="#top"

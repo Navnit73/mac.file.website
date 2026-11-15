@@ -7,6 +7,9 @@ export {
   type ReconciliationDropzoneProps,
 } from "./reconciliation-dropzone";
 export {
+  ReconciliationPreviewClient,
+} from "./reconciliation-preview-client";
+export {
   ReconciliationProgressCard,
   type ReconciliationProgressCardProps,
 } from "./reconciliation-progress-card";

@@ -1,36 +1,35 @@
 export function HeroReconciliationIllustration() {
   return (
-    <div className="relative overflow-hidden rounded-[28px] border border-slate-200/80 bg-[#F7F8F9] p-4 shadow-[0_24px_60px_rgba(17,18,20,0.06)] sm:p-6">
-      <svg
-        viewBox="0 0 600 420"
-        className="h-auto w-full select-none"
-        role="img"
-        aria-label="Diagram illustrating bank statement and business ledger files flowing into ClearTie matching engine to produce a verified $0.00 variance report"
-      >
-        <defs>
-          <linearGradient id="heroLimeGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#D7FF47" />
-            <stop offset="100%" stopColor="#BDF71D" />
-          </linearGradient>
-          <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="125%">
-            <feDropShadow
-              dx="0"
-              dy="8"
-              stdDeviation="10"
-              floodColor="#111214"
-              floodOpacity="0.07"
-            />
-          </filter>
-        </defs>
+    <svg
+      viewBox="0 16 600 388"
+      className="h-auto w-full overflow-visible select-none"
+      role="img"
+      aria-label="Diagram illustrating bank statement and business ledger files flowing into ClearTie matching engine to produce a verified $0.00 variance report"
+    >
+      <defs>
+        <linearGradient id="heroLimeGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#D7FF47" />
+          <stop offset="100%" stopColor="#BDF71D" />
+        </linearGradient>
+        <filter id="cardShadow" x="-12%" y="-12%" width="124%" height="128%">
+          <feDropShadow
+            dx="0"
+            dy="10"
+            stdDeviation="12"
+            floodColor="#111214"
+            floodOpacity="0.09"
+          />
+        </filter>
+      </defs>
 
-        {/* Subtle structural grid lines */}
-        <g stroke="#E2E8F0" strokeWidth="1" strokeDasharray="4 4" opacity="0.65">
-          <line x1="20" y1="70" x2="580" y2="70" />
-          <line x1="20" y1="210" x2="580" y2="210" />
-          <line x1="20" y1="350" x2="580" y2="350" />
-          <line x1="215" y1="24" x2="215" y2="396" />
-          <line x1="385" y1="24" x2="385" y2="396" />
-        </g>
+      {/* Subtle structural grid lines */}
+      <g stroke="#E2E8F0" strokeWidth="1" strokeDasharray="4 4" opacity="0.55">
+        <line x1="20" y1="70" x2="580" y2="70" />
+        <line x1="20" y1="210" x2="580" y2="210" />
+        <line x1="20" y1="350" x2="580" y2="350" />
+        <line x1="215" y1="24" x2="215" y2="396" />
+        <line x1="385" y1="24" x2="385" y2="396" />
+      </g>
 
         {/* Connector paths from inputs to center node */}
         <path
@@ -65,7 +64,7 @@ export function HeroReconciliationIllustration() {
             height="154"
             rx="18"
             fill="#FFFFFF"
-            stroke="#E2E8F0"
+            stroke="#CBD5E1"
             strokeWidth="1.2"
           />
           <rect x="34" y="46" width="84" height="20" rx="10" fill="#111214" />
@@ -156,7 +155,7 @@ export function HeroReconciliationIllustration() {
             height="154"
             rx="18"
             fill="#FFFFFF"
-            stroke="#E2E8F0"
+            stroke="#CBD5E1"
             strokeWidth="1.2"
           />
           <rect x="34" y="236" width="92" height="20" rx="10" fill="#F1F5F9" />
@@ -406,8 +405,7 @@ export function HeroReconciliationIllustration() {
             .CSV
           </text>
         </g>
-      </svg>
-    </div>
+    </svg>
   );
 }
 

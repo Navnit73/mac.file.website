@@ -39,6 +39,7 @@ export type UseReconciliationOptions = {
   pollIntervalMs?: number;
   defaultPageSize?: number;
   sessionStorageKey?: string;
+  skipInitialTransactionsFetch?: boolean;
   onCompleted?: (id: string, report: ReconciliationReport) => void;
 };
 
@@ -49,6 +50,7 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
     pollIntervalMs = 2500,
     defaultPageSize = 25,
     sessionStorageKey = "cleartie:last-reconciliation-id",
+    skipInitialTransactionsFetch = false,
     onCompleted,
   } = options;
 
@@ -212,11 +214,21 @@ export function useReconciliation(options: UseReconciliationOptions = {}) {
         onCompletedRef.current?.(id, finalSnapshot.result);
       }
 
+      if (skipInitialTransactionsFetch) {
+        return;
+      }
+
       setActiveCategory("all");
       setPage(1);
       await fetchTransactionsPage(id, "all", 1, pageSize);
     },
-    [client, fetchTransactionsPage, pageSize, pollIntervalMs]
+    [
+      client,
+      fetchTransactionsPage,
+      pageSize,
+      pollIntervalMs,
+      skipInitialTransactionsFetch,
+    ]
   );
 
   const start = useCallback(

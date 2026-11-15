@@ -5,7 +5,7 @@ import { RECONCILIATION_PROBLEMS } from "@/lib/landing-data";
 export function ReconciliationGuideSection() {
   return (
     <section id="reconciliation-guide" className="bg-white py-16 sm:py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[79.2rem] px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mx-auto max-w-3xl text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F7F8F9] px-3.5 py-1 text-xs font-semibold text-[#111214] border border-slate-200/80">

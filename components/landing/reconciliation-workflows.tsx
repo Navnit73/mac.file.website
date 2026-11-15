@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import {
   ArrowUpRight,
   Building2,
@@ -10,19 +9,72 @@ import {
   Landmark,
   Scale,
   ShieldCheck,
+  type LucideIcon,
 } from "lucide-react";
 import { BRAND, QUICK_GUIDES } from "@/lib/landing-data";
 import { GuideModal } from "@/components/landing/guide-modal";
 
+type WorkflowGuideId = "bank" | "credit-card" | "balance-sheet";
+
+type WorkflowPillar = {
+  id: WorkflowGuideId;
+  icon: LucideIcon;
+  title: string;
+  summary: string;
+  eyebrow: string;
+  subhead: string;
+  detail: string;
+  ctaLabel: string;
+};
+
+const WORKFLOW_PILLARS: WorkflowPillar[] = [
+  {
+    id: "bank",
+    icon: Landmark,
+    title: "Bank Account Reconciliation",
+    summary:
+      "Compare checking, savings, and treasury statements against your cash book to isolate wire fees, NSF checks, and timing items.",
+    eyebrow: "Checking, Savings & Cash Books",
+    subhead: "Bank-Only vs. Book-Only Lists",
+    detail:
+      "Filter unmatched lines directly to track deposits in transit and uncleared payments.",
+    ctaLabel: "Bank rec guide",
+  },
+  {
+    id: "credit-card",
+    icon: CreditCard,
+    title: "Credit Card Reconciliation",
+    summary:
+      "Match corporate Visa, Mastercard, or Amex PDF/CSV statements against expense ledgers to catch duplicate billings and FX fees.",
+    eyebrow: "Corporate Card Statements",
+    subhead: "Pending Authorizations & Refunds",
+    detail:
+      "Widen tolerance days for delayed posting and spot reversed refund directions.",
+    ctaLabel: "Card rec guide",
+  },
+  {
+    id: "balance-sheet",
+    icon: ShieldCheck,
+    title: "Balance Sheet Account Reconciliation",
+    summary:
+      "Substantiate cash, clearing, and subledger balances against external source statements before month-end close and audits.",
+    eyebrow: "Month-End Close Proof",
+    subhead: "Running-Balance & Variance Tie-Out",
+    detail:
+      "Verify opening + net flow = closing balance with downloadable XLSX audit trails.",
+    ctaLabel: "Balance sheet guide",
+  },
+];
+
 export function ReconciliationWorkflowsSection() {
-  const [activeGuideId, setActiveGuideId] = useState<
-    "bank" | "credit-card" | "balance-sheet" | null
-  >(null);
+  const [activeGuideId, setActiveGuideId] = useState<WorkflowGuideId | null>(
+    null
+  );
 
   return (
     <>
       <section id="use-cases" className="bg-white py-16 sm:py-24">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[79.2rem] px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#111214] sm:text-5xl sm:leading-[1.12]">
               Built for Bank, Credit Card &amp; Balance Sheet Reconciliations
@@ -35,266 +87,155 @@ export function ReconciliationWorkflowsSection() {
             </p>
           </div>
 
-          {/* 3-Column Symmetric Lime Centerpiece Layout */}
-          <div className="mt-10 grid gap-6 sm:mt-12 lg:grid-cols-12 lg:items-stretch">
-            {/* Left Stack: Bank Account & Credit Card Use Cases */}
-            <div className="grid gap-6 sm:grid-cols-2 lg:col-span-3 lg:flex lg:flex-col">
-              <article className="flex flex-1 flex-col items-center justify-between rounded-[24px] bg-[#F7F8F9] p-6 text-center sm:rounded-[28px] sm:p-7">
-                <div className="flex flex-col items-center">
-                  <div className="relative">
-                    <span className="lime-glow-icon flex h-14 w-14 items-center justify-center rounded-full text-[#111214]">
-                      <Landmark className="h-6 w-6" />
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      className="absolute -right-2 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-white text-[11px] font-bold text-[#111214] shadow-md"
-                    >
-                      $
-                    </span>
-                  </div>
-                  <h3 className="mt-5 text-lg font-semibold text-[#111214]">
-                    Bank Account Reconciliation
-                  </h3>
-                  <p className="mt-2 text-xs leading-relaxed text-[#5A5E67]">
-                    Compare checking, savings, and treasury statements against
-                    your cash book to isolate wire fees, NSF checks, and timing
-                    items.
-                  </p>
-                  <div className="mt-3 w-full rounded-2xl bg-white p-3 text-left">
-                    <h4 className="text-[11px] font-semibold uppercase tracking-wider text-[#5A5E67]">
-                      Checking, Savings &amp; Cash Books
-                    </h4>
-                    <h5 className="mt-1 text-xs font-semibold text-[#111214]">
-                      Bank-Only vs. Book-Only Lists
-                    </h5>
-                    <p className="mt-0.5 text-[11px] leading-relaxed text-[#5A5E67]">
-                      Filter unmatched lines directly to track deposits in
-                      transit and uncleared payments.
+          {/* Primary 3-Pillar Workflow Grid */}
+          <div className="mt-10 grid gap-5 sm:mt-12 md:grid-cols-3">
+            {WORKFLOW_PILLARS.map((item) => {
+              const Icon = item.icon;
+              return (
+                <article
+                  key={item.id}
+                  className="flex flex-col justify-between rounded-[24px] border border-slate-200/70 bg-[#F7F8F9] p-6 sm:p-7"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="lime-glow-icon flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-[#111214]">
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setActiveGuideId(item.id)}
+                        className="inline-flex min-h-[34px] items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#111214] ring-1 ring-slate-200/80 transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111214]"
+                      >
+                        {item.ctaLabel}
+                        <ArrowUpRight className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+
+                    <h3 className="mt-5 text-lg font-semibold tracking-[-0.015em] text-[#111214] sm:text-xl">
+                      {item.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-[#5A5E67]">
+                      {item.summary}
                     </p>
                   </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setActiveGuideId("bank")}
-                  className="mt-4 inline-flex min-h-[36px] items-center gap-1 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111214] shadow-xs transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111214]"
-                >
-                  Bank rec guide
-                  <ArrowUpRight className="h-3.5 w-3.5" />
-                </button>
-              </article>
 
-              <article className="flex flex-1 flex-col items-center justify-between rounded-[24px] bg-[#F7F8F9] p-6 text-center sm:rounded-[28px] sm:p-7">
-                <div className="flex flex-col items-center">
-                  <div className="relative">
-                    <span className="lime-glow-icon flex h-14 w-14 items-center justify-center rounded-full text-[#111214]">
-                      <CreditCard className="h-6 w-6" />
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      className="absolute -right-2 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-white text-[11px] font-bold text-[#111214] shadow-md"
-                    >
-                      ±
-                    </span>
-                  </div>
-                  <h3 className="mt-5 text-lg font-semibold text-[#111214]">
-                    Credit Card Reconciliation
-                  </h3>
-                  <p className="mt-2 text-xs leading-relaxed text-[#5A5E67]">
-                    Match corporate Visa, Mastercard, or Amex PDF/CSV statements
-                    against expense ledgers to catch duplicate billings and FX
-                    fees.
-                  </p>
-                  <div className="mt-3 w-full rounded-2xl bg-white p-3 text-left">
-                    <h4 className="text-[11px] font-semibold uppercase tracking-wider text-[#5A5E67]">
-                      Corporate Card Statements
+                  <div className="mt-6 border-t border-slate-200/80 pt-4">
+                    <h4 className="font-mono text-[11px] font-semibold uppercase tracking-wider text-[#5A5E67]">
+                      {item.eyebrow}
                     </h4>
-                    <h5 className="mt-1 text-xs font-semibold text-[#111214]">
-                      Pending Authorizations &amp; Refunds
+                    <h5 className="mt-1.5 text-sm font-semibold text-[#111214]">
+                      {item.subhead}
                     </h5>
-                    <p className="mt-0.5 text-[11px] leading-relaxed text-[#5A5E67]">
-                      Widen tolerance days for delayed posting and spot reversed
-                      refund directions.
+                    <p className="mt-1 text-xs leading-relaxed text-[#5A5E67]">
+                      {item.detail}
                     </p>
                   </div>
+                </article>
+              );
+            })}
+          </div>
+
+          {/* True Cash Proof & Regional Export Support */}
+          <div className="mt-5 grid gap-5 lg:grid-cols-12 lg:items-stretch">
+            <div className="lime-showcase-surface rounded-[24px] p-6 sm:rounded-[28px] sm:p-8 lg:col-span-8">
+              <div className="grid h-full gap-6 md:grid-cols-12 md:items-center">
+                <div className="flex h-full flex-col justify-between gap-6 md:col-span-7">
+                  <div>
+                    <div className="inline-flex items-center gap-2 rounded-full bg-[#111214] px-3.5 py-1.5 text-xs font-semibold text-white">
+                      <span className="h-2 w-2 rounded-full bg-[#BDF71D]" />
+                      True Cash Formula • {BRAND.name}
+                    </div>
+
+                    <h3 className="mt-5 text-xl font-semibold tracking-[-0.02em] text-[#111214] sm:text-2xl sm:leading-[1.2]">
+                      Adjusted Bank Balance Equals Adjusted Book Balance
+                    </h3>
+                    <p className="mt-2.5 text-sm leading-relaxed text-[#111214]/80">
+                      Both sides prove out toward the same ending cash figure
+                      while keeping timing differences, unrecorded fees, and
+                      errors transparent.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[#111214]/15 pt-4 text-xs font-semibold text-[#111214]">
+                    <span className="inline-flex items-center gap-1.5">
+                      <FileSpreadsheet className="h-4 w-4 shrink-0" />
+                      XLSX &amp; CSV Workpapers Included
+                    </span>
+                    <span className="font-mono text-[#111214]/75">
+                      $0.00 Variance Goal • All ISO 4217
+                    </span>
+                  </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setActiveGuideId("credit-card")}
-                  className="mt-4 inline-flex min-h-[36px] items-center gap-1 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111214] shadow-xs transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111214]"
-                >
-                  Card rec guide
-                  <ArrowUpRight className="h-3.5 w-3.5" />
-                </button>
-              </article>
-            </div>
 
-            {/* Centerpiece Vibrant Acid-Lime Formula & Proof Showcase */}
-            <div className="lime-showcase-surface relative flex flex-col justify-between overflow-hidden rounded-[28px] p-5 sm:rounded-[32px] sm:p-8 lg:col-span-6">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="inline-flex items-center gap-2 rounded-full bg-[#111214] px-3.5 py-1.5 text-xs font-semibold text-white">
-                  <span className="h-2 w-2 rounded-full bg-[#BDF71D]" />
-                  True Cash Formula • {BRAND.name}
-                </div>
-                <span className="rounded-full bg-white/90 px-3 py-1 font-mono text-[11px] font-semibold text-[#111214]">
-                  $0.00 Variance Goal
-                </span>
-              </div>
-
-              <div className="mt-5 rounded-2xl bg-white/90 p-4 backdrop-blur-sm">
-                <h3 className="text-base font-semibold text-[#111214] sm:text-lg">
-                  Adjusted Bank Balance Equals Adjusted Book Balance
-                </h3>
-                <p className="mt-1 text-xs leading-relaxed text-[#111214]/80">
-                  Both sides prove out toward the same ending cash figure while
-                  keeping timing differences, unrecorded fees, and errors fully
-                  transparent.
-                </p>
-              </div>
-
-              <div className="my-5 grid gap-4 sm:grid-cols-2 sm:items-end">
-                <div className="rounded-[24px] bg-[#111214] p-5 text-white shadow-2xl">
-                  <div className="flex items-center gap-2">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#BDF71D] text-[#111214]">
+                <div className="rounded-[20px] bg-[#111214] p-5 text-white shadow-xl md:col-span-5 sm:p-6">
+                  <div className="flex items-center gap-2.5">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#BDF71D] text-[#111214]">
                       <Scale className="h-4 w-4" />
                     </span>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-white/90">
+                    <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-white/90">
                       Tie-Out Formula
                     </h4>
                   </div>
-                  <h5 className="mt-4 text-xs font-medium text-white/75">
+
+                  <h5 className="mt-4 text-xs font-medium text-white/70">
                     Timing Items vs. Book Adjustments
                   </h5>
                   <div className="mt-1 font-mono text-2xl font-semibold tracking-tight text-[#BDF71D]">
                     $86,600.00
                   </div>
-                  <div className="mt-4 space-y-2 border-t border-white/10 pt-3 font-mono text-[11px] text-white/85">
+
+                  <div className="mt-4 space-y-2 border-t border-white/10 pt-3.5 font-mono text-xs text-white/85">
                     <div className="flex justify-between gap-2">
-                      <span className="truncate">Statement Ending</span>
-                      <span className="shrink-0">$84,920.00</span>
+                      <span className="text-white/75">Statement Ending</span>
+                      <span>$84,920.00</span>
                     </div>
                     <div className="flex justify-between gap-2">
-                      <span className="truncate">+ Deposits in Transit</span>
-                      <span className="shrink-0 text-[#BDF71D]">+$3,150.00</span>
+                      <span className="text-white/75">+ Deposits in Transit</span>
+                      <span className="text-[#BDF71D]">+$3,150.00</span>
                     </div>
                     <div className="flex justify-between gap-2">
-                      <span className="truncate">− Outstanding Checks</span>
-                      <span className="shrink-0 text-amber-300">−$1,470.00</span>
+                      <span className="text-white/75">− Outstanding Checks</span>
+                      <span className="text-amber-300">−$1,470.00</span>
                     </div>
                   </div>
                 </div>
-
-                <div className="overflow-hidden rounded-[24px] bg-white shadow-2xl">
-                  <div className="relative aspect-[16/10] w-full">
-                    <Image
-                      src="/images/bank-reconciliation-workspace.jpg"
-                      alt="Workstation monitor displaying ClearTie side-by-side bank statement and general ledger reconciliation with $0.00 variance"
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <div className="text-[11px] font-medium text-[#5A5E67]">
-                      Statement &amp; Ledger Tie-Out
-                    </div>
-                    <div className="mt-1 font-mono text-[11px] font-semibold text-[#111214]">
-                      Bank Statement ↔ Business Ledger
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-white/90 px-4 py-3 text-xs font-medium text-[#111214] backdrop-blur-sm">
-                <span className="inline-flex items-center gap-1.5">
-                  <FileSpreadsheet className="h-3.5 w-3.5 shrink-0" />
-                  XLSX &amp; CSV Workpapers Included
-                </span>
-                <span className="font-mono text-[11px] text-[#5A5E67]">
-                  All ISO 4217 Currencies
-                </span>
               </div>
             </div>
 
-            {/* Right Stack: Balance Sheet & US/UK/EU Multi-Language Exports */}
-            <div className="grid gap-6 sm:grid-cols-2 lg:col-span-3 lg:flex lg:flex-col">
-              <article className="flex flex-1 flex-col items-center justify-between rounded-[24px] bg-[#F7F8F9] p-6 text-center sm:rounded-[28px] sm:p-7">
-                <div className="flex flex-col items-center">
-                  <div className="relative">
-                    <span className="lime-glow-icon flex h-14 w-14 items-center justify-center rounded-full text-[#111214]">
-                      <ShieldCheck className="h-6 w-6" />
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      className="absolute -right-2 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-white text-[11px] font-bold text-[#111214] shadow-md"
-                    >
-                      =
-                    </span>
-                  </div>
-                  <h3 className="mt-5 text-lg font-semibold text-[#111214]">
-                    Balance Sheet Account Reconciliation
-                  </h3>
-                  <p className="mt-2 text-xs leading-relaxed text-[#5A5E67]">
-                    Substantiate cash, clearing, and subledger balances against
-                    external source statements before month-end close and
-                    external audits.
-                  </p>
-                  <div className="mt-3 w-full rounded-2xl bg-white p-3 text-left">
-                    <h4 className="text-[11px] font-semibold uppercase tracking-wider text-[#5A5E67]">
-                      Month-End Close Proof
-                    </h4>
-                    <h5 className="mt-1 text-xs font-semibold text-[#111214]">
-                      Running-Balance &amp; Variance Tie-Out
-                    </h5>
-                    <p className="mt-0.5 text-[11px] leading-relaxed text-[#5A5E67]">
-                      Verify opening + net flow = closing balance with
-                      downloadable XLSX audit trails.
-                    </p>
-                  </div>
+            <article className="flex flex-col justify-between rounded-[24px] border border-slate-200/70 bg-[#F7F8F9] p-6 sm:rounded-[28px] sm:p-7 lg:col-span-4">
+              <div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="lime-glow-icon flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-[#111214]">
+                    <Building2 className="h-5 w-5" />
+                  </span>
+                  <span className="rounded-full bg-white px-3 py-1 font-mono text-[11px] font-semibold text-[#5A5E67] ring-1 ring-slate-200/80">
+                    US · UK · EU
+                  </span>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setActiveGuideId("balance-sheet")}
-                  className="mt-4 inline-flex min-h-[36px] items-center gap-1 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111214] shadow-xs transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111214]"
-                >
-                  Balance sheet guide
-                  <ArrowUpRight className="h-3.5 w-3.5" />
-                </button>
-              </article>
 
-              <article className="flex flex-1 flex-col items-center justify-center rounded-[24px] bg-[#F7F8F9] p-6 text-center sm:rounded-[28px] sm:p-7">
-                <div className="relative">
-                  <span className="lime-glow-icon flex h-14 w-14 items-center justify-center rounded-full text-[#111214]">
-                    <Building2 className="h-6 w-6" />
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className="absolute -right-2 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-white text-[11px] font-bold text-[#111214] shadow-md"
-                  >
-                    ✓
-                  </span>
-                </div>
-                <h3 className="mt-5 text-lg font-semibold text-[#111214]">
+                <h3 className="mt-5 text-lg font-semibold tracking-[-0.015em] text-[#111214] sm:text-xl">
                   US, UK &amp; EU Multi-Language Exports
                 </h3>
-                <p className="mt-2 text-xs leading-relaxed text-[#5A5E67]">
+                <p className="mt-2 text-sm leading-relaxed text-[#5A5E67]">
                   Parses English, German, French, Spanish, Portuguese, and Dutch
                   headers plus UTF-16 Unicode and HTML/XML bank exports across
                   USD, GBP, and EUR.
                 </p>
-                <div className="mt-3 w-full rounded-2xl bg-white p-3 text-left">
-                  <h4 className="text-[11px] font-semibold uppercase tracking-wider text-[#5A5E67]">
-                    Currency Normalization
-                  </h4>
-                  <h5 className="mt-1 text-xs font-semibold text-[#111214]">
-                    Handles Dr/Cr &amp; Parentheses
-                  </h5>
-                  <p className="mt-0.5 text-[11px] leading-relaxed text-[#5A5E67]">
-                    Preserves decimal precision across European, UK, and US bank
-                    export conventions.
-                  </p>
-                </div>
-              </article>
-            </div>
+              </div>
+
+              <div className="mt-6 border-t border-slate-200/80 pt-4">
+                <h4 className="font-mono text-[11px] font-semibold uppercase tracking-wider text-[#5A5E67]">
+                  Currency Normalization
+                </h4>
+                <h5 className="mt-1.5 text-sm font-semibold text-[#111214]">
+                  Handles Dr/Cr &amp; Parentheses
+                </h5>
+                <p className="mt-1 text-xs leading-relaxed text-[#5A5E67]">
+                  Preserves decimal precision across European, UK, and US bank
+                  export conventions.
+                </p>
+              </div>
+            </article>
           </div>
         </div>
       </section>

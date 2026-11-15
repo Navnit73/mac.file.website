@@ -21,7 +21,7 @@ export function AutomatedEngineSection() {
 
   return (
     <section id="automated-rules" className="bg-white py-16 sm:py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[79.2rem] px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#111214] sm:text-5xl sm:leading-[1.12]">
             Why Modern Teams Choose Purpose-Built Financial Reconciliation Software

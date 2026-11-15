@@ -23,7 +23,7 @@ export function HowToUseAndFaqSection() {
   return (
     <>
       <section id="how-to-use" className="bg-white py-16 sm:py-24">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[79.2rem] px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#111214] sm:text-5xl sm:leading-[1.12]">
               How to Use ClearTie to Reconcile Bank Statement Files
@@ -111,7 +111,7 @@ export function HowToUseAndFaqSection() {
       </section>
 
       <section id="faq" className="bg-white py-16 sm:py-24">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[61.6rem] px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#111214] sm:text-5xl sm:leading-[1.12]">
               Frequently Asked Questions About Bank &amp; Account Reconciliation
@@ -212,7 +212,7 @@ export function HowToUseAndFaqSection() {
 
       {/* Final Obsidian Rounded Utility CTA Banner */}
       <section className="bg-white pt-6 pb-16 sm:pt-8">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[79.2rem] px-4 sm:px-6 lg:px-8">
           <div className="rounded-[28px] bg-[#111214] px-5 py-12 text-center text-white sm:rounded-[32px] sm:px-12 sm:py-20">
             <h2 className="mx-auto max-w-2xl text-3xl font-semibold tracking-[-0.03em] text-white sm:text-5xl sm:leading-[1.1]">
               Ready to Reconcile Bank Statement Data Without Spreadsheets?
@@ -243,7 +243,7 @@ export function HowToUseAndFaqSection() {
       </section>
 
       <footer className="border-t border-slate-100 bg-white py-12 text-[#5A5E67]">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[79.2rem] px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
             <div>
               <div className="flex items-center gap-2.5">

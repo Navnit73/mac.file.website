@@ -42,7 +42,7 @@ export function FeaturesExplorerSection() {
 
   return (
     <section id="features" className="bg-white py-16 sm:py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[79.2rem] px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[#111214] px-3.5 py-1 text-xs font-semibold text-[#BDF71D]">
             <Cpu className="h-3.5 w-3.5 shrink-0" />

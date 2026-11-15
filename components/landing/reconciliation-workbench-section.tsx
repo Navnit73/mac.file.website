@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
   CheckCircle2,
   FileSpreadsheet,
@@ -9,9 +10,11 @@ import {
 import { BankReconciliationWorkbench } from "@/components/reconciliation";
 
 export function ReconciliationWorkbenchSection() {
+  const router = useRouter();
+
   return (
     <section id="reconcile-workbench" className="bg-white py-8 sm:py-14">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[79.2rem] px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[#111214] px-3.5 py-1 text-xs font-semibold text-[#BDF71D]">
             <Sparkles className="h-3.5 w-3.5 shrink-0" />
@@ -74,7 +77,13 @@ export function ReconciliationWorkbenchSection() {
             </div>
           </div>
 
-          <BankReconciliationWorkbench />
+          <BankReconciliationWorkbench
+            skipInitialTransactionsFetch
+            hideReportOnComplete
+            onCompleted={(id) => {
+              router.push(`/reconcile-preview/${encodeURIComponent(id)}`);
+            }}
+          />
         </div>
       </div>
     </section>

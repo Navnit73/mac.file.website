@@ -15,7 +15,7 @@ export function HeroSection() {
       id="top"
       className="relative overflow-hidden bg-white pt-8 pb-8 sm:pt-12 sm:pb-14"
     >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[79.2rem] px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-10">
           {/* Left Copy & Conversion Column */}
           <div className="lg:col-span-6">
