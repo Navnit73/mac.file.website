@@ -1,12 +1,17 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page, type Route } from "@playwright/test";
-import { TRUST_PAGE_ROUTES } from "@/lib/site-config";
+import { TOOL_PAGE_ROUTES, TRUST_PAGE_ROUTES } from "@/lib/site-config";
 import type {
   ReconciliationStatusResponse,
   TransactionsPageResponse,
 } from "@/lib/reconciliation/types";
 
-const ALL_INDEXABLE_ROUTES = ["/", "/reconcile", ...TRUST_PAGE_ROUTES] as const;
+const ALL_INDEXABLE_ROUTES = [
+  "/",
+  "/reconcile",
+  ...TRUST_PAGE_ROUTES,
+  ...TOOL_PAGE_ROUTES,
+] as const;
 
 const A11Y_CORE_ROUTES = [
   "/",
@@ -15,6 +20,7 @@ const A11Y_CORE_ROUTES = [
   "/faq",
   "/contact-us",
   "/about-us",
+  ...TOOL_PAGE_ROUTES,
 ] as const;
 
 function buildCompletedReportPayload(
@@ -323,7 +329,7 @@ test.describe("Sitewide Routing, SEO, Structured Data, Responsive & Runtime Audi
     expect(sitemapXml).not.toContain("/api/");
 
     const hrefs = new Set<string>();
-    for (const seedPath of ["/", "/reconcile", "/how-it-works"]) {
+    for (const seedPath of ["/", "/reconcile", "/how-it-works", "/tool"]) {
       await page.goto(seedPath, { waitUntil: "domcontentloaded" });
       const pageHrefs = await page.evaluate(() =>
         Array.from(document.querySelectorAll("a[href]"))

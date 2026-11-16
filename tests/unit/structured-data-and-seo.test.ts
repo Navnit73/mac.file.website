@@ -5,6 +5,7 @@ import sitemap from "@/app/sitemap";
 import {
   AUTHORS,
   SITE_CONFIG,
+  TOOL_PAGE_ROUTES,
   TRUST_PAGE_ROUTES,
 } from "@/lib/site-config";
 import {
@@ -66,7 +67,7 @@ describe("structured data builders & technical SEO routes", () => {
     assert.ok(urls.includes(SITE_CONFIG.url));
     assert.ok(urls.includes(`${SITE_CONFIG.url}/reconcile`));
 
-    for (const route of TRUST_PAGE_ROUTES) {
+    for (const route of [...TRUST_PAGE_ROUTES, ...TOOL_PAGE_ROUTES]) {
       assert.ok(
         urls.includes(`${SITE_CONFIG.url}${route}`),
         `Missing ${route} in sitemap`

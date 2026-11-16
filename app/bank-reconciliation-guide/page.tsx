@@ -46,6 +46,12 @@ export default function BankReconciliationGuidePage() {
       ]}
       relatedLinks={[
         {
+          title: "Bank Reconciliation Guides & Tools Hub",
+          description:
+            "Browse all 8 guides: worked examples, step-by-step process, outstanding cheques, NSF returns, and balance sheet checklists.",
+          href: "/tool",
+        },
+        {
           title: "Reconciliation Methodology",
           description:
             "See how reconcilebankstatement compares uploaded statements and ledgers algorithmically.",
@@ -56,12 +62,6 @@ export default function BankReconciliationGuidePage() {
           description:
             "Learn what deterministic balance checks verify and where accountant review is required.",
           href: "/data-accuracy-policy",
-        },
-        {
-          title: "FAQ",
-          description:
-            "Quick answers to file limits, PDF decryption, and common reconciliation discrepancies.",
-          href: "/faq",
         },
       ]}
     >

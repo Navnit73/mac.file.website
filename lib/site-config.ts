@@ -130,6 +130,7 @@ export const FOOTER_NAV_GROUPS: FooterNavGroup[] = [
     heading: "Product & Resources",
     links: [
       { label: "Reconciliation Tool", href: "/reconcile" },
+      { label: "Reconciliation Guides Hub", href: "/tool" },
       { label: "How It Works", href: "/how-it-works" },
       {
         label: "Bank Reconciliation Guide",
@@ -181,6 +182,93 @@ export const TRUST_PAGE_ROUTES = [
   "/accessibility",
   "/responsible-use",
   "/affiliate-disclosure",
+] as const;
+
+export type ToolGuideDirectoryItem = {
+  href: string;
+  badge: string;
+  title: string;
+  description: string;
+  keyword: string;
+};
+
+export const TOOL_GUIDE_ITEMS: ToolGuideDirectoryItem[] = [
+  {
+    href: "/tool/bank-statement-reconciliation",
+    badge: "Beginner's Guide",
+    title: "Bank Reconciliation Explained: Complete Beginner’s Guide",
+    description:
+      "Plain-English guide to bank statement reconciliation, why books differ from statements, the book-to-bank formula, and a simple worked example.",
+    keyword: "bank statement reconciliation",
+  },
+  {
+    href: "/tool/bank-reconciliation-meaning",
+    badge: "Core Concepts",
+    title: "Bank Reconciliation Meaning and Why It Matters",
+    description:
+      "Understand what bank reconciliation means in accounting, why regular tie-outs prevent fraud and cash blind spots, and what skipping it costs.",
+    keyword: "bank reconciliation meaning",
+  },
+  {
+    href: "/tool/bank-reconciliation-steps",
+    badge: "Process Playbook",
+    title: "Bank Reconciliation Steps: A Step-by-Step Process",
+    description:
+      "Follow a practical 7-step bank reconciliation workflow from opening balance proof to variance troubleshooting and final workpaper export.",
+    keyword: "bank reconciliation steps",
+  },
+  {
+    href: "/tool/bank-reconciliation-example",
+    badge: "Worked Numbers",
+    title: "Bank Reconciliation Example with Worked Numbers",
+    description:
+      "Line-by-line worked example with raw bank vs. book transactions, reconciling items, adjusting journal entries, and a $0.00 variance tie-out.",
+    keyword: "bank reconciliation example",
+  },
+  {
+    href: "/tool/account-reconciliation-meaning",
+    badge: "GL Controls",
+    title: "Account Reconciliation Meaning in Accounting",
+    description:
+      "See how account reconciliation works across cash, AR/AP, corporate cards, and clearing accounts—plus methods and month-end close workflows.",
+    keyword: "account reconciliation meaning",
+  },
+  {
+    href: "/tool/outstanding-cheques-in-bank-reconciliation",
+    badge: "Timing Items",
+    title: "Outstanding Cheques in Bank Reconciliation Explained",
+    description:
+      "Learn how unpresented cheques affect the bank balance, why no journal entry is needed at issuance, and how to handle stale-dated cheques.",
+    keyword: "outstanding cheques in bank reconciliation",
+  },
+  {
+    href: "/tool/nsf-checks-bank-reconciliation",
+    badge: "Returned Items",
+    title: "NSF and Returned Cheques in Bank Reconciliation",
+    description:
+      "Step-by-step handling for bounced customer cheques, bank return fees, book-side deductions, and exact adjusting journal entries.",
+    keyword: "nsf checks bank reconciliation",
+  },
+  {
+    href: "/tool/balance-sheet-reconciliation-example",
+    badge: "Close Checklist",
+    title: "Balance Sheet Reconciliation: Process, Example, and Checklist",
+    description:
+      "Complete month-end balance sheet reconciliation process with cash and prepaid expense examples plus a sign-off checklist template.",
+    keyword: "balance sheet reconciliation example",
+  },
+];
+
+export const TOOL_PAGE_ROUTES = [
+  "/tool",
+  "/tool/bank-statement-reconciliation",
+  "/tool/bank-reconciliation-meaning",
+  "/tool/bank-reconciliation-steps",
+  "/tool/bank-reconciliation-example",
+  "/tool/account-reconciliation-meaning",
+  "/tool/outstanding-cheques-in-bank-reconciliation",
+  "/tool/nsf-checks-bank-reconciliation",
+  "/tool/balance-sheet-reconciliation-example",
 ] as const;
 
 export function createPageMetadata({

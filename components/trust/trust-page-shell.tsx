@@ -32,6 +32,21 @@ export type RelatedResourceLink = {
   href: string;
 };
 
+export type HeroCtaConfig = {
+  label: string;
+  href: string;
+  secondaryLabel?: string;
+  secondaryHref?: string;
+  note?: string;
+};
+
+export type BottomCtaOverride = {
+  title: string;
+  description: string;
+  buttonLabel: string;
+  href?: string;
+};
+
 export type TrustPageShellProps = {
   path: string;
   eyebrow: string;
@@ -46,6 +61,8 @@ export type TrustPageShellProps = {
     title: string;
     body: string;
   };
+  heroCta?: HeroCtaConfig;
+  ctaOverride?: BottomCtaOverride;
   pageType?: SchemaWebPageType;
   mainEntityId?: string;
   relatedLinks?: RelatedResourceLink[];
@@ -64,6 +81,8 @@ export function TrustPageShell({
   reviewer,
   updatedLabel = SITE_CONFIG.lastReviewedLabel,
   notice,
+  heroCta,
+  ctaOverride,
   pageType = "WebPage",
   mainEntityId,
   relatedLinks = [],
@@ -114,6 +133,31 @@ export function TrustPageShell({
                 {lead}
               </p>
 
+              {heroCta && (
+                <div className="mt-6">
+                  <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+                    <Link
+                      href={heroCta.href}
+                      className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-full bg-[#111214] px-6 text-xs font-semibold text-white shadow-xs transition-all hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111214] focus-visible:ring-offset-2 sm:text-sm"
+                    >
+                      {heroCta.label}
+                      <ArrowRight className="h-4 w-4 text-[#BDF71D]" aria-hidden="true" />
+                    </Link>
+                    {heroCta.secondaryLabel && heroCta.secondaryHref && (
+                      <Link
+                        href={heroCta.secondaryHref}
+                        className="inline-flex min-h-[46px] items-center justify-center rounded-full border border-slate-300 bg-white px-5 text-xs font-semibold text-[#111214] transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111214] focus-visible:ring-offset-2 sm:text-sm"
+                      >
+                        {heroCta.secondaryLabel}
+                      </Link>
+                    )}
+                  </div>
+                  {heroCta.note && (
+                    <p className="mt-2.5 text-xs text-[#5A5E67]">{heroCta.note}</p>
+                  )}
+                </div>
+              )}
+
               {author ? (
                 <EditorialAttributionBar
                   author={author}
@@ -144,7 +188,7 @@ export function TrustPageShell({
           <div className="mx-auto max-w-[79.2rem] px-4 sm:px-6 lg:px-8">
             <div className="grid gap-10 lg:grid-cols-12">
               {sections.length > 0 && (
-                <aside className="lg:col-span-3">
+                <aside className="min-w-0 lg:col-span-3">
                   <nav
                     aria-label="On this page"
                     className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-5 lg:sticky lg:top-24"
@@ -181,8 +225,8 @@ export function TrustPageShell({
               <div
                 className={
                   sections.length > 0
-                    ? "space-y-8 lg:col-span-9"
-                    : "mx-auto max-w-4xl space-y-8 lg:col-span-12"
+                    ? "min-w-0 space-y-8 lg:col-span-9"
+                    : "mx-auto w-full min-w-0 max-w-4xl space-y-8 lg:col-span-12"
                 }
               >
                 {children}
@@ -232,19 +276,20 @@ export function TrustPageShell({
               >
                 <div>
                   <h2 className="text-lg font-semibold sm:text-xl">
-                    Ready to compare your bank statement against your ledger?
+                    {ctaOverride?.title ??
+                      "Ready to compare your bank statement against your ledger?"}
                   </h2>
                   <p className="mt-1 text-xs leading-relaxed text-white/75 sm:text-sm">
-                    Upload PDF, image, CSV, or XLSX files directly in the
-                    workbench or test immediately with our sample CSV pair.
+                    {ctaOverride?.description ??
+                      "Upload PDF, image, CSV, or XLSX files directly in the workbench or test immediately with our sample CSV pair."}
                   </p>
                 </div>
                 <Link
-                  href="/reconcile"
-                  className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full bg-[#BDF71D] px-6 text-xs font-semibold text-[#111214] transition-colors hover:bg-[#cffb4e] sm:text-sm"
+                  href={ctaOverride?.href ?? "/reconcile"}
+                  className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full bg-[#BDF71D] px-6 text-xs font-semibold text-[#111214] transition-colors hover:bg-[#cffb4e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:text-sm"
                 >
-                  Open Workbench
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  {ctaOverride?.buttonLabel ?? "Open Workbench"}
+                  <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
                 </Link>
               </div>
             </div>

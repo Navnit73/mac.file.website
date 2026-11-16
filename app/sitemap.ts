@@ -1,6 +1,10 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/landing-data";
-import { SITE_CONFIG, TRUST_PAGE_ROUTES } from "@/lib/site-config";
+import {
+  SITE_CONFIG,
+  TOOL_PAGE_ROUTES,
+  TRUST_PAGE_ROUTES,
+} from "@/lib/site-config";
 
 const HIGH_PRIORITY_ROUTES = new Set<string>([
   "/how-it-works",
@@ -8,6 +12,7 @@ const HIGH_PRIORITY_ROUTES = new Set<string>([
   "/bank-reconciliation-methodology",
   "/faq",
   "/security",
+  ...TOOL_PAGE_ROUTES,
 ]);
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -26,7 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
-    ...TRUST_PAGE_ROUTES.map((route) => ({
+    ...[...TRUST_PAGE_ROUTES, ...TOOL_PAGE_ROUTES].map((route) => ({
       url: `${SITE_URL}${route}`,
       lastModified,
       changeFrequency: HIGH_PRIORITY_ROUTES.has(route)
