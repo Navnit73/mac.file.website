@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BRAND, SITE_URL } from "@/lib/landing-data";
+import { SOFTWARE_GUIDES } from "@/lib/software-guides";
 
 export type AuthorProfile = {
   id: string;
@@ -257,6 +258,13 @@ export const TOOL_GUIDE_ITEMS: ToolGuideDirectoryItem[] = [
       "Complete month-end balance sheet reconciliation process with cash and prepaid expense examples plus a sign-off checklist template.",
     keyword: "balance sheet reconciliation example",
   },
+  ...SOFTWARE_GUIDES.map((g) => ({
+    href: `/tool/${g.slug}`,
+    badge: g.badge,
+    title: g.title,
+    description: g.description,
+    keyword: g.keyword,
+  })),
 ];
 
 export const TOOL_PAGE_ROUTES = [
@@ -269,6 +277,7 @@ export const TOOL_PAGE_ROUTES = [
   "/tool/outstanding-cheques-in-bank-reconciliation",
   "/tool/nsf-checks-bank-reconciliation",
   "/tool/balance-sheet-reconciliation-example",
+  ...SOFTWARE_GUIDES.map((g) => `/tool/${g.slug}` as const),
 ] as const;
 
 export function createPageMetadata({

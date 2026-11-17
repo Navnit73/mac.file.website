@@ -36,12 +36,12 @@ export default function ToolHubPage() {
       heroCta={{
         label: "Open Bank Reconciliation Tool",
         href: "/reconcile",
-        secondaryLabel: "Browse 8 Step-by-Step Guides",
+        secondaryLabel: "Browse 14 Step-by-Step Guides",
         secondaryHref: "#guide-directory",
         note: "Free browser utility • PDF OCR, CSV, TSV, TXT & XLSX up to 100 MB • No bank credentials required",
       }}
       sections={[
-        { id: "guide-directory", label: "All 8 Reconciliation Guides" },
+        { id: "guide-directory", label: "All 14 Reconciliation Guides" },
         { id: "quick-launch", label: "Why Pair Guides With the Tool" },
       ]}
       relatedLinks={[

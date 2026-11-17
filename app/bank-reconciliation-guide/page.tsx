@@ -48,7 +48,7 @@ export default function BankReconciliationGuidePage() {
         {
           title: "Bank Reconciliation Guides & Tools Hub",
           description:
-            "Browse all 8 guides: worked examples, step-by-step process, outstanding cheques, NSF returns, and balance sheet checklists.",
+            "Browse all 14 guides: worked examples, step-by-step process, NSF returns, and QuickBooks, Xero, NetSuite, SAP and Tally walkthroughs.",
           href: "/tool",
         },
         {
